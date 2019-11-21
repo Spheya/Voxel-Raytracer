@@ -11,9 +11,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19} = {A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}
+		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244} = {A4F50B57-017B-43A1-B5E8-1FA68ADD2244}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Networking", "Networking\Networking.csproj", "{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntitySystem", "EntitySystem\EntitySystem.csproj", "{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +36,10 @@ Global
 		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
