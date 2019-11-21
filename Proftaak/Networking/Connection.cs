@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Networking
 {
-    class Connection
+    public class Connection
     {
         private struct PacketData
         {
