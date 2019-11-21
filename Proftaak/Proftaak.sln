@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Networking", "Networking\Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntitySystem", "EntitySystem\EntitySystem.csproj", "{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelData", "VoxelData\VoxelData.csproj", "{FE82B5BA-5DFC-4366-8453-243560B0A5A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

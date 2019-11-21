@@ -61,6 +61,10 @@
       <Project>{a9d5d548-c519-40b1-af5e-dd04b5d4be19}</Project>
       <Name>Networking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VoxelData\VoxelData.csproj">
+      <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
+      <Name>VoxelData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
