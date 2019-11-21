@@ -4,6 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{06BCDB2B-160C-4C7F-A569-184129BB210F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19} = {A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19} = {A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Networking", "Networking\Networking.csproj", "{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,14 @@ Global
 		{06BCDB2B-160C-4C7F-A569-184129BB210F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06BCDB2B-160C-4C7F-A569-184129BB210F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06BCDB2B-160C-4C7F-A569-184129BB210F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
