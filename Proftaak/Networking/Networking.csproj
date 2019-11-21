@@ -46,9 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
+    <Compile Include="src\Connection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreadLauncher.cs" />
+    <Compile Include="src\ThreadLauncher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
