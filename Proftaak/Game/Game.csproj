@@ -57,6 +57,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EntitySystem\EntitySystem.csproj">
+      <Project>{a4f50b57-017b-43a1-b5e8-1fa68add2244}</Project>
+      <Name>EntitySystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Networking\Networking.csproj">
       <Project>{a9d5d548-c519-40b1-af5e-dd04b5d4be19}</Project>
       <Name>Networking</Name>
