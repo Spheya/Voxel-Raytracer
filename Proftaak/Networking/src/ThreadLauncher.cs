@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Networking
 {
-    class ThreadLauncher
+    public class ThreadLauncher
     {
         public delegate void OnPacket(Connection connection, byte[] data);
 
