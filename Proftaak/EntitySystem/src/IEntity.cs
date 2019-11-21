@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EntitySystem
 {
-    interface IEntity
+    public interface IEntity
     {
         bool DeletionMark { get; set; }
         bool Enabled { get; set; }

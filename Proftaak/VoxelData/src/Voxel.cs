@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoxelData
 {
-    struct Voxel
+    public struct Voxel
     {
         public int ColourValue => (_r << 16) | (_g << 8) | (_b << 0);
 

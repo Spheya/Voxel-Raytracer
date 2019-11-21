@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoxelData
 {
-    class VoxelGrid
+    public class VoxelGrid
     {
         public int Width { get; }
         public int Height { get; }

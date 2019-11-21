@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EntitySystem
 {
-    class EntityManager
+    public class EntityManager
     {
         private readonly List<IEntity> _entities = new List<IEntity>();
 
