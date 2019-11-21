@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{896BE05E-7B4F-4A77-84A5-65B8932FA8F1}</ProjectGuid>
+    <ProjectGuid>{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>GameServer</RootNamespace>
     <AssemblyName>GameServer</AssemblyName>
@@ -32,6 +32,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>

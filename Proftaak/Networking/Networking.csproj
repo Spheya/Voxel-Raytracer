@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6FF1E4D1-00C9-45A8-AD21-1019B0D3F26F}</ProjectGuid>
+    <ProjectGuid>{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Game</RootNamespace>
-    <AssemblyName>Game</AssemblyName>
+    <RootNamespace>Networking</RootNamespace>
+    <AssemblyName>Networking</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
