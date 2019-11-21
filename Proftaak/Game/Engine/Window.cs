@@ -54,6 +54,7 @@ namespace Game.Engine
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
 
             Color4 backColor;
@@ -62,7 +63,8 @@ namespace Game.Engine
             backColor.G = 0.1f;
             backColor.B = 0.3f;
             GL.ClearColor(backColor);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            
+            //Call Draw on entities here
 
             SwapBuffers();
         }
