@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Game.GameStates;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -13,7 +13,9 @@ namespace Game.Engine
 {
     public sealed class Window : GameWindow
     {
-        public Window() : base(
+        private GameState _state;
+
+        public Window(GameState state) : base(
                 1280,
                 720,
                 GraphicsMode.Default,
@@ -25,6 +27,8 @@ namespace Game.Engine
                 GraphicsContextFlags.ForwardCompatible
             )
         {
+            _state = state;
+
             Title += ": OpenGL " + GL.GetString(StringName.Version);
             VSync = VSyncMode.Off;
         }
@@ -41,7 +45,12 @@ namespace Game.Engine
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            HandleKeyboard();
+            _state.OnUpdate((float)e.Time);
+            CheckForNewState();
+            
+            //TODO: Actually do a fixed update
+            _state.OnFixedUpdate((float)e.Time);
+            CheckForNewState();
         }
 
         private void HandleKeyboard()
@@ -64,9 +73,19 @@ namespace Game.Engine
             backColor.B = 0.3f;
             GL.ClearColor(backColor);
             
-            //Call Draw on entities here
+            _state.OnDraw((float)e.Time);
 
             SwapBuffers();
+        }
+
+        private void CheckForNewState()
+        {
+            if (_state.IsStateRequested())
+            {
+                _state.OnDestroy();
+                _state = _state.GetRequestedState();
+                _state.OnCreate();
+            }
         }
     }
 }
