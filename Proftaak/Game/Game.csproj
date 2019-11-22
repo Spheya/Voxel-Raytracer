@@ -48,7 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Engine\Rendering\Camera.cs" />
+    <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
     <Compile Include="src\Engine\Window.cs" />
+    <Compile Include="src\GameStates\Game.cs" />
+    <Compile Include="src\GameStates\GameState.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
