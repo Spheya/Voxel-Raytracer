@@ -24,6 +24,8 @@ namespace Game.GameStates
 
             GL.DetachShader(shader, fragmentShader);
             GL.DeleteShader(fragmentShader);
+
+            Console.WriteLine("Shader compiled <o/"); //epic it work
         }
 
         public override void OnUpdate(float deltatime)

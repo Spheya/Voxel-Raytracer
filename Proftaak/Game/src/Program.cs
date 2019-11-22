@@ -1,5 +1,6 @@
 ﻿using Networking;
 using Game.Engine;
+using Game.GameStates;
 
 namespace Game
 {
@@ -7,7 +8,7 @@ namespace Game
     {
         static void Main(string[] args)
         {
-            new Window(new Game()).Run();
+            new Window(new GameState()).Run();
         }
     }
 }
