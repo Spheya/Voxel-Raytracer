@@ -15,6 +15,7 @@ namespace VoxelData
 
         private readonly Voxel[,,] _voxels;
 
+        public bool[] VoxelMesh { get; }
         public int[] VoxelColours { get; }
         //TODO: Reflectivity 'n shit
 
@@ -24,7 +25,10 @@ namespace VoxelData
             set {
                 _voxels[x, y, z] = value;
 
-                VoxelColours[x + y * Width + z * Width * Depth] = value.ColourValue;
+                int index = x + y * Width + z * Width * Depth;
+
+                VoxelMesh[index] = !value.Equals(Voxel.EMPTY);
+                VoxelColours[index] = value.ColourValue;
             }
         }
 
@@ -41,6 +45,7 @@ namespace VoxelData
             _voxels = new Voxel[width, height, depth];
 
             VoxelColours = new int[width * height * depth];
+            VoxelMesh = new bool[width * height * depth];
         }
     }
 }

@@ -8,6 +8,8 @@ namespace VoxelData
 {
     public struct Voxel
     {
+        public static readonly Voxel EMPTY = new Voxel(-1);
+
         public int ColourValue => (_r << 16) | (_g << 8) | (_b << 0);
 
         public byte _r, _g, _b;
