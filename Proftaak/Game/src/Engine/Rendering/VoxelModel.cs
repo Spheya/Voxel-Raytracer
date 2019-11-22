@@ -56,18 +56,24 @@ namespace Game.Engine.Rendering
 
         public void UpdateBufferTexture()
         {
-
             if (_dirtyFlag)
             {
                 GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
-                GL.BufferSubData<ushort>(BufferTarget.TextureBuffer, _minDirty, _maxDirty - _minDirty, _grid.VoxelMaterials.Skip(_minDirty).ToArray());
+                GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, _maxDirty - _minDirty, _grid.VoxelMaterials.Skip(_minDirty).ToArray());
                 GL.BindBuffer(BufferTarget.TextureBuffer, 0);
 
-                //GL.TexBuffer(TextureBufferTarget.TextureBuffer, SizedInternalFormat.R16ui, BufferTextureId);
+                //
 
                 _maxDirty = int.MinValue;
                 _minDirty = int.MaxValue;
             }
+        }
+
+        public void BindTexture(TextureUnit unit)
+        {
+            GL.ActiveTexture(unit);
+            GL.BindTexture(TextureTarget.TextureBuffer, _bufferTextureId);
+            GL.TexBuffer(TextureBufferTarget.TextureBuffer, SizedInternalFormat.R16ui, _bufferId);
         }
     }
 }
