@@ -1,37 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Game.GameStates
 {
-    public abstract class GameState
+    sealed class GameState : ApplicationState
     {
-        public abstract void OnCreate();
-        public abstract void OnUpdate(float deltatime);
-        public abstract void OnFixedUpdate(float deltatime);
-        public abstract void OnDraw(float deltatime);
-        public abstract void OnDestroy();
-
-        protected void RequestState(GameState state)
+        public override void OnCreate()
         {
-            _requestedState = state;
         }
 
-        public bool IsStateRequested()
+        public override void OnUpdate(float deltatime)
         {
-            return _requestedState != null;
         }
 
-        public GameState GetRequestedState()
+        public override void OnFixedUpdate(float deltatime)
         {
-            Debug.Assert(_requestedState != null);
-            return _requestedState;
         }
 
+        public override void OnDraw(float deltatime)
+        {
+        }
 
-        private GameState _requestedState = null;
+        public override void OnDestroy()
+        {
+        }
     }
 }

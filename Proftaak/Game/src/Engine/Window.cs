@@ -13,9 +13,9 @@ namespace Game.Engine
 {
     public sealed class Window : GameWindow
     {
-        private GameState _state;
+        private ApplicationState _state;
 
-        public Window(GameState state) : base(
+        public Window(ApplicationState state) : base(
                 1280,
                 720,
                 GraphicsMode.Default,
