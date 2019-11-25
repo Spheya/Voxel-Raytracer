@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Game.Engine.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using VoxelData;
 
 namespace Game.GameStates
 {
@@ -16,6 +18,8 @@ namespace Game.GameStates
         int VertexArray;
         int Buffer;
 
+        private VoxelModel model;
+
         Vector2[] QuadVertices = new Vector2[4] {
             new Vector2(-1f, -1f),
             new Vector2(1f, -1f),
@@ -25,6 +29,17 @@ namespace Game.GameStates
 
         public override void OnCreate()
         {
+            Random rand = new Random();
+            model = new VoxelModel(1280, 720, 1);
+            for (int i = 0; i < 1280; i++)
+            {
+                for (int j = 0; j < 720; j++)
+                {
+                    model[i, j, 0] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
+                }
+            }
+            model.UpdateBufferTexture();
+
             try
             {
                 var vertexShader = GL.CreateShader(ShaderType.VertexShader);
@@ -102,6 +117,8 @@ namespace Game.GameStates
         public override void OnDraw(float deltatime)
         {
             GL.UseProgram(Shader);
+            model.BindTexture(TextureUnit.Texture0);
+            GL.Uniform1(Shader, GL.GetUniformLocation(Shader, "u_voxelBuffer"), new []{ 0 });
             GL.BindVertexArray(VertexArray);
             GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
         }

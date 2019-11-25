@@ -19,8 +19,8 @@ namespace Game.Engine.Rendering
         private int _minDirty = int.MaxValue;
         private int _maxDirty = int.MinValue;
 
-        private int _bufferTextureId;
-        private int _bufferId;
+        private readonly int _bufferTextureId;
+        private readonly int _bufferId;
 
         public int Width => _grid.Width;
         public int Height => _grid.Height;
@@ -61,8 +61,6 @@ namespace Game.Engine.Rendering
                 GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
                 GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, _maxDirty - _minDirty, _grid.VoxelMaterials.Skip(_minDirty).ToArray());
                 GL.BindBuffer(BufferTarget.TextureBuffer, 0);
-
-                //
 
                 _maxDirty = int.MinValue;
                 _minDirty = int.MaxValue;
