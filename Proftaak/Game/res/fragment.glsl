@@ -3,7 +3,9 @@
 uniform samplerBuffer u_voxelBuffer;
 uniform ivec3 u_bufferDimensions;
 
-uniform float u_zoom;
+uniform vec2 u_windowSize;
+
+//uniform float u_zoom;
 
 out vec4 colour;
 
@@ -24,7 +26,7 @@ int getVoxelData(int x, int y, int z) {
 }
 
 Ray generateRay() {
-	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy, u_zoom)));
+	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, 2.0)));
 }
 
 HitData trace(Ray ray) {
@@ -53,5 +55,6 @@ void main () {
 	float dist = trace(ray).dist;
 
 	colour = vec4(0.2, 1.0 / dist, 0.4, 1.0);
+	if(dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 	//gl_FragColor = vec4(1.0, vec2(0.0), 1.0);
 }

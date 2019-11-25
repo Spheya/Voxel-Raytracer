@@ -4,11 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace Game.GameStates
 {
     public abstract class ApplicationState
     {
+        protected GameWindow Window { get; private set; }
+
+        public void AssignWindow(GameWindow window)
+        {
+            Window = window;
+        }
+
         public abstract void OnCreate();
         public abstract void OnUpdate(float deltatime);
         public abstract void OnFixedUpdate(float deltatime);

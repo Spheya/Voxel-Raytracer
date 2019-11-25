@@ -124,7 +124,8 @@ namespace Game.GameStates
             model.BindTexture(TextureUnit.Texture0);
             GL.Uniform1(GL.GetUniformLocation(Shader, "u_voxelBuffer"), 1, new[] { 0 });
             GL.Uniform3(GL.GetUniformLocation(Shader, "u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
-
+            GL.Uniform2(GL.GetUniformLocation(Shader, "u_windowSize"), 1, new float [] { Window.Width, Window.Height });
+            
             GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
         }
 
