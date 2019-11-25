@@ -31,12 +31,13 @@ namespace Game.Engine
 
             Title += ": OpenGL " + GL.GetString(StringName.Version);
             VSync = VSyncMode.Off;
+
+            _state.OnCreate();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             CursorVisible = true;
-            _state.OnCreate();
         }
 
         protected override void OnResize(EventArgs e)
