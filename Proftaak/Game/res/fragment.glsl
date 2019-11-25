@@ -5,7 +5,7 @@ uniform ivec3 u_bufferDimensions;
 
 uniform vec2 u_windowSize;
 
-//uniform float u_zoom;
+uniform float u_zoom;
 
 out vec4 colour;
 
@@ -26,7 +26,7 @@ int getVoxelData(int x, int y, int z) {
 }
 
 Ray generateRay() {
-	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, 2.0)));
+	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_zoom)));
 }
 
 HitData trace(Ray ray) {
