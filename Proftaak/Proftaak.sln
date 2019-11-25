@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntitySystem", "EntitySyste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelData", "VoxelData\VoxelData.csproj", "{FE82B5BA-5DFC-4366-8453-243560B0A5A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoInput", "ArduinoInput\ArduinoInput.csproj", "{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE82B5BA-5DFC-4366-8453-243560B0A5A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
