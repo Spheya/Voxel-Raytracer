@@ -7,6 +7,8 @@ uniform vec2 u_windowSize;
 
 uniform float u_zoom;
 
+uniform float f;
+
 out vec4 colour;
 
 struct Ray {
@@ -20,9 +22,10 @@ struct HitData {
 };
 
 int getVoxelData(int x, int y, int z) {
-	return (x > u_bufferDimensions.x || y > u_bufferDimensions.y || z > u_bufferDimensions.z) ?
-				floatBitsToInt(texelFetch(u_voxelBuffer, x + y * u_bufferDimensions.x + z * u_bufferDimensions.x * u_bufferDimensions.y)) : 
-				0;
+	if (x > u_bufferDimensions.x || y > u_bufferDimensions.y || z > u_bufferDimensions.z)
+		return 0;
+		
+	return floatBitsToInt(texelFetch(u_voxelBuffer, x + y * u_bufferDimensions.x + z * u_bufferDimensions.x * u_bufferDimensions.y));
 }
 
 Ray generateRay() {
@@ -36,7 +39,7 @@ HitData trace(Ray ray) {
 	for(int i = 0; i < 100; ++i){
 		point += ray.direction;
 		dist += 1.0f;
-		int material = getVoxelData(int(floor(point).x), int(floor(point).y), int(floor(point).z));
+		int material = getVoxelData(int(floor(point.x)), int(floor(point.y)), int(floor(point.z)));
 		if(material != 0) {
 			return HitData(dist, vec3(0.0), material);
 		}
@@ -49,12 +52,12 @@ HitData trace(Ray ray) {
 void main () {
 	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
+	ray.origin = vec3(0.0, 0.0, -f);
 	//ray.origin = (u_cameraTransformation * vec4(ray.origin, 1.0)).xyz;
 	//ray.direction = (u_cameraTransformation * vec4(ray.direction, 0.0)).xyz;
 
 	float dist = trace(ray).dist;
 
-	colour = vec4(0.2, 1.0 / dist, 0.4, 1.0);
+	colour = vec4(1.0, 1.0 / dist, 1.0, 1.0);
 	if(dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
-	//gl_FragColor = vec4(1.0, vec2(0.0), 1.0);
 }
