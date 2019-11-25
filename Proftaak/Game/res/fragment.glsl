@@ -52,6 +52,6 @@ void main () {
 
 	float dist = trace(ray).dist;
 
-	// gl_FragColor = vec4(0.7, 1.0 / dist, 0.8, 1.0);
-	gl_FragColor = vec4(1.0, vec2(0.0), 1.0);
+	colour = vec4(0.2, 1.0 / dist, 0.4, 1.0);
+	//gl_FragColor = vec4(1.0, vec2(0.0), 1.0);
 }
