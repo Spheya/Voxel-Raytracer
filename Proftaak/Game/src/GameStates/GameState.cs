@@ -30,15 +30,25 @@ namespace Game.GameStates
                 var vertexShader = GL.CreateShader(ShaderType.VertexShader);
                 GL.ShaderSource(vertexShader, File.ReadAllText(@"res\vertex.glsl"));
                 GL.CompileShader(vertexShader);
+                var info = GL.GetShaderInfoLog(vertexShader);
+                if (!string.IsNullOrWhiteSpace(info))
+                    throw new Exception($"CompileShader {ShaderType.VertexShader} had errors: {info}");
 
                 var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
                 GL.ShaderSource(fragmentShader, File.ReadAllText(@"res\fragment.glsl"));
                 GL.CompileShader(fragmentShader);
+                info = GL.GetShaderInfoLog(fragmentShader);
+                if (!string.IsNullOrWhiteSpace(info))
+                    throw new Exception($"CompileShader {ShaderType.FragmentShader} had errors: {info}");
 
                 Shader = GL.CreateProgram();
                 GL.AttachShader(Shader, vertexShader);
                 GL.AttachShader(Shader, fragmentShader);
                 GL.LinkProgram(Shader);
+
+                info = GL.GetProgramInfoLog(Shader);
+                if (!string.IsNullOrWhiteSpace(info))
+                    throw new Exception($"CompileShaders ProgramLinking had errors: {info}");
 
                 GL.DetachShader(Shader, vertexShader);
                 GL.DetachShader(Shader, fragmentShader);

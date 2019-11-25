@@ -23,7 +23,7 @@ namespace Game.Engine
                 GameWindowFlags.Default,
                 DisplayDevice.Default,
                 4,
-                0,
+                5,
                 GraphicsContextFlags.ForwardCompatible
             )
         {
@@ -31,13 +31,12 @@ namespace Game.Engine
 
             Title += ": OpenGL " + GL.GetString(StringName.Version);
             VSync = VSyncMode.Off;
-
-            _state.OnCreate();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             CursorVisible = true;
+            _state.OnCreate();
         }
 
         protected override void OnResize(EventArgs e)
@@ -67,13 +66,14 @@ namespace Game.Engine
         {
             //Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
 
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
             Color4 backColor;
             backColor.A = 1.0f;
             backColor.R = 0.1f;
             backColor.G = 0.1f;
             backColor.B = 0.3f;
             GL.ClearColor(backColor);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             _state.OnDraw((float)e.Time);
 
