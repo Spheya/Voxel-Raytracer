@@ -12,5 +12,5 @@ vec4 isVoxel(int x, int y, int z) {
 void main () {
 	//bool draw = isVoxel(int(gl_FragCoord.x), int(gl_FragCoord.y), 0);
 
-	colour = isVoxel(int(gl_FragCoord.x), int(gl_FragCoord.y), 0);
+	colour = vec4(float(floatBitsToInt(isVoxel(int(gl_FragCoord.x), int(gl_FragCoord.y), 0).r)), 0.0, 0.8, 1.0);
 }

@@ -35,10 +35,9 @@ namespace Game.GameStates
             {
                 for (int j = 0; j < 720; j++)
                 {
-                    model[i, j, 0] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
+                    model[i, j, 0] = ((i + j) & (32 + 8)) == 0 ? new Voxel(ushort.MaxValue) : Voxel.EMPTY;
                 }
             }
-            model.UpdateBufferTexture();
 
             try
             {
@@ -116,10 +115,16 @@ namespace Game.GameStates
 
         public override void OnDraw(float deltatime)
         {
+
+            model.UpdateBufferTexture();
+
             GL.UseProgram(Shader);
-            model.BindTexture(TextureUnit.Texture0);
-            GL.Uniform1(Shader, GL.GetUniformLocation(Shader, "u_voxelBuffer"), new []{ 0 });
             GL.BindVertexArray(VertexArray);
+
+            model.BindTexture(TextureUnit.Texture0);
+            GL.Uniform1(GL.GetUniformLocation(Shader, "u_voxelBuffer"), 1, new[] { 0 });
+            GL.Uniform3(GL.GetUniformLocation(Shader, "u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
+
             GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
         }
 
