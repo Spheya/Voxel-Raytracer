@@ -49,7 +49,12 @@ HitData trace(Ray ray) {
 				normal = vec3(0.0, 0.0, -sign(ray.direction.z));
 			}
 
-			return HitData(1.0, normal, 0);
+			vec3 hit1 = (vec3(mapPos) - vec3(ray.origin)) / ray.direction;
+			vec3 hit2 = (vec3(mapPos + 1) - vec3(ray.origin)) / ray.direction;
+
+			float hit = max(max(min(hit1.x, hit2.x), min(hit1.y, hit2.y)), min(hit1.z, hit2.z));
+
+			return HitData(hit, normal, material - 1);
 		}
 
 		mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
@@ -70,6 +75,21 @@ void main () {
 
 	HitData hit = trace(ray);
 
-	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
-	if(hit.dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+	if(hit.dist > 0) {
+		Ray ray2 = Ray(ray.origin + ray.direction * hit.dist, ray.direction + 2 * hit.normal * dot(ray.direction, hit.normal));
+		ray2.origin = ray.origin + ray.direction * 0.01;
+
+		HitData hit2 = trace(ray2);
+
+		vec3 colour1 = hit.normal * 0.5 + 0.5;
+		vec3 colour2;
+		if(hit2.dist < 0) {
+			colour2 = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+		} else {
+			colour2 = hit2.normal * 0.5 + 0.5;
+		}
+		colour = vec4((colour1 + colour2) * 0.5, 1.0);
+	} else {
+		colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+	}
 }
