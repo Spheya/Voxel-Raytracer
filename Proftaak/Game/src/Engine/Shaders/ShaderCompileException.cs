@@ -9,7 +9,7 @@ namespace Game.Engine.Shaders
     class ShaderCompileException : Exception
     {
         public ShaderCompileException(string error) : 
-            base("Error when compiling the shader!\nError log:\n" + error)
+            base("Error when compiling the shader!\nError message:\n" + error)
         {}
     }
 }
