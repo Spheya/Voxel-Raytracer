@@ -10,16 +10,17 @@ namespace Game.Engine.Shaders
 {
     static class ShaderPreprocessor
     {
-        static ShaderPreprocessor()
+        public static string Execute(string[] definitions, string[] code, string rootLocation)
         {
+            StringBuilder result = new StringBuilder();
 
-        }
+            result.AppendLine(code[0]);
 
-        public static string Execute(string definitions, string[] code, string rootLocation)
-        {
-            string result = "";
+            if (definitions != null)
+                foreach (string def in definitions)
+                    result.AppendLine("#define " + def);
 
-            foreach (string line in code)
+            foreach (string line in code.Skip(1))
             {
                 if (line.StartsWith("#include"))
                 {
@@ -39,19 +40,17 @@ namespace Game.Engine.Shaders
                         throw new ShaderPreprocessorException("Error in include statement: File not found");
                     }
 
-                    string data = Execute(definitions, fileContent, Path.GetDirectoryName(filePath));
+                    string data = Execute(null, fileContent, Path.GetDirectoryName(filePath));
 
-                    result += data;
-                    result += '\n';
+                    result.AppendLine(data);
                 }
                 else
                 {
-                    result += line;
-                    result += '\n';
+                    result.AppendLine(line);
                 }
             }
 
-            return result;
+            return result.ToString();
         }
     }
 }

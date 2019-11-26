@@ -6,6 +6,7 @@
 
 uniform samplerBuffer u_voxelBuffer;
 uniform ivec3 u_bufferDimensions;
+
 uniform vec2 u_windowSize;
 uniform float u_zoom;
 uniform float f;
@@ -67,7 +68,11 @@ HitData trace(Ray ray) {
 
 
 void main () {
-	// Generate a local ray and transform it to world space
+#ifdef TEST_COLOR
+	colour = vec4(1.0, 0.0, 1.0, 1.0);
+#else
+
+	// Generate a local ray and transform it to world space	
 	Ray ray = generateRay();
 	ray.origin = vec3(-5.0, -5.0 + f, -f);
 	//ray.origin = (u_cameraTransformation * vec4(ray.origin, 1.0)).xyz;
@@ -92,4 +97,5 @@ void main () {
 	} else {
 		colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 	}
+#endif
 }

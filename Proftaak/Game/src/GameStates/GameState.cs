@@ -14,17 +14,9 @@ namespace Game.GameStates
 {
     sealed class GameState : ApplicationState
     {
-        int VertexArray;
-        int Buffer;
+        private Model _canvas;
 
         private VoxelModel _model;
-
-        Vector2[] QuadVertices = new Vector2[4] {
-            new Vector2(-1f, -1f),
-            new Vector2(1f, -1f),
-            new Vector2(1f, 1f),
-            new Vector2(-1f, 1f)
-        };
 
         private ShaderProgram _shader;
 
@@ -34,9 +26,9 @@ namespace Game.GameStates
             try
             {
                 Shader vertexShader = new Shader(ShaderType.VertexShader, 
-                    ShaderPreprocessor.Execute("", File.ReadAllLines(@"res\vertex.glsl"), @"res\"));
+                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\vertex.glsl"), @"res\"));
                 Shader fragmentShader = new Shader(ShaderType.FragmentShader, 
-                    ShaderPreprocessor.Execute("", File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
+                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
 
                 _shader = new ShaderProgram(new[] { vertexShader, fragmentShader });
             } catch (Exception ex)
@@ -47,31 +39,12 @@ namespace Game.GameStates
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            //Epic
-            VertexArray = GL.GenVertexArray();
-            Buffer = GL.GenBuffer();
-
-            GL.BindVertexArray(VertexArray);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Buffer);
-
-            GL.NamedBufferStorage(
-                Buffer,
-                8 * 4,
-                QuadVertices,
-                BufferStorageFlags.MapWriteBit
-            );
-
-            GL.VertexArrayAttribBinding(VertexArray, 0, 0);
-            GL.EnableVertexArrayAttrib(VertexArray, 0);
-            GL.VertexArrayAttribFormat(
-                VertexArray,
-                0,                      // attribute index, from the shader location = 0
-                2,                      // size of attribute, vec2
-                VertexAttribType.Float, // contains floats
-                false,                  // does not need to be normalized as it is already, floats ignore this flag anyway
-                0);                     // relative offset, first item
-
-            GL.VertexArrayVertexBuffer(VertexArray, 0, Buffer, IntPtr.Zero, 8);
+            _canvas = new Model(new []{
+                -1.0f, -1.0f,
+                 1.0f, -1.0f,
+                 1.0f,  1.0f,
+                -1.0f,  1.0f
+            }, 2);
 
             Random rand = new Random();
             _model = new VoxelModel(32, 32, 32);
@@ -104,7 +77,7 @@ namespace Game.GameStates
 
             _shader.Bind();
 
-            GL.BindVertexArray(VertexArray);
+            GL.BindVertexArray(_canvas.Vao);
 
             _model.BindTexture(TextureUnit.Texture0);
             GL.Uniform1(_shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
