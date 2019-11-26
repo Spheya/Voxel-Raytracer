@@ -15,7 +15,7 @@ out vec4 colour;
 int getVoxelData(ivec3 pos) {
 	if (pos.x >= u_bufferDimensions.x || pos.y >= u_bufferDimensions.y || pos.z >= u_bufferDimensions.z || pos.x < 0 || pos.y < 0 || pos.z < 0)
 		return 0;
-		
+
 	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * u_bufferDimensions.x + pos.z * u_bufferDimensions.x * u_bufferDimensions.y).r);
 }
 
@@ -31,7 +31,7 @@ HitData trace(Ray ray) {
 	ivec3 mapPos = ivec3(floor(ray.origin));
 	vec3 deltaDist = abs(vec3(length(ray.direction)) / ray.direction);
 	ivec3 rayStep = ivec3(sign(ray.direction));
-	vec3 sideDist = (sign(ray.direction) * (vec3(mapPos) - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist; 
+	vec3 sideDist = (sign(ray.direction) * (vec3(mapPos) - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist;
 	bvec3 mask;
 	int material;
 
@@ -46,7 +46,18 @@ HitData trace(Ray ray) {
 		mapPos += ivec3(mask) * rayStep;
 	}
 
-	return HitData(-1.0, sign(vec3(mask) * -ray.direction), 0);
+	vec3 normal;
+	if (mask.x) {
+		normal = vec3(1.0 * sign(ray.direction.x), 0.0, 0.0);
+	}
+	if (mask.y) {
+		normal = vec3(0.0, 1.0 * sign(ray.direction.y), 0.0);
+	}
+	if (mask.z) {
+		normal = vec3(0.0, 0.0, 1.0 * sign(ray.direction.z));
+	}
+
+	return HitData(-1.0, normal, 0);
 }
 
 
@@ -59,6 +70,6 @@ void main () {
 
 	HitData hit = trace(ray);
 
-	colour = vec4((hit.normal.xyz + 1.0) * 0.5, 1.0);
+	colour = vec4(hit.normal.xyz * -1.0, 1.0);
 	if(hit.dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
