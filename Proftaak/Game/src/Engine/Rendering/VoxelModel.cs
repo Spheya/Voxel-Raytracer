@@ -13,6 +13,7 @@ namespace Game.Engine.Rendering
 {
     class VoxelModel
     {
+
         private readonly VoxelGrid _grid;
 
         private bool _dirtyFlag;

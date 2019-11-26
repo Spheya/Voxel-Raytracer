@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Engine\Maths\Transform.cs" />
     <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
     <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
