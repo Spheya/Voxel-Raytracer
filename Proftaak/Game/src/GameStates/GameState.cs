@@ -33,8 +33,11 @@ namespace Game.GameStates
 
             try
             {
-                Shader vertexShader = new Shader(ShaderType.VertexShader, File.ReadAllText(@"res\vertex.glsl"));
-                Shader fragmentShader = new Shader(ShaderType.FragmentShader, File.ReadAllText(@"res\fragment.glsl"));
+                Shader vertexShader = new Shader(ShaderType.VertexShader, 
+                    ShaderPreprocessor.Execute("", File.ReadAllLines(@"res\vertex.glsl"), @"res\"));
+                Shader fragmentShader = new Shader(ShaderType.FragmentShader, 
+                    ShaderPreprocessor.Execute("", File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
+
                 _shader = new ShaderProgram(new[] { vertexShader, fragmentShader });
             } catch (Exception ex)
             {
@@ -107,6 +110,8 @@ namespace Game.GameStates
             GL.Uniform1(_shader.GetUniformLocation("f"), 1, new []{ f });
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
+
+            _shader.Unbind();
         }
 
         public override void OnDestroy()

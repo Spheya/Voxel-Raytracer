@@ -15,7 +15,7 @@ namespace Game.Engine.Shaders
 
         }
 
-        static string Execute(string definitions, string[] code, string rootLocation)
+        public static string Execute(string definitions, string[] code, string rootLocation)
         {
             string result = "";
 
@@ -42,10 +42,12 @@ namespace Game.Engine.Shaders
                     string data = Execute(definitions, fileContent, Path.GetDirectoryName(filePath + fileName));
 
                     result += data;
+                    result += '\n';
                 }
                 else
                 {
                     result += line;
+                    result += '\n';
                 }
             }
 

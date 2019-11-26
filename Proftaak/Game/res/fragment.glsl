@@ -1,4 +1,4 @@
-#version 330
+#version 450
 
 uniform samplerBuffer u_voxelBuffer;
 uniform ivec3 u_bufferDimensions;
