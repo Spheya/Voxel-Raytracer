@@ -33,13 +33,13 @@ namespace Game.Engine.Shaders
                     string[] fileContent;
                     try
                     {
-                        fileContent = File.ReadAllLines(filePath + fileName);
+                        fileContent = File.ReadAllLines(filePath);
                     }
                     catch (Exception e) {
                         throw new ShaderPreprocessorException("Error in include statement: File not found");
                     }
 
-                    string data = Execute(definitions, fileContent, Path.GetDirectoryName(filePath + fileName));
+                    string data = Execute(definitions, fileContent, Path.GetDirectoryName(filePath));
 
                     result += data;
                     result += '\n';

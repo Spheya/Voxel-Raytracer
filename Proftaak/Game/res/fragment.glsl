@@ -1,25 +1,14 @@
 #version 450
 
+#include "math.glsl"
+
 uniform samplerBuffer u_voxelBuffer;
 uniform ivec3 u_bufferDimensions;
-
 uniform vec2 u_windowSize;
-
 uniform float u_zoom;
-
 uniform float f;
 
 out vec4 colour;
-
-struct Ray {
-	vec3 origin, direction;
-};
-
-struct HitData {
-	float dist;
-	vec3 normal;
-	int material;
-};
 
 int getVoxelData(int x, int y, int z) {
 	if (x >= u_bufferDimensions.x || y >= u_bufferDimensions.y || z >= u_bufferDimensions.z || x < 0 || y < 0 || z < 0)
