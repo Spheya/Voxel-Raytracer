@@ -32,6 +32,8 @@ namespace Game.Engine
             Title += ": OpenGL " + GL.GetString(StringName.Version);
             VSync = VSyncMode.Off;
 
+            _state.AssignWindow(this);
+
             _state.OnCreate();
         }
 
@@ -87,6 +89,7 @@ namespace Game.Engine
             {
                 _state.OnDestroy();
                 _state = _state.GetRequestedState();
+                _state.AssignWindow(this);
                 _state.OnCreate();
             }
         }

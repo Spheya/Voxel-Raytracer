@@ -59,11 +59,13 @@ namespace Game.Engine.Rendering
             if (_dirtyFlag)
             {
                 GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
-                GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, _maxDirty - _minDirty, _grid.VoxelMaterials.Skip(_minDirty).ToArray());
+                GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, sizeof(ushort) * (_maxDirty - _minDirty), _grid.VoxelMaterials.Skip(_minDirty).ToArray());
                 GL.BindBuffer(BufferTarget.TextureBuffer, 0);
 
                 _maxDirty = int.MinValue;
                 _minDirty = int.MaxValue;
+
+                _dirtyFlag = false;
             }
         }
 

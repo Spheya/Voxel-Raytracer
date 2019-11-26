@@ -30,15 +30,11 @@ namespace Game.GameStates
         public override void OnCreate()
         {
             Random rand = new Random();
-            model = new VoxelModel(1280, 720, 1);
-            for (int i = 0; i < 1280; i++)
-            {
-                for (int j = 0; j < 720; j++)
-                {
-                    model[i, j, 0] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
-                }
-            }
-            model.UpdateBufferTexture();
+            model = new VoxelModel(32, 32, 32);
+            for(int x = 0; x < 32; x++)
+                for(int y = 0; y < 32; y++)
+                    for(int z = 0; z < 32; z++) 
+                        model[x,y,z] = new Voxel(1);
 
             try
             {
@@ -114,12 +110,24 @@ namespace Game.GameStates
         {
         }
 
+        private float f;
         public override void OnDraw(float deltatime)
         {
+
+            f += deltatime;
+
+            model.UpdateBufferTexture();
+
             GL.UseProgram(Shader);
-            model.BindTexture(TextureUnit.Texture0);
-            GL.Uniform1(Shader, GL.GetUniformLocation(Shader, "u_voxelBuffer"), new []{ 0 });
             GL.BindVertexArray(VertexArray);
+
+            model.BindTexture(TextureUnit.Texture0);
+            GL.Uniform1(GL.GetUniformLocation(Shader, "u_voxelBuffer"), 1, new[] { 0 });
+            GL.Uniform3(GL.GetUniformLocation(Shader, "u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
+            GL.Uniform2(GL.GetUniformLocation(Shader, "u_windowSize"), 1, new float [] { Window.Width, Window.Height });
+            GL.Uniform1(GL.GetUniformLocation(Shader, "u_zoom"), 1, new []{ (Window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
+            GL.Uniform1(GL.GetUniformLocation(Shader, "f"), 1, new []{ f });
+
             GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
         }
 

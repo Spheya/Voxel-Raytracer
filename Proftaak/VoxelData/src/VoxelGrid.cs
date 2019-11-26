@@ -23,7 +23,7 @@ namespace VoxelData
             set {
                 _voxels[x, y, z] = value;
 
-                VoxelMaterials[x + y * Width + z * Width * Depth] = value.materialId;
+                VoxelMaterials[x + y * Width + z * Width * Height] = value.materialId;
             }
         }
 
