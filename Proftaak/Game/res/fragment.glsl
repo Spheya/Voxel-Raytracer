@@ -70,6 +70,6 @@ void main () {
 
 	HitData hit = trace(ray);
 
-	colour = vec4(hit.normal.xyz * -1.0, 1.0);
+	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
 	if(hit.dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
