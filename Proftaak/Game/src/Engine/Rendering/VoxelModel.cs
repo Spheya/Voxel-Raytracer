@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Game.Engine.Maths;
 using VoxelData;
 
 using OpenTK;
@@ -13,7 +13,7 @@ namespace Game.Engine.Rendering
 {
     class VoxelModel
     {
-
+        public Transform Transform { get; }
         private readonly VoxelGrid _grid;
 
         private bool _dirtyFlag;
@@ -43,8 +43,16 @@ namespace Game.Engine.Rendering
             }
         }
 
+        public VoxelModel(int width, int height, int depth, Transform transform) :
+            this(width, height, depth)
+        {
+            Transform = transform;
+        }
+
         public VoxelModel(int width, int height, int depth)
         {
+            Transform = new Transform(Vector3.Zero, Vector3.Zero, new Vector3(width, height, depth));
+
             _grid = new VoxelGrid(width, height, depth);
 
             // Generate the buffer

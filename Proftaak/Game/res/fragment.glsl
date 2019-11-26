@@ -21,7 +21,7 @@ int getVoxelData(ivec3 pos) {
 }
 
 Ray generateRay() {
-	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_zoom)));
+	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, -u_zoom)));
 }
 
 HitData trace(Ray ray) {

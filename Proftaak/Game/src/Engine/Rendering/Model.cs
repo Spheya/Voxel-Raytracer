@@ -10,11 +10,16 @@ namespace Game.Engine.Rendering
     class Model
     {
         private readonly int _vbo;
-        
+
         public int Vao { get; }
 
-        public Model(float[] vertexData, int dimensions)
+        public PrimitiveType Type { get; }
+        public int Count { get; }
+
+        public Model(float[] vertexData, int dimensions, PrimitiveType type)
         {
+            Count = vertexData.Length / dimensions;
+            Type = type;
             Vao = GL.GenVertexArray();
             _vbo = GL.GenBuffer();
 

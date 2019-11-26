@@ -77,7 +77,9 @@
     <None Include="res\vertex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\vertex3d.glsl" />
+    <None Include="res\vertex3d.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntitySystem\EntitySystem.csproj">

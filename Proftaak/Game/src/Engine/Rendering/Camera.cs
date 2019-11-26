@@ -10,6 +10,10 @@ namespace Game.Engine.Rendering
 {
     class Camera
     {
+        public float Near { get; set; } = 0.1f;
+        public float Far { get; set; } = 100.0f;
+        public float Fov { get; set; } = 90.0f;
+
         private readonly Transform _transform = new Transform();
 
         public Vector3 Position => _transform.Position;
@@ -31,6 +35,12 @@ namespace Game.Engine.Rendering
         public Matrix4 CalculateViewMatrix()
         {
             return _transform.CalculateInverseMatrix();
+        }
+
+        public Matrix4 CalculateProjectionMatrix(GameWindow window)
+        {
+            float aspect = window.Width / (float)window.Height;
+            return Matrix4.CreatePerspectiveFieldOfView(Fov * (float)(Math.PI / 180.0f), aspect, Near, Far);
         }
     }
 }
