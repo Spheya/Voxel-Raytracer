@@ -17,7 +17,7 @@ namespace Game.GameStates
         int VertexArray;
         int Buffer;
 
-        private VoxelModel model;
+        private VoxelModel _model;
 
         Vector2[] QuadVertices = new Vector2[4] {
             new Vector2(-1f, -1f),
@@ -74,12 +74,12 @@ namespace Game.GameStates
             GL.VertexArrayVertexBuffer(VertexArray, 0, Buffer, IntPtr.Zero, 8);
 
             Random rand = new Random();
-            model = new VoxelModel(32, 32, 32);
-            for (int x = 0; x < 32; x++)
-            for (int y = 0; y < 32; y++)
-            for (int z = 0; z < 32; z++)
-                model[x, y, z] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
-
+            _model = new VoxelModel(32, 32, 32);
+            /*for (int x = 0; x < 32; x++)
+                for (int y = 0; y < 32; y++)
+                    for (int z = 0; z < 32; z++)
+                        _model[x, y, z] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
+                        */
             Console.WriteLine("Epic");
         }
 
@@ -94,18 +94,21 @@ namespace Game.GameStates
         private float f;
         public override void OnDraw(float deltatime)
         {
+            Random rand = new Random();
+
+            _model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
 
             f += deltatime;
 
-            model.UpdateBufferTexture();
+            _model.UpdateBufferTexture();
 
             _shader.Bind();
 
             GL.BindVertexArray(VertexArray);
 
-            model.BindTexture(TextureUnit.Texture0);
+            _model.BindTexture(TextureUnit.Texture0);
             GL.Uniform1(_shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
-            GL.Uniform3(_shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
+            GL.Uniform3(_shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { _model.Width, _model.Height, _model.Depth });
             GL.Uniform2(_shader.GetUniformLocation("u_windowSize"), 1, new float [] { Window.Width, Window.Height });
             GL.Uniform1(_shader.GetUniformLocation("u_zoom"), 1, new []{ (Window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
             GL.Uniform1(_shader.GetUniformLocation("f"), 1, new []{ f });

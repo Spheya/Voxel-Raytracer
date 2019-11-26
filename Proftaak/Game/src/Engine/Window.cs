@@ -67,7 +67,7 @@ namespace Game.Engine
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            //Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
+            Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 

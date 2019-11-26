@@ -25,7 +25,7 @@ namespace Game.Engine.Shaders
 
         ~Shader()
         {
-            GL.DeleteShader(Id);
+            //GL.DeleteShader(Id);
         }
     }
 }
