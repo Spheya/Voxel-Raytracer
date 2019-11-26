@@ -4,45 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Game.Engine.Maths;
 
-namespace Game.src.Engine.Rendering
+namespace Game.Engine.Rendering
 {
     class Camera
     {
-        public Vector3 Position;
-        public Vector3 Rotation;
+        private readonly Transform _transform = new Transform();
 
-        private Matrix4 RotationMatrix;
+        public Vector3 Position => _transform.Position;
+        public Vector3 Rotation => _transform.Rotation;
+
+        public Camera()
+        {}
 
         public Camera(Vector3 position, Vector3 rotation)
         {
-            Position = position;
-            Rotation = rotation;
-
-            Matrix4 rotX = new Matrix4(
-                1, 0,                            0,                           0,
-                0, (float)Math.Cos(rotation.X),  (float)Math.Sin(rotation.X), 0,
-                0, (float)-Math.Sin(rotation.X), (float)Math.Cos(rotation.X), 0,
-                0, 0,                            0,                           1
-                );
-
-            Matrix4 rotY = new Matrix4(
-                (float)Math.Cos(rotation.Y),  0, (float)Math.Sin(rotation.Y), 0,
-                0,                            1, 0,                           0,
-                (float)-Math.Sin(rotation.Y), 0, (float)Math.Cos(rotation.Y), 0,
-                0,                            0, 0,                           1
-                );
-            
-            Matrix4 rotZ = new Matrix4(
-                (float)Math.Cos(rotation.Z),  (float)Math.Sin(rotation.Z), 0, 0,
-                (float)-Math.Sin(rotation.Z), (float)Math.Cos(rotation.Z), 0, 0,
-                0,                            0,                           1, 0,
-                0,                            0,                           0, 1
-                );
-
-            RotationMatrix = rotZ * rotY * rotX;
+            _transform = new Transform(position, rotation, new Vector3(1.0f, 1.0f, 1.0f));
         }
 
-        //TODO: Add helper functions here, like setting rotation and such
+        public Matrix4 CalculateMatrix()
+        {
+            return _transform.CalculateMatrix();
+        }
+
+        public Matrix4 CalculateViewMatrix()
+        {
+            return _transform.CalculateInverseMatrix();
+        }
     }
 }
