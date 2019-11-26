@@ -37,7 +37,9 @@ HitData trace(Ray ray) {
 
 	for(int i = 0; i < RENDER_DISTANCE; i++){
 		material = getVoxelData(mapPos);
-		if (material == 0) continue;
+		if (material != 0) {
+			return HitData(1.0, sign(vec3(mask) * -ray.direction), 0);
+		}
 
 		mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
 		sideDist += vec3(mask) * deltaDist;
@@ -51,12 +53,12 @@ HitData trace(Ray ray) {
 void main () {
 	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
-	ray.origin = vec3(0.0, 0.0, -f * 8);
+	ray.origin = vec3(-5.0, -5.0, -f * 8);
 	//ray.origin = (u_cameraTransformation * vec4(ray.origin, 1.0)).xyz;
 	//ray.direction = (u_cameraTransformation * vec4(ray.direction, 0.0)).xyz;
 
 	HitData hit = trace(ray);
 
-	colour = vec4(hit.normal.rgb, 1.0);
+	colour = vec4((hit.normal.xyz + 1.0) * 0.5, 1.0);
 	if(hit.dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }

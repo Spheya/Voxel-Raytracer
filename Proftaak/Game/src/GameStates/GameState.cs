@@ -73,11 +73,12 @@ namespace Game.GameStates
 
             GL.VertexArrayVertexBuffer(VertexArray, 0, Buffer, IntPtr.Zero, 8);
 
+            Random rand = new Random();
             model = new VoxelModel(32, 32, 32);
             for (int x = 0; x < 32; x++)
             for (int y = 0; y < 32; y++)
             for (int z = 0; z < 32; z++)
-                model[x, y, z] = new Voxel(1);
+                model[x, y, z] = (rand.Next() & 1) == 0 ? new Voxel(1) : Voxel.EMPTY;
 
             Console.WriteLine("Epic");
         }
