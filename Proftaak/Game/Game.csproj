@@ -47,8 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
     <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderCompileException.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderLinkException.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderPreprocessor.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderProgram.cs" />
     <Compile Include="src\Engine\Window.cs" />
     <Compile Include="src\GameStates\GameState.cs" />
     <Compile Include="src\GameStates\ApplicationState.cs" />
@@ -62,6 +67,7 @@
     <None Include="res\fragment.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="res\rt_frag.glsl" />
     <None Include="res\vertex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
