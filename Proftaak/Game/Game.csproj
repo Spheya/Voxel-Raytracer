@@ -22,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Game.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +53,8 @@
     <Compile Include="src\Engine\Input\KeyboardInput.cs" />
     <Compile Include="src\Engine\Input\UserInput.cs" />
     <Compile Include="src\Engine\Maths\Transform.cs" />
+    <Compile Include="src\Engine\Rendering\Model.cs" />
+    <Compile Include="src\Engine\Rendering\Renderer.cs" />
     <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
     <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
@@ -76,6 +80,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="res\vertex.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\vertex3d.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

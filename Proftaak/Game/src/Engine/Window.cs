@@ -27,6 +27,9 @@ namespace Game.Engine
                 GraphicsContextFlags.ForwardCompatible
             )
         {
+            Console.WriteLine(GL.GetString(StringName.Renderer));
+            Console.WriteLine(GL.GetInteger(GetPName.MaxFragmentUniformVectors));
+
             _state = state;
 
             Title += ": OpenGL " + GL.GetString(StringName.Version);
