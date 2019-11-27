@@ -86,8 +86,9 @@ namespace Game.Engine.Rendering
             foreach (var model in _models)
             {
                 model.UpdateBufferTexture();
+                model.BindTexture(TextureUnit.Texture0);
                 
-                Matrix4 modelMatrix = model.Transform.CalculateMatrix();
+                Matrix4 modelMatrix = Matrix4.Identity;
 
                 GL.Uniform3(shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
                 GL.UniformMatrix4(shader.GetUniformLocation("u_modelMatrix"), false, ref modelMatrix);

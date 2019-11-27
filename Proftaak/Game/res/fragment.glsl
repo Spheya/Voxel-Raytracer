@@ -6,11 +6,9 @@
 
 uniform samplerBuffer u_voxelBuffer;
 uniform ivec3 u_bufferDimensions;
-
 uniform vec2 u_windowSize;
 uniform float u_zoom;
-
-uniform mat4 u_cameraMatrix;
+uniform float f;
 
 out vec4 colour;
 
@@ -41,6 +39,7 @@ HitData trace(Ray ray) {
 		material = getVoxelData(mapPos);
 		if (material != 0) {
 			vec3 normal;
+
 			if (mask.x) {
 				normal = vec3(-sign(ray.direction.x), 0.0, 0.0);
 			}
@@ -51,12 +50,7 @@ HitData trace(Ray ray) {
 				normal = vec3(0.0, 0.0, -sign(ray.direction.z));
 			}
 
-			vec3 hit1 = (vec3(mapPos) - vec3(ray.origin)) / ray.direction;
-			vec3 hit2 = (vec3(mapPos + 1) - vec3(ray.origin)) / ray.direction;
-
-			float hit = max(max(min(hit1.x, hit2.x), min(hit1.y, hit2.y)), min(hit1.z, hit2.z));
-
-			return HitData(hit, normal, material - 1);
+			return HitData(1.0, normal, 0);
 		}
 
 		mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
@@ -69,35 +63,14 @@ HitData trace(Ray ray) {
 
 
 void main () {
-#ifdef TEST_COLOR
-	colour = vec4(1.0, 0.0, 1.0, 1.0);
-#else
-
-	// Generate a local ray and transform it to world space	
+	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
-	ray.origin = vec3(0.0);
-	
-	//ray.origin = (u_cameraMatrix * vec4(ray.origin, 1.0)).xyz;
-	//ray.direction = (u_cameraMatrix * vec4(ray.direction, 0.0)).xyz;
+	ray.origin = vec3(-5.0, -5.0 + f, -f);
+	//ray.origin = (u_cameraTransformation * vec4(ray.origin, 1.0)).xyz;
+	//ray.direction = (u_cameraTransformation * vec4(ray.direction, 0.0)).xyz;
 
 	HitData hit = trace(ray);
 
-	if(hit.dist > 0) {
-		Ray ray2 = Ray(ray.origin + ray.direction * hit.dist, ray.direction + 2 * hit.normal * dot(ray.direction, hit.normal));
-		ray2.origin = ray.origin + ray.direction * 0.01;
-
-		HitData hit2 = trace(ray2);
-
-		vec3 colour1 = hit.normal * 0.5 + 0.5;
-		vec3 colour2;
-		if(hit2.dist < 0) {
-			colour2 = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
-		} else {
-			colour2 = hit2.normal * 0.5 + 0.5;
-		}
-		colour = vec4((colour1 + colour2) * 0.5, 1.0);
-	} else {
-		colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
-	}
-#endif
+	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
+	if(hit.dist < 0) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
