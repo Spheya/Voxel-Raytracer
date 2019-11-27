@@ -3,20 +3,39 @@
 #include "math.glsl"
 
 #define RENDER_DISTANCE 256
+#define MAX_MODELS 512
+
+struct ModelSpace {
+	int offset;
+	ivec3 size;
+	mat4 modelMatrix;
+	mat4 normalMatrix;
+};
 
 uniform samplerBuffer u_voxelBuffer;
-uniform ivec3 u_bufferDimensions;
+// uniform ivec3 u_bufferDimensions;
 uniform vec2 u_windowSize;
 uniform float u_zoom;
 uniform float f;
 
+uniform ModelSpace u_models[MAX_MODELS];
+
 out vec4 colour;
 
-int getVoxelData(ivec3 pos) {
-	if (pos.x >= u_bufferDimensions.x || pos.y >= u_bufferDimensions.y || pos.z >= u_bufferDimensions.z || pos.x < 0 || pos.y < 0 || pos.z < 0)
+int getVoxelDataIndexed(ivec3 pos, int modelIndex) {
+	if (pos.x >= u_models[modelIndex].size.x || pos.y >= u_models[modelIndex].size.y || pos.z >= u_models[modelIndex].size.z || pos.x < 0 || pos.y < 0 || pos.z < 0)
 		return 0;
+	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * u_models[modelIndex].size.x + pos.z * u_models[modelIndex].size.x * u_models[modelIndex].size.y).r);
+}
 
-	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * u_bufferDimensions.x + pos.z * u_bufferDimensions.x * u_bufferDimensions.y).r);
+int getVoxelData(ivec3 pos) {
+	for (int i = 0; i < MAX_MODELS; i++) {
+		int result = getVoxelDataIndexed(pos, i);
+		if (result > 0)
+			return result;
+	}
+
+	return 0;
 }
 
 Ray generateRay() {
