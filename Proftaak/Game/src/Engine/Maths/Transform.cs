@@ -44,11 +44,12 @@ namespace Game.Engine.Maths
 
         public Matrix4 CalculateNormalMatrix()
         {
-            return Matrix4.CreateTranslation(Position)
-                   * Matrix4.CreateScale(new Vector3(1.0f / Scale.X, 1.0f / Scale.Y, 1.0f / Scale.Z))
+            return Matrix4.CreateScale(1.0f / Scale.X, 1.0f / Scale.Y, 1.0f / Scale.Z)
+                   * Matrix4.CreateTranslation(-Scale * 0.5f)
                    * Matrix4.CreateRotationX(Rotation.X)
                    * Matrix4.CreateRotationY(Rotation.Y)
-                   * Matrix4.CreateRotationZ(Rotation.Z);
+                   * Matrix4.CreateRotationZ(Rotation.Z)
+                   * Matrix4.CreateTranslation(Position + Scale * 0.5f);
         }
 
     }

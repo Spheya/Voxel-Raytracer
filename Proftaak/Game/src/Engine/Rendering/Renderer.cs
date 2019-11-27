@@ -75,6 +75,8 @@ namespace Game.Engine.Rendering
             Matrix4 projectionMatrix = camera.CalculateProjectionMatrix(window);
             Matrix4 viewMatrix = camera.CalculateViewMatrix();
 
+            Matrix4 cameraMatrix = camera.CalculateMatrix();
+
             GL.UniformMatrix4(shader.GetUniformLocation("u_projectionMatrix"), false, ref projectionMatrix);
             GL.UniformMatrix4(shader.GetUniformLocation("u_viewMatrix"), false, ref viewMatrix);
 
@@ -89,6 +91,7 @@ namespace Game.Engine.Rendering
 
                 GL.Uniform3(shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
                 GL.UniformMatrix4(shader.GetUniformLocation("u_modelMatrix"), false, ref modelMatrix);
+                GL.UniformMatrix4(shader.GetUniformLocation("u_cameraMatrix"), false, ref cameraMatrix);
 
                 GL.DrawArrays(_cubeModel.Type, 0, _cubeModel.Count);
             }

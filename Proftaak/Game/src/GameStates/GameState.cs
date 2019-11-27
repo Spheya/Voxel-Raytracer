@@ -26,9 +26,9 @@ namespace Game.GameStates
             try
             {
                 Shader vertexShader = new Shader(ShaderType.VertexShader, 
-                    ShaderPreprocessor.Execute(new[] { "TEST_COLOR" }, File.ReadAllLines(@"res\vertex3d.glsl"), @"res\"));
+                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\vertex3d.glsl"), @"res\"));
                 Shader fragmentShader = new Shader(ShaderType.FragmentShader, 
-                    ShaderPreprocessor.Execute(new[] { "TEST_COLOR" }, File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
+                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
 
                 _shader = new ShaderProgram(new[] { vertexShader, fragmentShader });
             } catch (Exception ex)
@@ -47,7 +47,11 @@ namespace Game.GameStates
             }, 2, PrimitiveType.TriangleFan);
 
             _model = new VoxelModel(32, 32, 32);
-            _model.Transform.Position = Vector3.One;
+            for (int x = 0; x < 32; x++)
+            for (int y = 0; y < 32; y++)
+            for (int z = 0; z < 32; z++)
+                _model[x,y,z] = new Voxel(1);
+            //_model.Transform.Position = Vector3.One;
   
             _renderer = new Renderer();
             _renderer.Add(_model);
@@ -59,8 +63,9 @@ namespace Game.GameStates
         {
             Random rand = new Random();
             _model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
+            _model.UpdateBufferTexture();
 
-            _model.Transform.Rotation += new Vector3(0.31243f, 0.3764356f, 0.455f) * deltatime;
+            //_model.Transform.Rotation += new Vector3(0.31243f, 0.3764356f, 0.455f) * deltatime;
         }
 
         public override void OnFixedUpdate(float deltatime)

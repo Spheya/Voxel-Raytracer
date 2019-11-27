@@ -9,7 +9,8 @@ uniform ivec3 u_bufferDimensions;
 
 uniform vec2 u_windowSize;
 uniform float u_zoom;
-uniform float f;
+
+uniform mat4 u_cameraMatrix;
 
 out vec4 colour;
 
@@ -21,7 +22,7 @@ int getVoxelData(ivec3 pos) {
 }
 
 Ray generateRay() {
-	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, -u_zoom)));
+	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_zoom)));
 }
 
 HitData trace(Ray ray) {
@@ -74,9 +75,10 @@ void main () {
 
 	// Generate a local ray and transform it to world space	
 	Ray ray = generateRay();
-	ray.origin = vec3(-5.0, -5.0 + f, -f);
-	//ray.origin = (u_cameraTransformation * vec4(ray.origin, 1.0)).xyz;
-	//ray.direction = (u_cameraTransformation * vec4(ray.direction, 0.0)).xyz;
+	ray.origin = vec3(0.0);
+	
+	//ray.origin = (u_cameraMatrix * vec4(ray.origin, 1.0)).xyz;
+	//ray.direction = (u_cameraMatrix * vec4(ray.direction, 0.0)).xyz;
 
 	HitData hit = trace(ray);
 
