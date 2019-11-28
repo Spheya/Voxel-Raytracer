@@ -25,7 +25,7 @@ namespace Game.Engine.Rendering
         /// </summary>
         public float Fov { get; set; } = 90.0f;
 
-        private readonly Transform _transform = new Transform();
+        public Transform _transform = new Transform();
 
         /// <summary>
         /// The position of the camera
