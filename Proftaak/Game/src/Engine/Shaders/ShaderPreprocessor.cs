@@ -12,6 +12,9 @@ namespace Game.Engine.Shaders
     {
         public static string Execute(string[] definitions, string[] code, string rootLocation)
         {
+            if (code.Length == 0)
+                return "";
+
             StringBuilder result = new StringBuilder();
 
             result.AppendLine(code[0]);
