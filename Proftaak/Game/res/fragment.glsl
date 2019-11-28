@@ -26,9 +26,6 @@ uniform Camera u_camera;
 out vec4 colour;
 
 int getVoxelData(ivec3 pos, ivec4 modelData) {
-	if (any(greaterThanEqual(pos, modelData.xyz)) || any(lessThanEqual(pos, ivec3(0))))
-		return 0;
-
 	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * modelData.x + pos.z * modelData.x * modelData.y + modelData.w).r);
 }
 
@@ -51,14 +48,20 @@ HitData traceModel(Ray ray, int modelIndex) {
 		return HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
 
 	// Traverse through the voxel grid
-	ivec3 mapPos = ivec3(floor(ray.origin));
+	ivec3 mapPos = ivec3(floor(ray.origin + ray.direction * max(modelHitNear - 0.001, 0.0)));
 	vec3 deltaDist = abs(vec3(length(ray.direction)) * invertedDirection);
 	ivec3 rayStep = ivec3(sign(ray.direction));
 	vec3 sideDist = (sign(ray.direction) * (vec3(mapPos) - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist;
-	bvec3 mask;
+	bvec3 mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
+	sideDist += vec3(mask) * deltaDist;
+	mapPos += ivec3(mask) * rayStep;
+
 	int material;
 
 	for(int i = 0; i < RENDER_DISTANCE; i++){
+		if (any(greaterThanEqual(mapPos, modelData.xyz)) || any(lessThan(mapPos, ivec3(0))))
+			return HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
+
 		material = getVoxelData(mapPos, modelData);
 		if (material != 0) {
 			vec3 normal = ivec3(mask) * -sign(ray.direction);
