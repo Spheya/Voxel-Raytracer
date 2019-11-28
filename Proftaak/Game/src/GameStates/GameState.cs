@@ -24,9 +24,9 @@ namespace Game.GameStates
         {
             try
             {
-                Shader vertexShader = new Shader(ShaderType.VertexShader, 
+                Shader vertexShader = new Shader(ShaderType.VertexShader,
                     ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\vertex.glsl"), @"res\"));
-                Shader fragmentShader = new Shader(ShaderType.FragmentShader, 
+                Shader fragmentShader = new Shader(ShaderType.FragmentShader,
                     ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\fragment.glsl"), @"res\"));
 
                 _renderer = new Renderer(new ShaderProgram(new[] { vertexShader, fragmentShader }));
