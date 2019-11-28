@@ -12,12 +12,16 @@ struct Camera {
 #define MAX_MODELS 512
 #define MODEL_DATA_STRIDE 4
 
+struct Camera {
+	mat4 matrix;
+	float zoom;
+};
+
 uniform samplerBuffer u_voxelBuffer;
 uniform samplerBuffer u_modelData;
 
 uniform vec2 u_windowSize;
-uniform float u_zoom;
-uniform float f;
+uniform Camera u_camera;
 
 out vec4 colour;
 
@@ -29,7 +33,7 @@ int getVoxelData(ivec3 pos, ivec4 modelData) {
 }
 
 Ray generateRay() {
-	return Ray(vec3(0,0,0), normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_zoom)));
+	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
 }
 
 HitData traceModel(Ray ray, int modelIndex) {
@@ -94,7 +98,7 @@ HitData trace(Ray ray) {
 void main () {
 	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
-	ray.origin = vec3(-5.0, -5.0, 0.0);
+	//ray.origin = vec3(-5.0, -5.0, 0.0);
 
 	// Find the hitpoint of the ray
 	HitData hit = trace(ray);

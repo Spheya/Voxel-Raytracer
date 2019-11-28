@@ -71,8 +71,10 @@ namespace Game.Engine.Rendering
             return true;
         }
 
-        public void Draw(GameWindow window)
+        public void Draw(Camera camera, GameWindow window)
         {
+            Matrix4 mat = camera.CalculateMatrix();
+
             _voxelData.Update();
             _modelData.Update();
 
@@ -87,8 +89,8 @@ namespace Game.Engine.Rendering
 
             GL.Uniform3(Shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { _models[0].Width, _models[0].Height, _models[0].Depth });
             GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height });
-            GL.Uniform1(Shader.GetUniformLocation("u_zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
-            GL.Uniform1(Shader.GetUniformLocation("f"), 1, new[] { 0.0f });
+            GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
+            GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
 
