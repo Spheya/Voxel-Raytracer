@@ -31,5 +31,15 @@ namespace Game.Engine.Input
         {
             return currentState.IsKeyDown(Key.D);
         }
+
+        public static bool IsTurnLeftDown()
+        {
+            return currentState.IsKeyDown(Key.Left);
+        }
+
+        public static bool IsTurnRightDown()
+        {
+            return currentState.IsKeyDown(Key.Right);
+        }
     }
 }
