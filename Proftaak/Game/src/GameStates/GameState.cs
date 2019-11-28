@@ -56,7 +56,7 @@ namespace Game.GameStates
 
         public override void OnDraw(float deltatime)
         {
-           _renderer.Draw(window);
+           _renderer.Draw(new Camera(new Vector3(16.0f, 16.0f, -32.0f), new Vector3(0.0f, f, 0.0f)), window);
         }
 
         public override void OnDestroy()
