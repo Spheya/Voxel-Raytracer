@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Game.Engine.Input;
 using Game.Engine.Rendering;
 using Game.Engine.Shaders;
 using OpenTK;
@@ -14,6 +15,8 @@ namespace Game.GameStates
 {
     sealed class GameState : ApplicationState
     {
+
+        private FreeCamera _camera = new FreeCamera(new Vector3(16.0f, 16.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
         private Renderer _renderer;
 
@@ -48,6 +51,7 @@ namespace Game.GameStates
         {
             //Random rand = new Random();
             //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
+            _camera.Update(deltatime);
         }
 
         public override void OnFixedUpdate(float deltatime)
@@ -56,7 +60,7 @@ namespace Game.GameStates
 
         public override void OnDraw(float deltatime)
         {
-           _renderer.Draw(new Camera(new Vector3(16.0f, 16.0f, -32.0f), new Vector3(0.0f, f, 0.0f)), window);
+           _renderer.Draw(_camera, window);
         }
 
         public override void OnDestroy()
