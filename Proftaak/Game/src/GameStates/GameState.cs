@@ -49,6 +49,7 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
+            KeyboardInput.Update();
             //Random rand = new Random();
             //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
             _camera.Update(deltatime);
