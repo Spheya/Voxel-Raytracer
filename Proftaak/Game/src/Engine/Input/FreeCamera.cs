@@ -41,19 +41,25 @@ namespace Game.Engine.Input
             {
                 _transform.Position += new Vector3(_speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime);
             }
-            else if (pressedBD == true)
+            if (pressedBD == true)
             {
-                _transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                _transform.Position -= new Vector3(_speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime);
             }
-            else if (pressedSLD == true)
+            if (pressedSLD == true)
             {
-                _transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                _transform.Position += new Vector3(_speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime);
             }
-            else if (pressedSRD == true)
+            if (pressedSRD == true)
             {
-                _transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
+                _transform.Position += new Vector3(_speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime);
             }
-
+            if (pressedLeft)
+            {
+                _transform.Rotation -= new Vector3(0f, _turnSpeed * deltatime, 0f);
+            }
             if (pressedLeft)
             {
                 _transform.Rotation += new Vector3(0f, _turnSpeed * deltatime, 0f);
