@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Engine\Input\ControllerInput.cs" />
+    <Compile Include="src\Engine\Input\KeyboardInput.cs" />
+    <Compile Include="src\Engine\Input\UserInput.cs" />
     <Compile Include="src\Engine\Maths\Transform.cs" />
     <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
     <Compile Include="src\Engine\Rendering\Model.cs" />
