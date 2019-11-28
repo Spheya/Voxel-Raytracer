@@ -1,5 +1,10 @@
 #version 450
 
+struct Camera {
+	mat4 transformationMatrix;
+};
+
+#include "lighting.glsl"
 #include "math.glsl"
 
 #define WORLD_RENDER_DISTANCE 256 * 1.5
@@ -37,10 +42,10 @@ HitData traceModel(Ray ray, int modelIndex) {
 	vec3 modelHit2 = (vec3(modelData.xyz + 1) - vec3(ray.origin)) * invertedDirection;
 	float modelHitNear = max(max(min(modelHit1.x, modelHit2.x), min(modelHit1.y, modelHit2.y)), min(modelHit1.z, modelHit2.z));
 	float modelHitFar = min(min(max(modelHit1.x, modelHit2.x), max(modelHit1.y, modelHit2.y)), max(modelHit1.z, modelHit2.z));
-	
+
 	if(any(lessThan(vec2(modelHitFar), vec2(modelHitNear, 0.0))))
 		return HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
-		
+
 	// Traverse through the voxel grid
 	ivec3 mapPos = ivec3(floor(ray.origin));
 	vec3 deltaDist = abs(vec3(length(ray.direction)) * invertedDirection);
