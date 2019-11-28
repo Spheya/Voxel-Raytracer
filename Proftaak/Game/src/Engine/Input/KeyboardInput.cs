@@ -5,24 +5,31 @@ namespace Game.Engine.Input
 {
     class KeyboardInput
     {
-        public static bool isForwardDown()
+        private static KeyboardState currentState;
+
+        public static void Update()
         {
-            return Keyboard.GetState().IsKeyDown(Key.W);
+            currentState = Keyboard.GetState();
         }
 
-        public static bool isBackwardDown()
+        public static bool IsForwardDown()
         {
-            return Keyboard.GetState().IsKeyDown(Key.S);
+            return currentState.IsKeyDown(Key.W);
         }
 
-        public static bool isStrafeLeftDown()
+        public static bool IsBackwardDown()
         {
-            return Keyboard.GetState().IsKeyDown(Key.A);
+            return currentState.IsKeyDown(Key.S);
         }
 
-        public static bool isStrafeRightDown()
+        public static bool IsStrafeLeftDown()
         {
-            return Keyboard.GetState().IsKeyDown(Key.D);
+            return currentState.IsKeyDown(Key.A);
+        }
+
+        public static bool IsStrafeRightDown()
+        {
+            return currentState.IsKeyDown(Key.D);
         }
     }
 }
