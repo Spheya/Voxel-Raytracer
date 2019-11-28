@@ -16,7 +16,7 @@ namespace Game.Engine.Rendering
 
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<ushort> _voxelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
-        private readonly BufferTexture<ushort> _modelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
+        private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         public ShaderProgram Shader { get; set; }
 
         public Renderer(ShaderProgram shader)
@@ -28,7 +28,7 @@ namespace Game.Engine.Rendering
                 -1.0f,  1.0f
             }, 2, PrimitiveType.TriangleFan);
 
-            _modelData.Add(0);
+            _modelData.AddRange(new int[] { 0,0,0,0 });
 
             Shader = shader;
         }
@@ -38,7 +38,7 @@ namespace Game.Engine.Rendering
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth, transform);
             _models.Add(model);
             _modelData[0] = (ushort) _models.Count;
-            _modelData.AddRange(new ushort[] { 32,32,32 });
+            _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
 
             return model;
@@ -49,7 +49,7 @@ namespace Game.Engine.Rendering
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth);
             _models.Add(model);
             _modelData[0] = (ushort)_models.Count;
-            _modelData.AddRange(new ushort[] { (ushort)width, (ushort)height, (ushort)depth });
+            _modelData.AddRange(new [] { 32, 32, 32, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
 
             return model;
@@ -63,7 +63,7 @@ namespace Game.Engine.Rendering
                 return false;
 
             _voxelData.Erase(model.Offset, model.Footprint);
-            _modelData.Erase(index * 4 + 1, 4);
+            _modelData.Erase((index + 1) * 4, 4);
 
             for (int i = index; i < _models.Count; i++)
                 _models[i].Offset -= model.Footprint;

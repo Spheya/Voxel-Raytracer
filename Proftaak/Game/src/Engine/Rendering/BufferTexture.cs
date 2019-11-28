@@ -19,7 +19,7 @@ namespace Game.Engine.Rendering
         private readonly int _bufferTextureId;
         private readonly int _bufferId;
 
-        private SizedInternalFormat _internalFormat;
+        private readonly SizedInternalFormat _internalFormat;
 
         private bool _dirtyFlag;
         private int _minDirty = int.MaxValue;
@@ -118,7 +118,7 @@ namespace Game.Engine.Rendering
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.TextureBuffer, _bufferTextureId);
-            GL.TexBuffer(TextureBufferTarget.TextureBuffer, SizedInternalFormat.R16ui, _bufferId);
+            GL.TexBuffer(TextureBufferTarget.TextureBuffer, _internalFormat, _bufferId);
         }
 
         public IEnumerator<T> GetEnumerator()

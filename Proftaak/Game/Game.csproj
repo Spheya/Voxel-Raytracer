@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Engine\Maths\Transform.cs" />
+    <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
     <Compile Include="src\Engine\Rendering\Model.cs" />
     <Compile Include="src\Engine\Rendering\Renderer.cs" />
     <Compile Include="src\Engine\Shaders\Shader.cs" />

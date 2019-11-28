@@ -16,16 +16,11 @@ uniform float f;
 
 out vec4 colour;
 
-int getVoxelData(ivec3 pos, int modelIndex) {
-	int w = floatBitsToInt(texelFetch(u_modelData, MODEL_DATA_STRIDE * modelIndex + 1).r);
-	int h = floatBitsToInt(texelFetch(u_modelData, MODEL_DATA_STRIDE * modelIndex + 2).r);
-	int d = floatBitsToInt(texelFetch(u_modelData, MODEL_DATA_STRIDE * modelIndex + 3).r);
-
-	if (pos.x >= w || pos.y >= h || pos.z >= d ||
-		pos.x < 0 || pos.y < 0 || pos.z < 0)
+int getVoxelData(ivec3 pos, ivec4 modelData) {
+	if (any(greaterThanEqual(pos, modelData.xyz)) || any(lessThanEqual(pos, ivec3(0))))
 		return 0;
 
-	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * w + pos.z * w * d).r);
+	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * modelData.x + pos.z * modelData.x * modelData.y + modelData.w).r);
 }
 
 Ray generateRay() {
@@ -33,30 +28,41 @@ Ray generateRay() {
 }
 
 HitData traceModel(Ray ray, int modelIndex) {
-	vec3 point = ray.origin;
-	ivec3 gridPoint = ivec3(floor(point));
+	ivec4 modelData = floatBitsToInt(texelFetch(u_modelData, modelIndex + 1));
+	vec3 invertedDirection = 1.0 / ray.direction;
 
+	// Check if the ray hits the model
+	// TODO: Maybe do this in world space?
+	vec3 modelHit1 = (vec3(0.0) - vec3(ray.origin)) * invertedDirection;
+	vec3 modelHit2 = (vec3(modelData.xyz + 1) - vec3(ray.origin)) * invertedDirection;
+	float modelHitNear = max(max(min(modelHit1.x, modelHit2.x), min(modelHit1.y, modelHit2.y)), min(modelHit1.z, modelHit2.z));
+	float modelHitFar = min(min(max(modelHit1.x, modelHit2.x), max(modelHit1.y, modelHit2.y)), max(modelHit1.z, modelHit2.z));
+	
+	if(any(lessThan(vec2(modelHitFar), vec2(modelHitNear, 0.0))))
+		return HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
+		
+	// Traverse through the voxel grid
 	ivec3 mapPos = ivec3(floor(ray.origin));
-	vec3 deltaDist = abs(vec3(length(ray.direction)) / ray.direction);
+	vec3 deltaDist = abs(vec3(length(ray.direction)) * invertedDirection);
 	ivec3 rayStep = ivec3(sign(ray.direction));
 	vec3 sideDist = (sign(ray.direction) * (vec3(mapPos) - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist;
 	bvec3 mask;
 	int material;
 
 	for(int i = 0; i < RENDER_DISTANCE; i++){
-		material = getVoxelData(mapPos, modelIndex);
+		material = getVoxelData(mapPos, modelData);
 		if (material != 0) {
-			vec3 normal;
-			if (mask.x)
-				normal = vec3(-sign(ray.direction.x), 0.0, 0.0);
-			if (mask.y)
-				normal = vec3(0.0, -sign(ray.direction.y), 0.0);
-			if (mask.z)
-				normal = vec3(0.0, 0.0, -sign(ray.direction.z));
+			vec3 normal = ivec3(mask) * -sign(ray.direction);
 
-			return HitData(1.0, normal, 0);
+			// Calculate the distance to the hitpoint
+			vec3 hit1 = (vec3(mapPos) - vec3(ray.origin)) * invertedDirection;
+			vec3 hit2 = (vec3(mapPos + 1) - vec3(ray.origin)) * invertedDirection;
+			float hit = max(max(min(hit1.x, hit2.x), min(hit1.y, hit2.y)), min(hit1.z, hit2.z));
+
+			return HitData(hit, normal, 0);
 		}
 
+		// Move to the next cell in the grid
 		mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
 		sideDist += vec3(mask) * deltaDist;
 		mapPos += ivec3(mask) * rayStep;
@@ -69,6 +75,7 @@ HitData trace(Ray ray) {
 	int nModels = floatBitsToInt(texelFetch(u_modelData, 0).r);
 	HitData result = HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
 
+	// Check for intersection with every model
 	for(int i = 0; i < MAX_MODELS; ++i){
 		if(i > nModels) break;
 
@@ -90,4 +97,6 @@ void main () {
 	// Display the normal
 	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+
+	vec4 fetch = texelFetch(u_modelData, 0);
 }
