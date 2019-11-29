@@ -31,6 +31,8 @@ Ray generateRay() {
 }
 
 HitData traceModel(in Ray ray, in int modelIndex) {
+	ivec4 modelData = floatBitsToInt(texelFetch(u_modelData, modelIndex + 1));
+
 	mat4 transform = mat4(
 		texelFetch(u_modelTransformations, 0),
 		texelFetch(u_modelTransformations, 1),
@@ -39,14 +41,12 @@ HitData traceModel(in Ray ray, in int modelIndex) {
 	);
 
 	// Transform the ray to object space
-	ray.origin = (transform * vec4(ray.origin, 1.0)).xyz;
+	ray.origin = (transform * vec4(ray.origin, 1.0)).xyz + modelData.xyz * 0.5;
 	ray.direction = (transform * vec4(ray.direction, 1.0)).xyz;
 
-	ivec4 modelData = floatBitsToInt(texelFetch(u_modelData, modelIndex + 1));
 	vec3 invertedDirection = 1.0 / ray.direction;
 
 	// Check if the ray hits the model
-	// TODO: Maybe do this in world space?
 	vec3 modelHit1 = (vec3(0.0) - vec3(ray.origin)) * invertedDirection;
 	vec3 modelHit2 = (vec3(modelData.xyz) - vec3(ray.origin)) * invertedDirection;
 	float modelHitNear = max(max(min(modelHit1.x, modelHit2.x), min(modelHit1.y, modelHit2.y)), min(modelHit1.z, modelHit2.z));
