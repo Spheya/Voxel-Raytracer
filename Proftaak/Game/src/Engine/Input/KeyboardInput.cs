@@ -12,6 +12,16 @@ namespace Game.Engine.Input
             currentState = Keyboard.GetState();
         }
 
+        public static bool IsUpDown()
+        {
+            return currentState.IsKeyDown(Key.Space);
+        }
+
+        public static bool IsDownDown()
+        {
+            return currentState.IsKeyDown(Key.ShiftLeft);
+        }
+
         public static bool IsForwardDown()
         {
             return currentState.IsKeyDown(Key.W);
@@ -30,16 +40,6 @@ namespace Game.Engine.Input
         public static bool IsStrafeRightDown()
         {
             return currentState.IsKeyDown(Key.D);
-        }
-
-        public static bool IsTurnLeftDown()
-        {
-            return currentState.IsKeyDown(Key.Left);
-        }
-
-        public static bool IsTurnRightDown()
-        {
-            return currentState.IsKeyDown(Key.Right);
         }
     }
 }

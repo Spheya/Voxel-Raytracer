@@ -33,9 +33,6 @@ namespace Game.Engine.Input
             bool pressedSLD = KeyboardInput.IsStrafeLeftDown();
             bool pressedSRD = KeyboardInput.IsStrafeRightDown();
 
-            bool pressedLeft = KeyboardInput.IsTurnLeftDown();
-            bool pressedRight = KeyboardInput.IsTurnRightDown();
-
             if (pressedFD == true)
             {
                 _transform.Position += new Vector3(_speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime);
@@ -54,6 +51,15 @@ namespace Game.Engine.Input
             {
                 //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
                 _transform.Position += new Vector3(_speed * (float)Math.Cos(-_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(-_transform.Rotation.Y) * deltatime);
+            }
+
+            if (KeyboardInput.IsDownDown())
+            {
+                _transform.Position += new Vector3(0.0f, -_speed * deltatime, 0.0f);
+            }
+            if (KeyboardInput.IsUpDown())
+            {
+                _transform.Position += new Vector3(0.0f, _speed * deltatime, 0.0f);
             }
 
             Vector2 delta  = MouseInput.GetMouseDelta() * mouseSensitivity;

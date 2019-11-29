@@ -30,7 +30,7 @@ namespace Game.GameStates
         {
             try
             {
-
+                
                 Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\fragment.glsl"));
 
                 Shader vertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\vertex.glsl"));
@@ -76,7 +76,7 @@ namespace Game.GameStates
 
             int s = 512;
             VoxelModel model3 = _renderer.CreateModel(s,1,s,
-                new Transform(new Vector3(0.0f, -24.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
+                new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
 
             for (int x = 0; x < s; x++)
             for (int y = 0; y < 1; y++)
@@ -93,7 +93,7 @@ namespace Game.GameStates
                 Mouse.SetPosition(window.X + window.Width * 0.5, window.Y + window.Height * 0.5);
 
             _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
-            _model2.Transform.Rotation -= new Vector3(deltatime, deltatime, deltatime);
+            _model2.Transform.Rotation -= new Vector3(0.0f, deltatime * 0.25f, 0.0f);
 
             //Console.WriteLine(_model.Transform.Rotation);
 
