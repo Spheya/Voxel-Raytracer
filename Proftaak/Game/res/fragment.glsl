@@ -4,7 +4,6 @@ struct Camera {
 	mat4 transformationMatrix;
 };
 
-#include "lighting.glsl"
 #include "math.glsl"
 
 #define WORLD_RENDER_DISTANCE 256 * 1.5
@@ -98,6 +97,8 @@ HitData trace(Ray ray) {
 	return result;
 }
 
+#include "lighting.glsl"
+
 void main () {
 	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
@@ -108,7 +109,11 @@ void main () {
 
 	// Display the normal
 	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
-	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+	if(hit.dist == WORLD_RENDER_DISTANCE) {
+		colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
+	} else {
+		colour.rgb = shading(ray.direction, hit.normal.xyz, ray.origin + ray.direction * hit.dist);
+	}
 
 	vec4 fetch = texelFetch(u_modelData, 0);
 }

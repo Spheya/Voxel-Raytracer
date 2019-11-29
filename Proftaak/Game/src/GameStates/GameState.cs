@@ -16,7 +16,7 @@ namespace Game.GameStates
     sealed class GameState : ApplicationState
     {
 
-        private FreeCamera _camera = new FreeCamera(new Vector3(16.0f, 16.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
+        private FreeCamera _camera = new FreeCamera(new Vector3(256f, 256f, -270.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
         private Renderer _renderer;
 
@@ -38,11 +38,16 @@ namespace Game.GameStates
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            VoxelModel model = _renderer.CreateModel(32, 32, 32);
-            for (int x = 0; x < 32; x++)
-            for (int y = 0; y < 32; y++)
-            for (int z = 0; z < 32; z++)
-                model[x,y,z] = new Voxel((ushort) ((x + y + z)&1));
+            VoxelModel model = _renderer.CreateModel(512, 512, 512);
+            for (int x = 0; x < 512; x++)
+                for (int y = 0; y < 512; y++)
+                    for (int z = 0; z < 512; z++)
+                    {
+                        //int cx = x - 32; int cy = y - 32; int cz = z - 32;
+                        //model[x, y, z] = new Voxel((ushort)((Math.Sqrt(cx * cx + cy * cy + cz * cz) < 32) ? 1 : 0));
+                        model[x, y, z] = new Voxel((ushort)((x + y + z) & 1));
+                    }
+                //model[x,y,z] = new Voxel((ushort) ((x + y + z)&1));
 
             Console.WriteLine("Epic");
         }

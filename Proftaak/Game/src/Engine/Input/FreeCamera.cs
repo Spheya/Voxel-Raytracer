@@ -10,7 +10,7 @@ namespace Game.Engine.Input
 {
     sealed class FreeCamera : Camera
     {
-        private float _speed = 3f; //Speed of the camera
+        private float _speed = 10f; //Speed of the camera
         private float _turnSpeed = 1f; //Turning speed of the camera
 
         /// <summary>
@@ -36,6 +36,7 @@ namespace Game.Engine.Input
             bool pressedSRD = KeyboardInput.IsStrafeRightDown();
 
             bool pressedLeft = KeyboardInput.IsTurnLeftDown();
+            bool pressedRight = KeyboardInput.IsTurnRightDown();
 
             if (pressedFD == true)
             {
@@ -49,18 +50,18 @@ namespace Game.Engine.Input
             if (pressedSLD == true)
             {
                 //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
-                _transform.Position += new Vector3(_speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime);
+                _transform.Position -= new Vector3(_speed * (float)Math.Cos(-_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(-_transform.Rotation.Y) * deltatime);
             }
             if (pressedSRD == true)
             {
                 //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
-                _transform.Position += new Vector3(_speed * (float)Math.Cos(_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(_transform.Rotation.Y) * deltatime);
+                _transform.Position += new Vector3(_speed * (float)Math.Cos(-_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(-_transform.Rotation.Y) * deltatime);
             }
             if (pressedLeft)
             {
                 _transform.Rotation -= new Vector3(0f, _turnSpeed * deltatime, 0f);
             }
-            if (pressedLeft)
+            if (pressedRight)
             {
                 _transform.Rotation += new Vector3(0f, _turnSpeed * deltatime, 0f);
             }

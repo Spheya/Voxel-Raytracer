@@ -49,7 +49,7 @@ namespace Game.Engine.Rendering
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth);
             _models.Add(model);
             _modelData[0] = (ushort)_models.Count;
-            _modelData.AddRange(new [] { 32, 32, 32, model.Offset });
+            _modelData.AddRange(new [] { model.Width, model.Height, model.Depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
 
             return model;
