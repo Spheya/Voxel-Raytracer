@@ -76,7 +76,7 @@ namespace Game.Engine.Rendering
             // Generate the buffer
             _bufferId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
-            GL.BufferData(BufferTarget.TextureBuffer, _bufferData.Count, _bufferData.ToArray(), BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.TextureBuffer, _bufferData.Count * Marshal.SizeOf(default(T)), _bufferData.ToArray(), BufferUsageHint.DynamicDraw);
             _bufferSize = _bufferData.Count;
             _bufferTextureId = GL.GenTexture();
             GL.BindBuffer(BufferTarget.TextureBuffer, 0);
@@ -92,7 +92,7 @@ namespace Game.Engine.Rendering
                 GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
                 if (_bufferSize >= _bufferData.Count)
                 {
-                    GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, _maxDirty - _minDirty, _bufferData.Skip(_minDirty).ToArray());
+                    GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, (_maxDirty - _minDirty) * Marshal.SizeOf(default(T)), _bufferData.Skip(_minDirty).ToArray());
                 }
                 else
                 {

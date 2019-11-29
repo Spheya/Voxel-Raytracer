@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Engine.Input;
+using Game.Engine.Maths;
 using Game.Engine.Rendering;
 using Game.Engine.Shaders;
 using OpenTK;
@@ -16,10 +17,12 @@ namespace Game.GameStates
     sealed class GameState : ApplicationState
     {
 
-        private FreeCamera _camera = new FreeCamera(new Vector3(256f, 256f, -270.0f), new Vector3(0.0f, 0.0f, 0.0f));
+        private FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
         private Renderer _renderer;
 
+        private VoxelModel _model;
+        private VoxelModel _model2;
         public override void OnCreate()
         {
             try
@@ -38,26 +41,38 @@ namespace Game.GameStates
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            VoxelModel model = _renderer.CreateModel(512, 512, 512);
-            for (int x = 0; x < 512; x++)
-                for (int y = 0; y < 512; y++)
-                    for (int z = 0; z < 512; z++)
-                    {
-                        //int cx = x - 32; int cy = y - 32; int cz = z - 32;
-                        //model[x, y, z] = new Voxel((ushort)((Math.Sqrt(cx * cx + cy * cy + cz * cz) < 32) ? 1 : 0));
-                        model[x, y, z] = new Voxel((ushort)((x + y + z) & 1));
-                    }
-                //model[x,y,z] = new Voxel((ushort) ((x + y + z)&1));
+            _model = _renderer.CreateModel(32, 32, 32,
+                new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
+
+            for (int x = 0; x < 32; x++)
+            for (int y = 0; y < 32; y++)
+            for (int z = 0; z < 32; z++)
+                _model[x, y, z] = new Voxel((ushort) ((x + y + z) & 1));
+
+
+            _model2 = _renderer.CreateModel(32, 32, 32,
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
+
+            for (int x = -16; x < 16; x++)
+            for (int y = -16; y < 16; y++)
+            for (int z = -16; z < 16; z++)
+                _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? new Voxel(1) : Voxel.EMPTY;
 
             Console.WriteLine("Epic");
         }
 
         public override void OnUpdate(float deltatime)
         {
+            _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
+            _model2.Transform.Rotation -= new Vector3(deltatime, deltatime, deltatime);
+            //Console.WriteLine(_model.Transform.Rotation);
+
             KeyboardInput.Update();
             //Random rand = new Random();
             //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
             _camera.Update(deltatime);
+
+            //Console.WriteLine(_model.Transform.CalculateInverseMatrix().Column0);
         }
 
         public override void OnFixedUpdate(float deltatime)
