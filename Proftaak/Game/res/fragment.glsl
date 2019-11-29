@@ -69,7 +69,7 @@ HitData traceModel(in Ray ray, in int modelIndex) {
 		return HitData(WORLD_RENDER_DISTANCE, vec3(-1.0), 0);
 
 	// Traverse through the voxel grid
-	ivec3 mapPos = ivec3(floor(ray.origin + ray.direction * max(modelHitNear - 0.00001, 0.0)));
+	ivec3 mapPos = ivec3(floor(ray.origin + ray.direction * max(modelHitNear - 0.1, 0.0)));
 	vec3 deltaDist = abs(vec3(length(ray.direction)) * invertedDirection);
 	ivec3 rayStep = ivec3(sign(ray.direction));
 	vec3 sideDist = (sign(ray.direction) * (vec3(mapPos) - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist;
@@ -77,6 +77,15 @@ HitData traceModel(in Ray ray, in int modelIndex) {
 	sideDist += vec3(mask) * deltaDist;
 	mapPos += ivec3(mask) * rayStep;
 
+	for(int i = 0; i < 2; i++){
+		if (!(any(greaterThanEqual(mapPos, modelData.xyz)) || any(lessThan(mapPos, ivec3(0)))))
+			break;
+
+		mask = lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy));
+		sideDist += vec3(mask) * deltaDist;
+		mapPos += ivec3(mask) * rayStep;
+	}
+	
 	int material;
 
 	for(int i = 0; i < RENDER_DISTANCE; i++){
@@ -127,18 +136,14 @@ void main () {
 	// Generate a local ray and transform it to world space
 	Ray ray = generateRay();
 
-	ray.origin = vec3(0.0, 0.0, -32.0);
+	ray.origin += vec3(0.0001, 0.0001, 0.0001);
 
 	// Find the hitpoint of the ray
 	HitData hit = trace(ray);
 
-	// Display the normal
-	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
-	if(hit.dist == WORLD_RENDER_DISTANCE) {
-		colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
-	} else {
-		colour.rgb = shading(ray.direction, hit.normal.xyz, ray.origin + ray.direction * hit.dist);
-	}
-
+	// Calculate the colour
+	colour.a = 1.0;
+	colour.rgb = shading(ray.direction, hit.normal.xyz, ray.origin + ray.direction * hit.dist);
+	//colour.rgb = vec3(0.0);
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
