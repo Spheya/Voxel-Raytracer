@@ -27,22 +27,36 @@ int getVoxelData(in ivec3 pos, in ivec4 modelData) {
 }
 
 Ray generateRay() {
-	return Ray((/*u_camera.matrix */ vec4(0,0,0,1)).xyz, (/*u_camera.matrix */ vec4(normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
+	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
 }
 
 HitData traceModel(in Ray ray, in int modelIndex) {
 	ivec4 modelData = floatBitsToInt(texelFetch(u_modelData, modelIndex + 1));
 
-	mat4 transform = mat4(
+	mat4 worldToObject = mat4(
 		texelFetch(u_modelTransformations, modelIndex * 12 + 0),
 		texelFetch(u_modelTransformations, modelIndex * 12 + 1),
 		texelFetch(u_modelTransformations, modelIndex * 12 + 2),
 		texelFetch(u_modelTransformations, modelIndex * 12 + 3)
 	);
 
+	mat4 objectToWorld = mat4(
+		texelFetch(u_modelTransformations, modelIndex * 12 + 4),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 5),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 6),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 7)
+	);
+
+	mat4 objectToWorldNormal = mat4(
+		texelFetch(u_modelTransformations, modelIndex * 12 + 8),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 9),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 10),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 11)
+	);
+
 	// Transform the ray to object space
-	ray.origin = (transform * vec4(ray.origin, 1.0)).xyz + modelData.xyz * 0.5;
-	ray.direction = (transform * vec4(ray.direction, 0.0)).xyz;
+	ray.origin = (worldToObject * vec4(ray.origin, 1.0)).xyz + modelData.xyz * 0.5;
+	ray.direction = (worldToObject * vec4(ray.direction, 0.0)).xyz;
 
 	vec3 invertedDirection = 1.0 / ray.direction;
 
@@ -72,14 +86,16 @@ HitData traceModel(in Ray ray, in int modelIndex) {
 
 		material = getVoxelData(mapPos, modelData);
 		if (material != 0) {
-			vec3 normal = ivec3(mask) * -sign(ray.direction);
+			vec3 normal = normalize((objectToWorldNormal * vec4(ivec3(mask) * -sign(ray.direction), 0.0)).xyz);
 
 			// Calculate the distance to the hitpoint
 			vec3 hit1 = (vec3(mapPos) - vec3(ray.origin)) * invertedDirection;
 			vec3 hit2 = (vec3(mapPos + 1) - vec3(ray.origin)) * invertedDirection;
 			float hit = max(max(min(hit1.x, hit2.x), min(hit1.y, hit2.y)), min(hit1.z, hit2.z));
 
-			return HitData(hit, normal, 0);
+			float worldHit = length((objectToWorld * vec4(ray.direction * hit, 0.0)).xyz);
+
+			return HitData(worldHit, normal, 0);
 		}
 
 		// Move to the next cell in the grid
@@ -117,5 +133,6 @@ void main () {
 
 	// Display the normal
 	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
+	colour.b = 1.0 - colour.b;
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }

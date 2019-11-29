@@ -94,9 +94,9 @@ namespace Game.Engine.Rendering
 
             for (int i = 0; i < _models.Count; i++)
             {
-                _modelTransformations[i * 3] = _models[i].Transform.CalculateInverseMatrix();
-                _modelTransformations[i * 3] = _models[i].Transform.CalculateMatrix();
-                _modelTransformations[i * 3] = _models[i].Transform.CalculateNormalMatrix();
+                _modelTransformations[i * 3 + 0] = _models[i].Transform.CalculateInverseMatrix();
+                _modelTransformations[i * 3 + 1] = _models[i].Transform.CalculateMatrix();
+                _modelTransformations[i * 3 + 2] = _models[i].Transform.CalculateNormalMatrix();
             }
 
             _modelTransformations.Update();
