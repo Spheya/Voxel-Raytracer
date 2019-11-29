@@ -48,9 +48,8 @@ namespace Game.Engine.Rendering
 
         ~Model()
         {
-            //TODO: Fix these runtime errors
-            GL.DeleteBuffer(_vbo);
-            GL.DeleteVertexArray(Vao);
+            GLGarbageCollector.AddBuffer(_vbo);
+            GLGarbageCollector.AddVertexArray(Vao);
         }
     }
 }

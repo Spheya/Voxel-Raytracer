@@ -56,7 +56,7 @@ namespace Game.Engine.Shaders
 
         ~ShaderProgram()
         {
-            //GL.DeleteProgram(_program);
+            GLGarbageCollector.AddProgram(_program);
         }
 
     }

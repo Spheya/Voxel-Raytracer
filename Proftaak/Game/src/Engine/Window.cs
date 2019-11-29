@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,22 +43,30 @@ namespace Game.Engine
 
         protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
+
             CursorVisible = true;
         }
 
         protected override void OnResize(EventArgs e)
         {
+            base.OnResize(e);
+
             GL.Viewport(0,0, Width, Height);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            base.OnUpdateFrame(e);
+
             _state.OnUpdate((float)e.Time);
             CheckForNewState();
             
             //TODO: Actually do a fixed update
             _state.OnFixedUpdate((float)e.Time);
             CheckForNewState();
+
+            GLGarbageCollector.Process();
         }
 
         private void HandleKeyboard()
@@ -70,6 +79,8 @@ namespace Game.Engine
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            base.OnRenderFrame(e);
+
             Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -84,6 +95,14 @@ namespace Game.Engine
             _state.OnDraw((float)e.Time);
 
             SwapBuffers();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            _state.OnDestroy();
+            GLGarbageCollector.Process();
         }
 
         private void CheckForNewState()

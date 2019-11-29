@@ -10,6 +10,8 @@ namespace Game.Engine.Input
 {
     sealed class FreeCamera : Camera
     {
+        private static float mouseSensitivity = 0.001f;
+
         private float _speed = 10f; //Speed of the camera
         private float _turnSpeed = 1f; //Turning speed of the camera
 
@@ -27,9 +29,6 @@ namespace Game.Engine.Input
         /// <param name="deltatime">The time (in seconds) the previous frame took</param>
         public void Update(float deltatime)
         {
-            //Mike, je kunt gebruik maken van KeyboardInput om te kijken welke toetsen ingedrukt worden.
-            //Voorbeeld:
-
             bool pressedFD = KeyboardInput.IsForwardDown();
             bool pressedBD = KeyboardInput.IsBackwardDown();
             bool pressedSLD = KeyboardInput.IsStrafeLeftDown();
@@ -57,17 +56,11 @@ namespace Game.Engine.Input
                 //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
                 _transform.Position += new Vector3(_speed * (float)Math.Cos(-_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(-_transform.Rotation.Y) * deltatime);
             }
-            if (pressedLeft)
-            {
-                _transform.Rotation -= new Vector3(0f, _turnSpeed * deltatime, 0f);
-            }
-            if (pressedRight)
-            {
-                _transform.Rotation += new Vector3(0f, _turnSpeed * deltatime, 0f);
-            }
-            //Dit is voor horizontale bewegingen. Deze functies staan in KeyboardInput.cs. Als je hier meer aan toe wilt voegen, dan moet je gewoon een kopie maken die functies met een andere naam en een andere toets.
-            //Voor correcte beweging moet je de hoeveelheid die je verplaatst in units per seconden zetten (oftewel meters per seconde) en vermenigvuldigen met de deltatime.
-            //Vermenigvuldigen met de deltatime zorgt ervoor dat je niet sneller verplaatst als het programma sneller werkt.
+
+            Vector2 delta  = MouseInput.GetMouseDelta() * mouseSensitivity;
+            _transform.Rotation += new Vector3(delta.Y, delta.X, 0.0f);
+
+
         }
     }
 }
