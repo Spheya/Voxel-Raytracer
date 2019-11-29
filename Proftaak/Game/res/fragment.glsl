@@ -34,15 +34,15 @@ HitData traceModel(in Ray ray, in int modelIndex) {
 	ivec4 modelData = floatBitsToInt(texelFetch(u_modelData, modelIndex + 1));
 
 	mat4 transform = mat4(
-		texelFetch(u_modelTransformations, 0),
-		texelFetch(u_modelTransformations, 1),
-		texelFetch(u_modelTransformations, 2),
-		texelFetch(u_modelTransformations, 3)
+		texelFetch(u_modelTransformations, modelIndex * 12 + 0),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 1),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 2),
+		texelFetch(u_modelTransformations, modelIndex * 12 + 3)
 	);
 
 	// Transform the ray to object space
 	ray.origin = (transform * vec4(ray.origin, 1.0)).xyz + modelData.xyz * 0.5;
-	ray.direction = (transform * vec4(ray.direction, 1.0)).xyz;
+	ray.direction = (transform * vec4(ray.direction, 0.0)).xyz;
 
 	vec3 invertedDirection = 1.0 / ray.direction;
 

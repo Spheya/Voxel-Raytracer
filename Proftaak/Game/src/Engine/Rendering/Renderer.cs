@@ -17,7 +17,7 @@ namespace Game.Engine.Rendering
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<ushort> _voxelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
-        private readonly BufferTexture<float> _modelTransformations = new BufferTexture<float>(SizedInternalFormat.Rgba32f);
+        private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
         public ShaderProgram Shader { get; set; }
 
         public Renderer(ShaderProgram shader)
@@ -41,12 +41,11 @@ namespace Game.Engine.Rendering
             _modelData[0] = (ushort) _models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
-            _modelTransformations.AddRange(new[]
-            {
-                model.Transform.CalculateMatrix().M11, model.Transform.CalculateMatrix().M12, model.Transform.CalculateMatrix().M13, model.Transform.CalculateMatrix().M14,
-                model.Transform.CalculateMatrix().M21, model.Transform.CalculateMatrix().M22, model.Transform.CalculateMatrix().M23, model.Transform.CalculateMatrix().M24,
-                model.Transform.CalculateMatrix().M31, model.Transform.CalculateMatrix().M32, model.Transform.CalculateMatrix().M33, model.Transform.CalculateMatrix().M34,
-                model.Transform.CalculateMatrix().M41, model.Transform.CalculateMatrix().M42, model.Transform.CalculateMatrix().M43, model.Transform.CalculateMatrix().M44
+            _modelTransformations.AddRange(
+                new [] {
+                    model.Transform.CalculateInverseMatrix(),
+                    model.Transform.CalculateMatrix(),
+                    model.Transform.CalculateNormalMatrix()
             });
 
             return model;
@@ -59,11 +58,11 @@ namespace Game.Engine.Rendering
             _modelData[0] = (ushort)_models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
-            _modelTransformations.AddRange(new [] {
-                model.Transform.CalculateMatrix().M11, model.Transform.CalculateMatrix().M12, model.Transform.CalculateMatrix().M13, model.Transform.CalculateMatrix().M14,
-                model.Transform.CalculateMatrix().M21, model.Transform.CalculateMatrix().M22, model.Transform.CalculateMatrix().M23, model.Transform.CalculateMatrix().M24,
-                model.Transform.CalculateMatrix().M31, model.Transform.CalculateMatrix().M32, model.Transform.CalculateMatrix().M33, model.Transform.CalculateMatrix().M34,
-                model.Transform.CalculateMatrix().M41, model.Transform.CalculateMatrix().M42, model.Transform.CalculateMatrix().M43, model.Transform.CalculateMatrix().M44
+            _modelTransformations.AddRange(
+                    new[] {
+                        model.Transform.CalculateInverseMatrix(),
+                        model.Transform.CalculateMatrix(),
+                        model.Transform.CalculateNormalMatrix()
             });
 
             return model;
@@ -78,7 +77,7 @@ namespace Game.Engine.Rendering
 
             _voxelData.Erase(model.Offset, model.Footprint);
             _modelData.Erase((index + 1) * 4, 4);
-            _modelTransformations.Erase(index * 2, 2);
+            _modelTransformations.Erase(index * 3, 3);
 
             for (int i = index; i < _models.Count; i++)
                 _models[i].Offset -= model.Footprint;
@@ -93,17 +92,11 @@ namespace Game.Engine.Rendering
             _voxelData.Update();
             _modelData.Update();
 
-            Matrix4 mat2 = _models[0].Transform.CalculateInverseMatrix();
-
-            Console.WriteLine(mat2 + "\n");
-
-            int index = 0;
-            for (int x = 0; x < 4; x++)
+            for (int i = 0; i < _models.Count; i++)
             {
-                for (int y = 0; y < 4; y++)
-                {
-                    _modelTransformations[index++] = mat2[y,x];
-                }
+                _modelTransformations[i * 3] = _models[i].Transform.CalculateInverseMatrix();
+                _modelTransformations[i * 3] = _models[i].Transform.CalculateMatrix();
+                _modelTransformations[i * 3] = _models[i].Transform.CalculateNormalMatrix();
             }
 
             _modelTransformations.Update();
