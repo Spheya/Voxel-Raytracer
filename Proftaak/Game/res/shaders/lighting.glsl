@@ -188,8 +188,8 @@ float softshadow(vec3 ro, vec3 rd) {
 
   HitData hit = trace(ray);
   if (hit.dist <  WORLD_RENDER_DISTANCE) {
-    return clamp(hit.dist * 0.002, 0.0, 1.0);
-    // return 0.0;
+    // return clamp(hit.dist * 0.002, 0.0, 1.0);
+    return 0.0;
   } else {
     return 1.0;
   }
@@ -223,7 +223,7 @@ vec3 tonemap_filmic_hejl2015(vec3 hdr, float whitePt) {
 vec3 shading(vec3 v, vec3 n, vec3 hitpos) {
   //Testing variables
   float roughness = 0.85;
-  float metallic = 1.0;
+  float metallic = 0.0;
   vec3 albedo = vec3(1.0);
   vec3 cspec = vec3(1.0);
 

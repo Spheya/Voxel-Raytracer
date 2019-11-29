@@ -54,7 +54,7 @@ namespace Game.Engine.Rendering
         /// <param name="y">The y coordinate of the voxel</param>
         /// <param name="z">The z coordinate of the voxel</param>
         /// <returns></returns>
-        public Voxel this[int x, int y, int z]
+        public byte this[int x, int y, int z]
         {
             get => _grid[x, y, z];
             set
@@ -63,7 +63,7 @@ namespace Game.Engine.Rendering
 
                 // Mark the bounds of all the changes since the previous update
                 int index = Offset + x + y * Width + z * Width * Height;
-                _target[index] = value.materialId;
+                _target[index] = value;
             }
         }
 
