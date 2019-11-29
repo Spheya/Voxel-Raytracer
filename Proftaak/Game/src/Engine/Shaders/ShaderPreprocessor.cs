@@ -10,20 +10,34 @@ namespace Game.Engine.Shaders
 {
     static class ShaderPreprocessor
     {
-        public static string Execute(string[] definitions, string[] code, string rootLocation)
+        public static string Execute(string file)
         {
-            if (code.Length == 0)
-                return "";
+            return Include(file, new List<string>());
+        }
 
+        private static string Include(string file, List<string> included)
+        {
             StringBuilder result = new StringBuilder();
 
-            result.AppendLine(code[0]);
+            string[] code;
+            try
+            {
+                code = File.ReadAllLines(file);
+            }
+            catch (Exception)
+            {
+                throw new ShaderPreprocessorException("Error in include statement: File \"" + file + "\" not found");
+            }
 
-            if (definitions != null)
-                foreach (string def in definitions)
-                    result.AppendLine("#define " + def);
+            if (code[0] == "#pragma once")
+            {
+                if (included.Contains(Path.GetFullPath(file)))
+                    return "";
 
-            foreach (string line in code.Skip(1))
+                included.Add(Path.GetFullPath(file));
+            }
+
+            foreach (string line in code)
             {
                 if (line.StartsWith("#include"))
                 {
@@ -31,19 +45,7 @@ namespace Game.Engine.Shaders
                     if (segments.Length != 3)
                         throw new ShaderPreprocessorException("Syntax error on include statement");
 
-                    string fileName = segments[1];
-                    string filePath = rootLocation + fileName;
-
-                    string[] fileContent;
-                    try
-                    {
-                        fileContent = File.ReadAllLines(filePath);
-                    }
-                    catch (Exception) {
-                        throw new ShaderPreprocessorException("Error in include statement: File not found");
-                    }
-
-                    string data = Execute(null, fileContent, Path.GetDirectoryName(filePath));
+                    string data = Include(Path.GetDirectoryName(file) + '\\' + segments[1], included);
 
                     result.AppendLine(data);
                 }

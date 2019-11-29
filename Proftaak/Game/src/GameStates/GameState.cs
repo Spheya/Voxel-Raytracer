@@ -30,10 +30,12 @@ namespace Game.GameStates
         {
             try
             {
-                Shader vertexShader = new Shader(ShaderType.VertexShader,
-                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\shaders\vertex.glsl"), @"res\shaders\"));
-                Shader fragmentShader = new Shader(ShaderType.FragmentShader,
-                    ShaderPreprocessor.Execute(null, File.ReadAllLines(@"res\shaders\fragment.glsl"), @"res\shaders\"));
+
+                Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\fragment.glsl"));
+
+                Shader vertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\vertex.glsl"));
+                Shader fragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\fragment.glsl"));
+
 
                 _renderer = new Renderer(new ShaderProgram(new[] { vertexShader, fragmentShader }));
             } catch (Exception ex)
