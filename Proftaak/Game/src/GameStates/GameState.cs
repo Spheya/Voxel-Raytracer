@@ -10,6 +10,7 @@ using Game.Engine.Rendering;
 using Game.Engine.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Input;
 using VoxelData;
 
 namespace Game.GameStates
@@ -17,7 +18,7 @@ namespace Game.GameStates
     sealed class GameState : ApplicationState
     {
 
-        private FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
+        private readonly FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
         private Renderer _renderer;
 
@@ -75,11 +76,17 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
+            window.CursorVisible = !window.Focused;
+            if (!window.CursorVisible)
+                Mouse.SetPosition(window.X + window.Width * 0.5, window.Y + window.Height * 0.5);
+
             _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
             _model2.Transform.Rotation -= new Vector3(deltatime, deltatime, deltatime);
+
             //Console.WriteLine(_model.Transform.Rotation);
 
             KeyboardInput.Update();
+            MouseInput.Update();
             //Random rand = new Random();
             //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
             _camera.Update(deltatime);
