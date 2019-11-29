@@ -17,6 +17,7 @@ namespace Game.Engine.Rendering
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<ushort> _voxelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
+        private readonly BufferTexture<float> _modelTransformations = new BufferTexture<float>(SizedInternalFormat.Rgba32f);
         public ShaderProgram Shader { get; set; }
 
         public Renderer(ShaderProgram shader)
@@ -40,6 +41,13 @@ namespace Game.Engine.Rendering
             _modelData[0] = (ushort) _models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
+            _modelTransformations.AddRange(new[]
+            {
+                model.Transform.CalculateMatrix().M11, model.Transform.CalculateMatrix().M12, model.Transform.CalculateMatrix().M13, model.Transform.CalculateMatrix().M14,
+                model.Transform.CalculateMatrix().M21, model.Transform.CalculateMatrix().M22, model.Transform.CalculateMatrix().M23, model.Transform.CalculateMatrix().M24,
+                model.Transform.CalculateMatrix().M31, model.Transform.CalculateMatrix().M32, model.Transform.CalculateMatrix().M33, model.Transform.CalculateMatrix().M34,
+                model.Transform.CalculateMatrix().M41, model.Transform.CalculateMatrix().M42, model.Transform.CalculateMatrix().M43, model.Transform.CalculateMatrix().M44
+            });
 
             return model;
         }
@@ -49,8 +57,14 @@ namespace Game.Engine.Rendering
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth);
             _models.Add(model);
             _modelData[0] = (ushort)_models.Count;
-            _modelData.AddRange(new [] { 32, 32, 32, model.Offset });
+            _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new ushort[model.Footprint]);
+            _modelTransformations.AddRange(new [] {
+                model.Transform.CalculateMatrix().M11, model.Transform.CalculateMatrix().M12, model.Transform.CalculateMatrix().M13, model.Transform.CalculateMatrix().M14,
+                model.Transform.CalculateMatrix().M21, model.Transform.CalculateMatrix().M22, model.Transform.CalculateMatrix().M23, model.Transform.CalculateMatrix().M24,
+                model.Transform.CalculateMatrix().M31, model.Transform.CalculateMatrix().M32, model.Transform.CalculateMatrix().M33, model.Transform.CalculateMatrix().M34,
+                model.Transform.CalculateMatrix().M41, model.Transform.CalculateMatrix().M42, model.Transform.CalculateMatrix().M43, model.Transform.CalculateMatrix().M44
+            });
 
             return model;
         }
@@ -64,6 +78,7 @@ namespace Game.Engine.Rendering
 
             _voxelData.Erase(model.Offset, model.Footprint);
             _modelData.Erase((index + 1) * 4, 4);
+            _modelTransformations.Erase(index * 2, 2);
 
             for (int i = index; i < _models.Count; i++)
                 _models[i].Offset -= model.Footprint;
@@ -78,6 +93,21 @@ namespace Game.Engine.Rendering
             _voxelData.Update();
             _modelData.Update();
 
+            Matrix4 mat2 = _models[0].Transform.CalculateInverseMatrix();
+
+            Console.WriteLine(mat2 + "\n");
+
+            int index = 0;
+            for (int x = 0; x < 4; x++)
+            {
+                for (int y = 0; y < 4; y++)
+                {
+                    _modelTransformations[index++] = mat2[y,x];
+                }
+            }
+
+            _modelTransformations.Update();
+
             Shader.Bind();
 
             GL.BindVertexArray(_canvas.Vao);
@@ -86,10 +116,12 @@ namespace Game.Engine.Rendering
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
             _modelData.Bind(TextureUnit.Texture1);
             GL.Uniform1(Shader.GetUniformLocation("u_modelData"), 1, new[] { 1 });
+            _modelTransformations.Bind(TextureUnit.Texture2);
+            GL.Uniform1(Shader.GetUniformLocation("u_modelTransformations"), 1, new[] { 2 });
 
-            GL.Uniform3(Shader.GetUniformLocation("u_bufferDimensions"), 1, new[] { _models[0].Width, _models[0].Height, _models[0].Depth });
             GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height });
-            GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
+
+            GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);

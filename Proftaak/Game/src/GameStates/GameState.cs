@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.Engine.Input;
+using Game.Engine.Maths;
 using Game.Engine.Rendering;
 using Game.Engine.Shaders;
 using OpenTK;
@@ -16,10 +17,11 @@ namespace Game.GameStates
     sealed class GameState : ApplicationState
     {
 
-        private FreeCamera _camera = new FreeCamera(new Vector3(16.0f, 16.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
+        private FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
         private Renderer _renderer;
 
+        private VoxelModel _model;
         public override void OnCreate()
         {
             try
@@ -38,21 +40,28 @@ namespace Game.GameStates
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            VoxelModel model = _renderer.CreateModel(32, 32, 32);
+            _model = _renderer.CreateModel(32, 32, 32, 
+                new Transform(Vector3.Zero, Vector3.Zero, new Vector3(0.5f)));
+
             for (int x = 0; x < 32; x++)
             for (int y = 0; y < 32; y++)
             for (int z = 0; z < 32; z++)
-                model[x,y,z] = new Voxel((ushort) ((x + y + z)&1));
+                _model[x, y, z] = new Voxel((ushort) ((x + y + z) & 1));
 
             Console.WriteLine("Epic");
         }
 
         public override void OnUpdate(float deltatime)
         {
+            _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
+            //Console.WriteLine(_model.Transform.Rotation);
+
             KeyboardInput.Update();
             //Random rand = new Random();
             //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
             _camera.Update(deltatime);
+
+            //Console.WriteLine(_model.Transform.CalculateInverseMatrix().Column0);
         }
 
         public override void OnFixedUpdate(float deltatime)
