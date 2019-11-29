@@ -77,7 +77,13 @@
     <None Include="App.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+    <None Include="res\maps\castle.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="res\maps\map_city.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\maps\monu10.vox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="res\shaders\fragment.glsl">
@@ -108,6 +114,10 @@
     <ProjectReference Include="..\VoxelData\VoxelData.csproj">
       <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
       <Name>VoxelData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoxLoader\VoxLoader.csproj">
+      <Project>{ff8b2784-3111-43a2-9075-2f7ab8c496a6}</Project>
+      <Name>VoxLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
