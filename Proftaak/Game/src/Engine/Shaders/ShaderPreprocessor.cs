@@ -39,7 +39,7 @@ namespace Game.Engine.Shaders
                     {
                         fileContent = File.ReadAllLines(filePath);
                     }
-                    catch (Exception e) {
+                    catch (Exception) {
                         throw new ShaderPreprocessorException("Error in include statement: File not found");
                     }
 

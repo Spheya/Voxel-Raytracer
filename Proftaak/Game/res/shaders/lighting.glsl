@@ -154,6 +154,34 @@ vec3 bepis_lighting(vec3 v, vec3 n, vec3 lightdir, vec3 clight, float attenuatio
     return (kD * albedo / PI + specular) * radiance * n_dot_l;
 }
 
+float fresnel_schlick(float cos_theta, float reflectiveIndex) {
+	return reflectiveIndex + (1.0 - reflectiveIndex) * pow(1.0 - cos_theta, 5.0);
+}
+
+vec3 spheya_lighting(vec3 viewDir, vec3 normal, vec3 lightDir, vec3 hitPos, vec3 lightColour, float attenuation, float refractionIndex) {
+	// Diffuse lighting is lambert shading
+	float diffuse = max(dot(lightDir, normal), 0.0);
+
+	// Calculate the reflective coefficient from the refractionIndex
+	float reflectiveCoefficient = (1.0 - refractionIndex) / (1.0 + refractionIndex);
+	reflectiveCoefficient *= reflectiveCoefficient;
+
+	// Calculate the amount of reflection and refraction
+	float reflectiveAmount = fresnel_schlick(-dot(viewDir, normal), reflectiveCoefficient);
+	float refractiveAmount = 1.0 - reflectiveAmount;
+
+	// Trace the colours for refraction and reflection
+	vec3 reflectiveColour = vec3(1.0);
+	vec3 refractiveColour = vec3(0.0);
+
+	// The amount of light that gets scattered when refracting
+	float scatterAmount = 1.0;
+
+	return reflectiveAmount * reflectiveColour
+		   + refractiveAmount * (1.0 - scatterAmount) * refractiveColour
+		   + refractiveAmount * scatterAmount * diffuse * attenuation;
+}
+
 float softshadow(vec3 ro, vec3 rd) {
   float res = 1.0;
   Ray ray = Ray(ro + rd * 0.002, rd);
@@ -200,17 +228,20 @@ vec3 shading(vec3 v, vec3 n, vec3 hitpos) {
   vec3 cspec = vec3(1.0);
 
   //Testing light
-  vec3 lightdir = normalize(vec3(-0.5, 0.5, -0.5)); //Light direction
-  vec3 clight = vec3(23.47, 21.31, 20.79); //Light colour multiplied with intensity
+  vec3 lightdir = normalize(vec3(-0.5, 1.5, -1.0)); //Light direction
+  vec3 clight = vec3(1.0, 1.0, 1.0); //Light colour multiplied with intensity
   //NOTE: code for pointlight falloff `falloff = (clamp10(1-(d/lightRadius)^4)^2)/d*d+1`
 
   float attenuation = softshadow(hitpos, lightdir);
 
   // return cook_torrance_2(v, n, lightdir, clight, cdiff, cspec, roughness) * attenuation;
   // return lambert(v, n, lightdir, clight, cdiff) * attenuation;
-  vec3 final = bepis_lighting(-normalize(v), normalize(n), lightdir, clight, attenuation, albedo, roughness, metallic);
+
+  //vec3 final = bepis_lighting(-normalize(v), normalize(n), lightdir, clight, attenuation, albedo, roughness, metallic);
+  vec3 final = spheya_lighting(v, n, lightdir, hitpos, clight, attenuation, 2.4);
+
   // final = final / (final + vec3(1.0));
   // final = pow(final, vec3(1.0 / 2.2));
-  return filmic_reinhard(final);
+  return final;//filmic_reinhard(final);
   // return pow(tonemap_filmic_hejl2015(final, W), vec3(1.0/2.2));
 }

@@ -13,7 +13,6 @@ namespace Game.Engine.Input
         private static float mouseSensitivity = 0.001f;
 
         private float _speed = 10f; //Speed of the camera
-        private float _turnSpeed = 1f; //Turning speed of the camera
 
         /// <summary>
         /// Calls the Camera constructor

@@ -144,6 +144,6 @@ void main () {
 	// Calculate the colour
 	colour.a = 1.0;
 	colour.rgb = shading(ray.direction, hit.normal.xyz, ray.origin + ray.direction * hit.dist);
-	//colour.rgb = vec3(0.0);
+	//colour.rgb = hit.normal * 0.5 + 0.5;
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
