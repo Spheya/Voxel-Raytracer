@@ -59,6 +59,18 @@ namespace Game.GameStates
                 _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? new Voxel(1) : Voxel.EMPTY;
 
             Console.WriteLine("Epic");
+
+
+            int s = 512;
+            VoxelModel model3 = _renderer.CreateModel(s,1,s,
+                new Transform(new Vector3(0.0f, -24.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
+
+            for (int x = 0; x < s; x++)
+            for (int y = 0; y < 1; y++)
+            for (int z = 0; z < s; z++)
+                model3[x,y,z] = new Voxel(1);
+
+            Console.WriteLine("Epic");
         }
 
         public override void OnUpdate(float deltatime)
