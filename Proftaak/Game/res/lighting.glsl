@@ -1,3 +1,7 @@
+#define PI 3.14159265359
+const float W = 1.2;
+const float T2 = 7.5;
+
 struct DirectionalLight {
   vec3 direction;
 
@@ -14,7 +18,10 @@ struct PointLight {
   // float fallOff;
 };
 
-vec3 radiance(vec3 n, //Surface normal
+////////////////////////////////////////////////////////////////////////////////
+// Cook-Torrance (broken)
+////////////////////////////////////////////////////////////////////////////////
+vec3 ct_radiance(vec3 n, //Surface normal
               vec3 l, //Light direction
               vec3 v, //View/ray direction
 
@@ -62,17 +69,84 @@ vec3 radiance(vec3 n, //Surface normal
 vec3 cook_torrance(vec3 v, vec3 n, vec3 lightdir, vec3 clight, vec3 cdiff, vec3 cspec, float roughness) {
   vec3 ve = normalize(v);
 
-  vec3 final = vec3(0.0);
-
   vec3 vl = normalize(lightdir);
 
-  final += radiance(n, -vl, -ve, roughness, cdiff, cspec, clight);
-
-  return final;
+  return ct_radiance(n, -vl, -ve, roughness, cdiff, cspec, clight);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Lambert
+////////////////////////////////////////////////////////////////////////////////
 vec3 lambert(vec3 v, vec3 n, vec3 lightdir, vec3 clight, vec3 cdiff) {
   return cdiff * (max(dot(n, lightdir), 0.0) * clight);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Bepis (WIP)
+////////////////////////////////////////////////////////////////////////////////
+//n: macro normal
+//h: half vector
+float ggx_distribution(vec3 n, vec3 h, float a) {
+    float a2 = a*a;
+    float n_dot_h = max(dot(n, h), 0.0);
+    float n_dot_h2 = n_dot_h*n_dot_h;
+
+    float nom = a2;
+    float denom = (n_dot_h * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+
+    return nom / denom;
+}
+
+float geom_schlick_ggx(float n_dot_v, float k) {
+    float nom = n_dot_v;
+    float denom = n_dot_v * (1.0 - k) + k;
+    return nom / denom;
+}
+
+//n: macro normal
+//v: view/ray direction
+//l: light direction
+//k: roughness
+float geom_smith(vec3 n, vec3 v, vec3 l, float k) {
+    float n_dot_v = max(dot(n, v), 0.0);
+    float n_dot_l = max(dot(n, l), 0.0);
+    float ggx1 = geom_schlick_ggx(n_dot_v, k);
+    float ggx2 = geom_schlick_ggx(n_dot_l, k);
+
+    return ggx1 * ggx2;
+}
+
+vec3 fresnel_schlick(float cos_theta, vec3 f0) {
+    return f0 + (1.0 - f0) * pow(1.0 - cos_theta, 5.0);
+}
+
+//v: view/ray direction
+//n: macro normal
+vec3 bepis_lighting(vec3 v, vec3 n, vec3 lightdir, vec3 clight, float attenuation, vec3 cdiff, float roughness, float metallic) {
+    // vec3 h = normalize(v + lightdir);
+
+    vec3 f0 = vec3(0.04);
+    f0 = mix(f0, cdiff, metallic);
+
+    vec3 h = normalize(v + lightdir);
+    vec3 radiance = clight * attenuation;
+
+    //cook-torrance brdf
+    float NDF = ggx_distribution(n, h, roughness);
+    float g = geom_smith(n, v, lightdir, roughness);
+    vec3 f = fresnel_schlick(max(dot(h, v), 0.0), f0);
+
+    vec3 kS = f;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;
+
+    vec3 numerator = NDF * g * f;
+    float denominator = 4.0 * max(dot(n, v), 0.0) * max(dot(n, lightdir), 0.0);
+    vec3 specular = numerator / max(denominator, 0.001);
+
+    float n_dot_l = max(dot(n, lightdir), 0.0);
+    return (kD * cdiff / PI + specular) * radiance * n_dot_l;
 }
 
 float softshadow(vec3 ro, vec3 rd) {
@@ -88,16 +162,49 @@ float softshadow(vec3 ro, vec3 rd) {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Reinhard tonemapping
+////////////////////////////////////////////////////////////////////////////////
+float filmic_reinhard_curve(float x) {
+    float q = (T2 * T2 + 1.0) * x * x;
+    return q / (q + x + T2*T2);
+}
+
+vec3 filmic_reinhard(vec3 x) {
+    float w = filmic_reinhard_curve(W);
+    return vec3(filmic_reinhard_curve(x.r),
+                filmic_reinhard_curve(x.g),
+                filmic_reinhard_curve(x.b)) / W;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Hejl2015
+////////////////////////////////////////////////////////////////////////////////
+vec3 tonemap_filmic_hejl2015(vec3 hdr, float whitePt) {
+    vec4 vh = vec4(hdr, whitePt);
+    vec4 va = 1.425 * vh + 0.05;
+    vec4 vf = (vh * va + 0.004) / (vh * (va + 0.55) + 0.0491) - 0.0821;
+    return vf.rgb / vf.www;
+}
+
 vec3 shading(vec3 v, vec3 n, vec3 hitpos) {
   //Testing variables
   float roughness = 0.85;
+  float metallic = 0.05;
   vec3 cdiff = vec3(1.0);
   vec3 cspec = vec3(1.0);
 
   //Testing light
-  vec3 lightdir = vec3(-0.5, 0.5, -0.5); //Light direction
-  vec3 clight = vec3(0.4, 0.6, 0.8); //Light colour multiplied with intensity
+  vec3 lightdir = normalize(vec3(-0.5, 0.5, -0.5)); //Light direction
+  vec3 clight = vec3(23.47, 21.31, 20.79); //Light colour multiplied with intensity
 
-  // return cook_torrance(v, n, lightdir, clight, cdiff, cspec, roughness);
-  return lambert(v, n, lightdir, clight, cdiff) * softshadow(hitpos, lightdir);
+  float attenuation = softshadow(hitpos, lightdir);
+
+  // return cook_torrance_2(v, n, lightdir, clight, cdiff, cspec, roughness) * attenuation;
+  // return lambert(v, n, lightdir, clight, cdiff) * attenuation;
+  vec3 final = bepis_lighting(v, n, lightdir, clight, attenuation, cdiff, roughness, metallic);
+  // final = final / (final + vec3(1.0));
+  // final = pow(final, vec3(1.0 / 2.2));
+  return filmic_reinhard(final);
+  // return pow(tonemap_filmic_hejl2015(final, W), vec3(1.0/2.2));
 }
