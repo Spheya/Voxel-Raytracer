@@ -22,6 +22,7 @@ namespace Game.GameStates
         private Renderer _renderer;
 
         private VoxelModel _model;
+        private VoxelModel _model2;
         public override void OnCreate()
         {
             try
@@ -41,12 +42,21 @@ namespace Game.GameStates
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
             _model = _renderer.CreateModel(32, 32, 32, 
-                new Transform(Vector3.Zero, Vector3.Zero, new Vector3(0.5f)));
+                new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
             for (int x = 0; x < 32; x++)
             for (int y = 0; y < 32; y++)
             for (int z = 0; z < 32; z++)
                 _model[x, y, z] = new Voxel((ushort) ((x + y + z) & 1));
+
+
+            _model2 = _renderer.CreateModel(32, 32, 32,
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
+
+            for (int x = -16; x < 16; x++)
+            for (int y = -16; y < 16; y++)
+            for (int z = -16; z < 16; z++)
+                _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? new Voxel(1) : Voxel.EMPTY;
 
             Console.WriteLine("Epic");
         }
@@ -54,6 +64,7 @@ namespace Game.GameStates
         public override void OnUpdate(float deltatime)
         {
             _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
+            _model2.Transform.Rotation -= new Vector3(deltatime, deltatime, deltatime);
             //Console.WriteLine(_model.Transform.Rotation);
 
             KeyboardInput.Update();

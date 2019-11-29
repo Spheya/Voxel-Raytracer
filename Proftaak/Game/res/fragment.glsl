@@ -3,7 +3,7 @@
 #include "lighting.glsl"
 #include "math.glsl"
 
-#define WORLD_RENDER_DISTANCE 256 * 1.5
+#define WORLD_RENDER_DISTANCE 4096
 #define RENDER_DISTANCE 256
 #define MAX_MODELS 512
 #define MODEL_DATA_STRIDE 4
@@ -134,5 +134,6 @@ void main () {
 	// Display the normal
 	colour = vec4(hit.normal.xyz * 0.5 + 0.5, 1.0);
 	colour.b = 1.0 - colour.b;
+
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }
