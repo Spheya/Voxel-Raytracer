@@ -130,5 +130,11 @@ namespace Game.Engine.Rendering
         {
             return _bufferData.GetEnumerator();
         }
+
+        ~BufferTexture()
+        {
+            GLGarbageCollector.AddBuffer(_bufferId);
+            GLGarbageCollector.AddTexture(_bufferTextureId);
+        }
     }
 }

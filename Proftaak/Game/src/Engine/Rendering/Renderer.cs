@@ -18,8 +18,13 @@ namespace Game.Engine.Rendering
         private readonly BufferTexture<ushort> _voxelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
+
+        /// <summary>
+        /// The shader program used to render stuff
+        /// </summary>
         public ShaderProgram Shader { get; set; }
 
+        /// <param name="shader">The initial shader to render stuff</param>
         public Renderer(ShaderProgram shader)
         {
             _canvas = new Model(new[]{
@@ -34,6 +39,14 @@ namespace Game.Engine.Rendering
             Shader = shader;
         }
 
+        /// <summary>
+        /// Create a VoxelModel and add it to the renderer
+        /// </summary>
+        /// <param name="width">The width of the model in voxels</param>
+        /// <param name="height">The height of the model in voxels</param>
+        /// <param name="depth">The depth of the model in voxels</param>
+        /// <param name="transform">The transform of the model</param>
+        /// <returns>The created VoxelModel</returns>
         public VoxelModel CreateModel(int width, int height, int depth, Transform transform)
         {
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth, transform);
@@ -51,6 +64,13 @@ namespace Game.Engine.Rendering
             return model;
         }
 
+        /// <summary>
+        /// Create a VoxelModel and add it to the renderer
+        /// </summary>
+        /// <param name="width">The width of the model in voxels</param>
+        /// <param name="height">The height of the model in voxels</param>
+        /// <param name="depth">The depth of the model in voxels</param>
+        /// <returns>The created VoxelModel</returns>
         public VoxelModel CreateModel(int width, int height, int depth)
         {
             VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth);
@@ -68,6 +88,12 @@ namespace Game.Engine.Rendering
             return model;
         }
 
+        /// <summary>
+        /// Remove a model from the renderer
+        /// If this function returns true, using the model will result in undefined behaviour
+        /// </summary>
+        /// <param name="model">The model that needs to be removed</param>
+        /// <returns>If the removal was successful</returns>
         public bool Remove(VoxelModel model)
         {
             int index = _models.FindIndex(0, m => m == model);
@@ -85,6 +111,11 @@ namespace Game.Engine.Rendering
             return true;
         }
 
+        /// <summary>
+        /// Draw the scene
+        /// </summary>
+        /// <param name="camera">The camera where you want to draw from</param>
+        /// <param name="window">The window you want to draw to</param>
         public void Draw(Camera camera, GameWindow window)
         {
             Matrix4 mat = camera.CalculateMatrix();
