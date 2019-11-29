@@ -1,4 +1,6 @@
 #define PI 3.14159265359
+const float W = 1.2;
+const float T2 = 7.5;
 
 struct DirectionalLight {
   vec3 direction;
@@ -160,6 +162,31 @@ float softshadow(vec3 ro, vec3 rd) {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Reinhard tonemapping
+////////////////////////////////////////////////////////////////////////////////
+float filmic_reinhard_curve(float x) {
+    float q = (T2 * T2 + 1.0) * x * x;
+    return q / (q + x + T2*T2);
+}
+
+vec3 filmic_reinhard(vec3 x) {
+    float w = filmic_reinhard_curve(W);
+    return vec3(filmic_reinhard_curve(x.r),
+                filmic_reinhard_curve(x.g),
+                filmic_reinhard_curve(x.b)) / W;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Hejl2015
+////////////////////////////////////////////////////////////////////////////////
+vec3 tonemap_filmic_hejl2015(vec3 hdr, float whitePt) {
+    vec4 vh = vec4(hdr, whitePt);
+    vec4 va = 1.425 * vh + 0.05;
+    vec4 vf = (vh * va + 0.004) / (vh * (va + 0.55) + 0.0491) - 0.0821;
+    return vf.rgb / vf.www;
+}
+
 vec3 shading(vec3 v, vec3 n, vec3 hitpos) {
   //Testing variables
   float roughness = 0.85;
@@ -176,7 +203,8 @@ vec3 shading(vec3 v, vec3 n, vec3 hitpos) {
   // return cook_torrance_2(v, n, lightdir, clight, cdiff, cspec, roughness) * attenuation;
   // return lambert(v, n, lightdir, clight, cdiff) * attenuation;
   vec3 final = bepis_lighting(v, n, lightdir, clight, attenuation, cdiff, roughness, metallic);
-  final = final / (final + vec3(1.0));
-  final = pow(final, vec3(1.0 / 2.2));
-  return final;
+  // final = final / (final + vec3(1.0));
+  // final = pow(final, vec3(1.0 / 2.2));
+  return filmic_reinhard(final);
+  // return pow(tonemap_filmic_hejl2015(final, W), vec3(1.0/2.2));
 }
