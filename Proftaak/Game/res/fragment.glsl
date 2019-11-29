@@ -1,9 +1,5 @@
 #version 450
 
-struct Camera {
-	mat4 transformationMatrix;
-};
-
 #include "math.glsl"
 
 #define WORLD_RENDER_DISTANCE 4096
