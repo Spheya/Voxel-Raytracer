@@ -41,9 +41,9 @@ vec3 spheyaShading(vec3 lambertSum, Ray ray, Material material, vec3 normal, vec
 		   );
 }
 
-vec3 lambertShading(Material material, vec3 normal, vec3 lightDir, vec3 lightColour) {
+vec3 lambertShading(Material material, vec3 normal, vec3 lightDir, vec3 lightColour, float attenuation) {
 	float diffuse = max(dot(lightDir, normal), 0.0);
-	return material.baseColour * lightColour * diffuse;
+	return material.baseColour * lightColour * diffuse * attenuation;
 }
 
 float softshadow(in samplerBuffer voxelBuffer, 
@@ -52,7 +52,7 @@ float softshadow(in samplerBuffer voxelBuffer,
 				 in vec3 hitpos, 
 				 in vec3 lightDir) {
 
-	Ray ray = Ray(hitpos + lightDir * 0.01, lightDir);
+	Ray ray = Ray(hitpos, lightDir);
 	HitData hit = trace(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray);
 
 	if (hit.dist < WORLD_RENDER_DISTANCE) {
@@ -74,7 +74,7 @@ vec3 shading(in samplerBuffer voxelBuffer,
 	//Testing variables
 	Material material = Material(
 		vec3(0.453, 0.742, 0.551),	// base colour
-		1.2						// refractive index
+		1.3						// refractive index
 	);
 
 	vec3 lightColour = vec3(1.0, 1.0, 1.0);
@@ -86,8 +86,13 @@ vec3 shading(in samplerBuffer voxelBuffer,
 	float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir) * hit.ambientOcclusion;
 
 	// Calculate the colour using a lighting model
-	vec3 lambertSum = lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity); // Do this for every light source
-	vec3 final = spheyaShading(lambertSum * attenuation, ray, material, hit.normal, reflectiveColour, refractiveColour); // Do this once
+	vec3 lambertSum = lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
+
+	lambertSum += vec3(0.05, 0.1, 0.15); // Do this for every ambient light source
+
+	vec3 final = spheyaShading(lambertSum, ray, material, hit.normal, reflectiveColour, refractiveColour); // Do this once
+
 	
+
 	return final;
 }

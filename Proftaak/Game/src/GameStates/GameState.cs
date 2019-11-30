@@ -60,7 +60,7 @@ namespace Game.GameStates
 
 
             _model2 = _voxelRenderer.CreateModel(72, 126, 72,
-                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
             VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);

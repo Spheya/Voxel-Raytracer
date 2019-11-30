@@ -32,7 +32,7 @@ void main () {
 
 	// Trace a reflection ray
 	Ray reflectionRay = Ray(ray.origin + ray.direction * hit.dist, ray.direction - 2.0 * hit.normal * dot(ray.direction, hit.normal));
-	reflectionRay.origin += reflectionRay.direction * 0.01;
+	//reflectionRay.origin += reflectionRay.direction * 0.01;
 	HitData reflectionHit = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRay);
 
 	vec3 reflectionBackground = backgroundColour(reflectionRay.direction);
