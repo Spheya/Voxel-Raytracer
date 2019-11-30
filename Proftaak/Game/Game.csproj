@@ -61,6 +61,7 @@
     <Compile Include="src\Engine\Rendering\Model.cs" />
     <Compile Include="src\Engine\Rendering\Sprite.cs" />
     <Compile Include="src\Engine\Rendering\SpriteRenderer.cs" />
+    <Compile Include="src\Engine\Rendering\Texture.cs" />
     <Compile Include="src\Engine\Rendering\VoxelRenderer.cs" />
     <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
@@ -128,6 +129,10 @@
       <Name>Networking</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="res\textures\crosshair.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

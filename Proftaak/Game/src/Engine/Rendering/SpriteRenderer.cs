@@ -36,6 +36,7 @@ namespace Game.Engine.Rendering
             Shader.Bind();
             GL.BindVertexArray(_spriteModel.Vao);
 
+            // Bind the projection uniform
             Matrix4 projection = new Matrix4(
                 1.0f / window.Width, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f / window.Height, 0.0f, 0.0f,
@@ -46,11 +47,15 @@ namespace Game.Engine.Rendering
 
             foreach(Sprite sprite in _sprites)
             {
+                // Bind sprite specific uniforms
                 Matrix4 model = sprite.Transform.CalculateMatrix();
-                GL.UniformMatrix4(Shader.GetUniformLocation("u_modelMatrix"), false, ref model);
+                sprite.Texture.Bind(TextureUnit.Texture0);
 
+                GL.Uniform1(Shader.GetUniformLocation("u_texture"), 1, new [] {0});
+                GL.UniformMatrix4(Shader.GetUniformLocation("u_modelMatrix"), false, ref model);
                 GL.Uniform4(Shader.GetUniformLocation("u_colour"), 1, new [] {sprite.Colour.R, sprite.Colour.G, sprite.Colour.B, sprite.Colour.A});
 
+                // Draw the sprite
                 GL.DrawArrays(_spriteModel.Type, 0, _spriteModel.Count);
             }
 

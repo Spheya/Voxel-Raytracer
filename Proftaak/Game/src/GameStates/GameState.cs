@@ -89,9 +89,11 @@ namespace Game.GameStates
 
             Console.WriteLine("Epic");
 
-            Sprite spr = new Sprite();
-            _spriteRenderer.Add(spr);
-            spr.Colour = new Colour(1.0f, 0.0f, 1.0f, 0.5f);
+            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png"));
+            _spriteRenderer.Add(crosshair);
+            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 0.5f);
+            crosshair.Transform.Scale = new Vector3(64.0f, 64.0f, 1.0f);
+            crosshair.Transform.Position = Vector3.One;
         }
 
         public override void OnUpdate(float deltatime)

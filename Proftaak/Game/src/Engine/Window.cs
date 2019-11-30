@@ -46,6 +46,9 @@ namespace Game.Engine
             base.OnLoad(e);
 
             CursorVisible = true;
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
 
         protected override void OnResize(EventArgs e)
