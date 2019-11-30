@@ -32,6 +32,7 @@ void main () {
 
 	// Calculate the colour
 	colour.a = 1.0;
-	colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, ray.direction, hit.normal.xyz, ray.origin + ray.direction * hit.dist);
+	colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, ray, hit);
+	//colour.rgb *= hit.ambientOcclusion;
 	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = vec3(0.7, 0.9, 1.0) + ray.direction.y*0.8;
 }

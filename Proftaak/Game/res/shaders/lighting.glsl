@@ -76,23 +76,24 @@ float softshadow(in samplerBuffer voxelBuffer,
 vec3 shading(in samplerBuffer voxelBuffer, 
 			 in samplerBuffer modelDataBuffer,
 			 in samplerBuffer modelTransformsBuffer,
-			 vec3 v,
-			 vec3 n,
-			 vec3 hitpos) {
+			 Ray ray,
+			 HitData hit) {
 
 	//Testing variables
 	float refractionIndex = 2.4;
 	vec3 lightColour = vec3(1.0, 1.0, 1.0);
 	vec3 baseColour = vec3(0.453, 0.742, 0.551);
 	float lightIntensity = 1.0;
-	vec3 lightdir = normalize(vec3(-0.5, 1.5, -1.0));
+	vec3 lightDir = normalize(vec3(-0.5, 1.5, -1.0));
+
+	vec3 hitPos = ray.origin + ray.direction * hit.dist;
 
 	// Calculate the amount of light that hits the object
 	// TODO: Ambient occlusion
-	float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitpos, lightdir);
+	float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir) * hit.ambientOcclusion;
 
 	// Calculate the colour using a lighting model
-	vec3 final = spheyaLighting(voxelBuffer, modelDataBuffer, modelTransformsBuffer, v, n, lightdir, hitpos, baseColour, lightColour * lightIntensity, attenuation, refractionIndex);
+	vec3 final = spheyaLighting(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray.direction, hit.normal, lightDir, hitPos, baseColour, lightColour * lightIntensity, attenuation, refractionIndex);
   
 	return final;
 }

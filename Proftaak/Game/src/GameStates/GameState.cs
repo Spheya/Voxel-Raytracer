@@ -93,7 +93,7 @@ namespace Game.GameStates
                 Mouse.SetPosition(window.X + window.Width * 0.5, window.Y + window.Height * 0.5);
 
             _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
-            _model2.Transform.Rotation -= new Vector3(0.0f, deltatime * 0.25f, 0.0f);
+            //_model2.Transform.Rotation -= new Vector3(0.0f, deltatime * 0.25f, 0.0f);
 
             //Console.WriteLine(_model.Transform.Rotation);
 
