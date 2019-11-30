@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raytracing.glsl"
+#include "material.glsl"
 
 struct DirectionalLight {
 	vec3 direction;
@@ -21,39 +22,28 @@ float fresnelSchlick(float cos_theta, float reflectiveIndex) {
 	return reflectiveIndex + (1.0 - reflectiveIndex) * pow(1.0 - cos_theta, 5.0);
 }
 
-vec3 spheyaLighting(in samplerBuffer voxelBuffer, 
-					in samplerBuffer modelDataBuffer,
-					in samplerBuffer modelTransformsBuffer,
-					vec3 viewDir,
-					vec3 normal,
-					vec3 lightDir,
-					vec3 hitPos,
-					vec3 baseColour,
-					vec3 lightColour,
-					float attenuation,
-					float refractionIndex) {
-
-	// Diffuse lighting is lambert shading
-	float diffuse = max(dot(lightDir, normal), 0.0);
-
+vec3 spheyaShading(vec3 lambertSum, Ray ray, Material material, vec3 normal, vec3 reflectiveColour, vec3 refractiveColour) {
 	// Calculate the reflective coefficient from the refractionIndex
-	float reflectiveCoefficient = (1.0 - refractionIndex) / (1.0 + refractionIndex);
+	float reflectiveCoefficient = (1.0 - material.refractiveIndex) / (1.0 + material.refractiveIndex);
 	reflectiveCoefficient *= reflectiveCoefficient;
 
 	// Calculate the amount of reflection and refraction
-	float reflectiveAmount = fresnelSchlick(-dot(viewDir, normal), reflectiveCoefficient);
+	float reflectiveAmount = fresnelSchlick(-dot(ray.direction, normal), reflectiveCoefficient);
 	float refractiveAmount = 1.0 - reflectiveAmount;
-
-	// Trace the colours for refraction and reflection
-	vec3 reflectiveColour = lightColour;
-	vec3 refractiveColour = vec3(0.0);
 
 	// The amount of light that gets scattered when refracting
 	float scatterAmount = 1.0;
 
-	return baseColour * (reflectiveAmount * reflectiveColour
-		   + refractiveAmount * (1.0 - scatterAmount) * refractiveColour
-		   + refractiveAmount * scatterAmount * diffuse * attenuation * lightColour);
+	return reflectiveAmount * reflectiveColour + 
+		   refractiveAmount * (
+				scatterAmount * lambertSum +
+				(1.0 - scatterAmount) * refractiveColour
+		   );
+}
+
+vec3 lambertShading(Material material, vec3 normal, vec3 lightDir, vec3 lightColour) {
+	float diffuse = max(dot(lightDir, normal), 0.0);
+	return material.baseColour * lightColour * diffuse;
 }
 
 float softshadow(in samplerBuffer voxelBuffer, 
@@ -77,23 +67,27 @@ vec3 shading(in samplerBuffer voxelBuffer,
 			 in samplerBuffer modelDataBuffer,
 			 in samplerBuffer modelTransformsBuffer,
 			 Ray ray,
-			 HitData hit) {
+			 HitData hit,
+			 vec3 reflectiveColour,
+			 vec3 refractiveColour) {
 
 	//Testing variables
-	float refractionIndex = 2.4;
+	Material material = Material(
+		vec3(0.453, 0.742, 0.551),	// base colour
+		1.2						// refractive index
+	);
+
 	vec3 lightColour = vec3(1.0, 1.0, 1.0);
-	vec3 baseColour = vec3(0.453, 0.742, 0.551);
 	float lightIntensity = 1.0;
 	vec3 lightDir = normalize(vec3(-0.5, 1.5, -1.0));
-
 	vec3 hitPos = ray.origin + ray.direction * hit.dist;
 
 	// Calculate the amount of light that hits the object
-	// TODO: Ambient occlusion
 	float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir) * hit.ambientOcclusion;
 
 	// Calculate the colour using a lighting model
-	vec3 final = spheyaLighting(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray.direction, hit.normal, lightDir, hitPos, baseColour, lightColour * lightIntensity, attenuation, refractionIndex);
-  
+	vec3 lambertSum = lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity); // Do this for every light source
+	vec3 final = spheyaShading(lambertSum * attenuation, ray, material, hit.normal, reflectiveColour, refractiveColour); // Do this once
+	
 	return final;
 }
