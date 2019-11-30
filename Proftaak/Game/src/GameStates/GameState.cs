@@ -22,7 +22,8 @@ namespace Game.GameStates
 
         private readonly FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
-        private Renderer _renderer;
+        private VoxelRenderer _voxelRenderer;
+        private SpriteRenderer _spriteRenderer;
 
         private VoxelModel _model;
         private VoxelModel _model2;
@@ -31,13 +32,16 @@ namespace Game.GameStates
             try
             {
                 
-                Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\fragment.glsl"));
+                Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
 
-                Shader vertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\vertex.glsl"));
-                Shader fragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\fragment.glsl"));
+                Shader voxelVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\vertex.glsl"));
+                Shader voxelFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
+                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }));
 
+                Shader spriteVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\ui\vertex.glsl"));
+                Shader spriteFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\ui\fragment.glsl"));
+                _spriteRenderer = new SpriteRenderer(new ShaderProgram(new[] { spriteVertexShader, spriteFragmentShader }));
 
-                _renderer = new Renderer(new ShaderProgram(new[] { vertexShader, fragmentShader }));
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
@@ -46,7 +50,7 @@ namespace Game.GameStates
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            _model = _renderer.CreateModel(32, 32, 32,
+            _model = _voxelRenderer.CreateModel(32, 32, 32,
                 new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
             for (int x = 0; x < 32; x++)
@@ -55,7 +59,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
 
-            _model2 = _renderer.CreateModel(72, 126, 72,
+            _model2 = _voxelRenderer.CreateModel(72, 126, 72,
                 new Transform(new Vector3(-24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
@@ -75,7 +79,7 @@ namespace Game.GameStates
 
 
             int s = 512;
-            VoxelModel model3 = _renderer.CreateModel(s,1,s,
+            VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
                 new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
 
             for (int x = 0; x < s; x++)
@@ -84,6 +88,10 @@ namespace Game.GameStates
                 model3[x,y,z] = (byte)1;
 
             Console.WriteLine("Epic");
+
+            Sprite spr = new Sprite();
+            _spriteRenderer.Add(spr);
+            spr.Colour = new Colour(1.0f, 0.0f, 1.0f, 0.5f);
         }
 
         public override void OnUpdate(float deltatime)
@@ -112,7 +120,8 @@ namespace Game.GameStates
 
         public override void OnDraw(float deltatime)
         {
-           _renderer.Draw(_camera, window);
+           _voxelRenderer.Draw(_camera, window);
+           _spriteRenderer.Draw(window);
         }
 
         public override void OnDestroy()

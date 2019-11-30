@@ -57,8 +57,11 @@
     <Compile Include="src\Engine\Input\UserInput.cs" />
     <Compile Include="src\Engine\Maths\Transform.cs" />
     <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
+    <Compile Include="src\Engine\Rendering\Colour.cs" />
     <Compile Include="src\Engine\Rendering\Model.cs" />
-    <Compile Include="src\Engine\Rendering\Renderer.cs" />
+    <Compile Include="src\Engine\Rendering\Sprite.cs" />
+    <Compile Include="src\Engine\Rendering\SpriteRenderer.cs" />
+    <Compile Include="src\Engine\Rendering\VoxelRenderer.cs" />
     <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
     <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
@@ -82,16 +85,22 @@
     <None Include="res\maps\monu10.vox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\shaders\fragment.glsl">
+    <None Include="res\shaders\raytracing\fragment.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\shaders\lighting.glsl">
+    <None Include="res\shaders\raytracing\lighting.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\shaders\raytracing.glsl">
+    <None Include="res\shaders\raytracing\raytracing.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\shaders\vertex.glsl">
+    <None Include="res\shaders\raytracing\vertex.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\ui\fragment.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\ui\vertex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -119,5 +128,6 @@
       <Name>Networking</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

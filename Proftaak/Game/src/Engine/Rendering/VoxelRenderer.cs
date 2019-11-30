@@ -10,7 +10,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Game.Engine.Rendering
 {
-    class Renderer
+    class VoxelRenderer
     {
         private readonly Model _canvas;
 
@@ -25,7 +25,7 @@ namespace Game.Engine.Rendering
         public ShaderProgram Shader { get; set; }
 
         /// <param name="shader">The initial shader to render stuff</param>
-        public Renderer(ShaderProgram shader)
+        public VoxelRenderer(ShaderProgram shader)
         {
             _canvas = new Model(new[]{
                 -1.0f, -1.0f,
