@@ -1,4 +1,6 @@
-[![forthebadge](https://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](https://forthebadge.com)
+[![wordpress](https://img.shields.io/badge/made%20in-wordpress-brightgreen)](https://wordpress.com)
+[![bugcount](https://img.shields.io/badge/bug%20count-0-brightgreen)](https://github.com/Spheya/Voxel-Raytracer)
+
 
 # Proftaak2 : Voxel Ray Tracer
 
