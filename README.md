@@ -1,14 +1,5 @@
-# Proftaak2
+[![forthebadge](https://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](https://forthebadge.com)
 
-### Naming conventions
-Type | Name
---- | --- 
-Classes / Structs / Enums | UpperCamelCase
-Interfaces | IUpperCamelCase
-Methods | UpperCamelCase
-Delegates | UpperCamelCase
-Member variables | _lowerCamelCase
-Properties | UpperCamelCase
-Local variables | lowerCamelCase
-Static / const variables | UPPER_SNAKE_CASE
-Enum Members | UPPER_SNAKE_CASE
+# Proftaak2 : Voxel Ray Tracer
+
+This is a school project
