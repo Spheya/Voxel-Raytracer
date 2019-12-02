@@ -2,6 +2,7 @@
 
 #include "raytracing.glsl"
 #include "lighting.glsl"
+#include "material.glsl"
 
 #define RAY_RECURSION 1
 

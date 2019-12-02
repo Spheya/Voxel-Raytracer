@@ -59,7 +59,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\monu9.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
             r.Read();
 
             _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
@@ -88,10 +88,10 @@ namespace Game.GameStates
 
             Console.WriteLine("Epic");
 
-            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png"));
+            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png", TextureMinFilter.Linear, TextureMagFilter.Linear));
             _spriteRenderer.Add(crosshair);
             crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
-            crosshair.Transform.Scale = new Vector3(64.0f, 64.0f, 1.0f);
+            crosshair.Transform.Scale = new Vector3(128.0f, 128.0f, 0.25f);
         }
 
         public override void OnUpdate(float deltatime)
