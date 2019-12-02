@@ -60,7 +60,7 @@ void main () {
 	colour.rgb = backgroundColour(reflectionRays[RAY_RECURSION].direction);
 
 	for(int i = RAY_RECURSION; i >= 0; --i) {
-		colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material-1], colour.rgb, vec3(0.0));
+		colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material], colour.rgb, vec3(0.0));
 		if(reflectionHits[i].dist == WORLD_RENDER_DISTANCE) colour.rgb = backgroundColour(reflectionRays[i].direction);
 	}
 }

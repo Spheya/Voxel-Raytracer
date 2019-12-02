@@ -144,7 +144,7 @@ HitData traceModel(in samplerBuffer voxelBuffer,
 			float interpAo = mix(mix(ambient.z, ambient.w, uv.x), mix(ambient.y, ambient.x, uv.x), uv.y);
 			interpAo = pow(interpAo, 0.4);
 
-			return HitData(worldHit, interpAo, normal, 0);
+			return HitData(worldHit, interpAo, normal, material);
 		}
 
 		// Move to the next cell in the grid
