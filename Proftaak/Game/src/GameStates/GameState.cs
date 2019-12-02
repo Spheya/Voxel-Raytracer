@@ -48,6 +48,12 @@ namespace Game.GameStates
                 throw;
             }
 
+            //List<Material> materials = new List<Material>();
+            //for (int i = 0; i < 256; i++)
+            //    materials.Add(new Material(Vector3.One, 1.5f));
+
+            //_voxelRenderer.Materials = materials;
+
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
             _model = _voxelRenderer.CreateModel(32, 32, 32,
@@ -58,21 +64,30 @@ namespace Game.GameStates
             for (int z = 0; z < 32; z++)
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
-
-            _model2 = _voxelRenderer.CreateModel(72, 126, 72,
-                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
-
             MyVoxLoader CastleVox = new MyVoxLoader();
             VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
             r.Read();
+
+            //Use palette of castlevox
+            List<Material> materials = new List<Material>();
+            for (int i = 0; i < 256; i++)
+            {
+                Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
+                //Vector3 color = new Vector3(1f, 0f, 0f);
+                materials.Add(new Material(color));
+            }
+            _voxelRenderer.Materials = materials;
+
+            _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 
             //for (int x = -16; x < 16; x++)
             //for (int y = -16; y < 16; y++)
             //for (int z = -16; z < 16; z++)
             //    _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? (byte)1 : (byte)0;
-            for (int x = 0; x < 72; x++)
-            for (int y = 0; y < 126; y++)
-            for (int z = 0; z < 72; z++)
+            for (int x = 0; x < CastleVox.Width; x++)
+            for (int y = 0; y < CastleVox.Height; y++)
+            for (int z = 0; z < CastleVox.Depth; z++)
                 _model2[x,y,z] = CastleVox._data[x,y,z];
 
             Console.WriteLine("Epic");
@@ -89,11 +104,10 @@ namespace Game.GameStates
 
             Console.WriteLine("Epic");
 
-            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png"));
+            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png", TextureMinFilter.Linear, TextureMagFilter.Linear));
             _spriteRenderer.Add(crosshair);
-            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 0.5f);
-            crosshair.Transform.Scale = new Vector3(64.0f, 64.0f, 1.0f);
-            crosshair.Transform.Position = Vector3.One;
+            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
+            crosshair.Transform.Scale = new Vector3(128.0f, 128.0f, 0.25f);
         }
 
         public override void OnUpdate(float deltatime)

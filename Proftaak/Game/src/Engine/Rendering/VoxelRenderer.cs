@@ -15,9 +15,11 @@ namespace Game.Engine.Rendering
         private readonly Model _canvas;
 
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
-        private readonly BufferTexture<ushort> _voxelData = new BufferTexture<ushort>(SizedInternalFormat.R16ui);
+        private readonly BufferTexture<byte> _voxelData = new BufferTexture<byte>(SizedInternalFormat.R8ui);
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
+
+        public List<Material> Materials { get; set; } = new List<Material>();
 
         /// <summary>
         /// The shader program used to render stuff
@@ -27,6 +29,8 @@ namespace Game.Engine.Rendering
         /// <param name="shader">The initial shader to render stuff</param>
         public VoxelRenderer(ShaderProgram shader)
         {
+            Materials.Add(new Material(Vector3.One));
+
             _canvas = new Model(new[]{
                 -1.0f, -1.0f,
                 1.0f, -1.0f,
@@ -53,7 +57,7 @@ namespace Game.Engine.Rendering
             _models.Add(model);
             _modelData[0] = (ushort) _models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
-            _voxelData.AddRange(new ushort[model.Footprint]);
+            _voxelData.AddRange(new byte[model.Footprint]);
             _modelTransformations.AddRange(
                 new [] {
                     model.Transform.CalculateInverseMatrix(),
@@ -77,7 +81,7 @@ namespace Game.Engine.Rendering
             _models.Add(model);
             _modelData[0] = (ushort)_models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
-            _voxelData.AddRange(new ushort[model.Footprint]);
+            _voxelData.AddRange(new byte[model.Footprint]);
             _modelTransformations.AddRange(
                     new[] {
                         model.Transform.CalculateInverseMatrix(),
@@ -135,6 +139,9 @@ namespace Game.Engine.Rendering
             Shader.Bind();
 
             GL.BindVertexArray(_canvas.Vao);
+
+            for (int i = 0; i < 255 && i < Materials.Count; i++)
+                Materials[i].Load(Shader, "u_materials[" + i + "]");
 
             _voxelData.Bind(TextureUnit.Texture0);
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });

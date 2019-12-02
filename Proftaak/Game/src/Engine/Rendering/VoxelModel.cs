@@ -15,7 +15,7 @@ namespace Game.Engine.Rendering
     {
         private readonly VoxelGrid _grid;
 
-        private readonly BufferTexture<ushort> _target;
+        private readonly BufferTexture<byte> _target;
         
         /// <summary>
         /// How the model is positioned in the world
@@ -73,7 +73,7 @@ namespace Game.Engine.Rendering
         /// <param name="height">The height of the grid</param>
         /// <param name="depth">The depth of the grid</param>
         /// <param name="transform">How the model should be positioned in the world</param>
-        public VoxelModel(BufferTexture<ushort> target, int offset, int width, int height, int depth, Transform transform) :
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth, Transform transform) :
             this(target, offset, width, height, depth)
         {
             Transform = transform;
@@ -84,7 +84,7 @@ namespace Game.Engine.Rendering
         /// <param name="width">The width of the grid</param>
         /// <param name="height">The height of the grid</param>
         /// <param name="depth">The depth of the grid</param>
-        public VoxelModel(BufferTexture<ushort> target, int offset, int width, int height, int depth)
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth)
         {
             _target = target;
             _grid = new VoxelGrid(width, height, depth);
