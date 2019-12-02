@@ -74,7 +74,7 @@ vec3 shading(in samplerBuffer voxelBuffer,
 	//Testing variables
 	Material material = Material(
 		vec3(0.453, 0.742, 0.551),	// base colour
-		1.3						// refractive index
+		1.3							// refractive index
 	);
 
 	vec3 lightColour = vec3(1.0, 1.0, 1.0);

@@ -3,6 +3,8 @@
 #include "raytracing.glsl"
 #include "lighting.glsl"
 
+#define RAY_RECURSION 1
+
 struct Camera {
 	mat4 matrix;
 	float zoom;
@@ -26,22 +28,35 @@ vec3 backgroundColour(vec3 direction){
 }
 
 void main () {
-	// Trace a ray
-	Ray ray = generateRay();
-	HitData hit = trace(u_voxelBuffer, u_modelData, u_modelTransformations, ray);
-
-	// Trace a reflection ray
-	Ray reflectionRay = Ray(ray.origin + ray.direction * hit.dist, ray.direction - 2.0 * hit.normal * dot(ray.direction, hit.normal));
-	//reflectionRay.origin += reflectionRay.direction * 0.01;
-	HitData reflectionHit = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRay);
-
-	vec3 reflectionBackground = backgroundColour(reflectionRay.direction);
-	vec3 reflectionColour = shading(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRay, reflectionHit, reflectionBackground, reflectionBackground);
-	if(reflectionHit.dist == WORLD_RENDER_DISTANCE) reflectionColour.rgb = reflectionBackground;
-
-	// Calculate the colour
 	colour.a = 1.0;
-	vec3 background = backgroundColour(ray.direction);
-	colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, ray, hit, reflectionColour, background);
-	if(hit.dist == WORLD_RENDER_DISTANCE) colour.rgb = background;
+
+	Ray reflectionRays[RAY_RECURSION + 1];
+	HitData reflectionHits[RAY_RECURSION + 1];
+
+	// TODO: disable warnings, so we don't have to initialize this data beforehand
+	for(int i = 0; i < RAY_RECURSION + 1; ++i) {
+		reflectionRays[i] = Ray(vec3(0.0), vec3(0.0));
+		reflectionHits[i] = HitData(WORLD_RENDER_DISTANCE, 0.0, vec3(-1.0), 0);
+	}
+
+	reflectionRays[0] = generateRay();
+	reflectionHits[0] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[0]);
+
+	vec3 reflectionBackground;
+
+	// Setup rays
+	for(int i = 1; i < RAY_RECURSION + 1; ++i) {
+		// Setup a reflection ray
+		reflectionRays[i] = Ray(reflectionRays[i-1].origin + reflectionRays[i-1].direction * reflectionHits[i-1].dist,
+			reflectionRays[i-1].direction - 2.0 * reflectionHits[i-1].normal * dot(reflectionRays[i-1].direction, reflectionHits[i-1].normal));
+		reflectionHits[i] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i]);
+	}
+
+	// Calculate the colours for the rays
+	colour.rgb = backgroundColour(reflectionRays[RAY_RECURSION].direction);
+
+	for(int i = RAY_RECURSION; i >= 0; --i) {
+		colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i], reflectionHits[i], colour.rgb, vec3(0.0));
+		if(reflectionHits[i].dist == WORLD_RENDER_DISTANCE) colour.rgb = backgroundColour(reflectionRays[i].direction);
+	}
 }
