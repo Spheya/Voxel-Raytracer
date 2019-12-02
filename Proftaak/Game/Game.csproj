@@ -75,6 +75,7 @@
     <Compile Include="src\Engine\Window.cs" />
     <Compile Include="src\GameStates\GameState.cs" />
     <Compile Include="src\GameStates\ApplicationState.cs" />
+    <Compile Include="src\GameStates\SpashScreenState.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

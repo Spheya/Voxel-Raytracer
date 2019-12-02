@@ -14,10 +14,10 @@ namespace Game.Engine.Rendering
         private readonly List<Sprite> _sprites = new List<Sprite>();
 
         private readonly Model _spriteModel = new Model(new[]{
-            -0.5f, -0.5f,
-            0.5f, -0.5f,
-            0.5f,  0.5f,
-            -0.5f,  0.5f
+            -1.0f, -1.0f,
+            1.0f, -1.0f,
+            1.0f,  1.0f,
+            -1.0f,  1.0f
         }, 2, PrimitiveType.TriangleFan);
 
 
