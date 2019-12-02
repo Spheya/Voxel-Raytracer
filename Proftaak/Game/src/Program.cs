@@ -8,7 +8,8 @@ namespace Game
     {
         static void Main(string[] args)
         {
-            new Window(new SpashScreenState()).Run();
+            //new Window(new SpashScreenState()).Run();
+            new Window(new GameState()).Run();
         }
     }
 }
