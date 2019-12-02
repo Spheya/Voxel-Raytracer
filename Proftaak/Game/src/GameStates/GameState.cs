@@ -62,6 +62,15 @@ namespace Game.GameStates
             VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
             r.Read();
 
+            //Use palette of castlevox
+            List<Material> materials = new List<Material>();
+            for (int i = 0; i < 256; i++)
+            {
+                Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
+                materials.Add(new Material(color));
+            }
+            _voxelRenderer.Materials = materials;
+
             _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
                 new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 

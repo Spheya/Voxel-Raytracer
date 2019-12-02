@@ -26,7 +26,7 @@ namespace VoxLoader
         public int Height;
         public int Depth;
 
-        public PaletteMaterial[] _materials = new PaletteMaterial[255];
+        public PaletteMaterial[] _materials = new PaletteMaterial[256];
 
         public void LoadModel(int sizeX, int sizeY, int sizeZ, byte[,,] data)
         {
@@ -38,7 +38,7 @@ namespace VoxLoader
 
         public void LoadPalette(UInt32[] palette)
         {
-            for (int i = 1; i < 255; i++)
+            for (int i = 0; i < 255; i++)
             {
                 _materials[i] = new PaletteMaterial();
                 palette[i].ToARGB(out _materials[i].a, out _materials[i].r, out _materials[i].g, out _materials[i].b);
