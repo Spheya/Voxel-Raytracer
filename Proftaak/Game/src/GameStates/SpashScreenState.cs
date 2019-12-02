@@ -30,7 +30,7 @@ namespace Game.GameStates
             }
             Texture texture;
             Vector3 vector1 = new Vector3(20, 30, 30);
-            Transform transform1 = new Transform(vector1, Vector3.Zero, new Vector3(System.Windows.SystemParameters.PrimaryScreenWidth, window.Height, 30));
+            Transform transform1 = new Transform(vector1, Vector3.Zero, new Vector3(window.Width, window.Height, 30));
             float kleur = 0.5F;
             Colour kleurdit = new Colour(0, 255, 0);
             Texture texture1 = new Texture("res\\textures\\crosshair.png");
