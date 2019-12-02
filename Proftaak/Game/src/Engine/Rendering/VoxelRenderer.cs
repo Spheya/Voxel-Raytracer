@@ -19,7 +19,7 @@ namespace Game.Engine.Rendering
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
 
-        public List<Material> _materials = new List<Material>();
+        public List<Material> Materials { get; set; } = new List<Material>();
 
         /// <summary>
         /// The shader program used to render stuff
@@ -29,7 +29,7 @@ namespace Game.Engine.Rendering
         /// <param name="shader">The initial shader to render stuff</param>
         public VoxelRenderer(ShaderProgram shader)
         {
-            _materials.Add(new Material(Vector3.One));
+            Materials.Add(new Material(Vector3.One));
 
             _canvas = new Model(new[]{
                 -1.0f, -1.0f,
@@ -140,8 +140,8 @@ namespace Game.Engine.Rendering
 
             GL.BindVertexArray(_canvas.Vao);
 
-            for (int i = 0; i < 255 && i < _materials.Count; i++)
-                _materials[i].Load(Shader, "u_materials[" + i + "]");
+            for (int i = 0; i < 255 && i < Materials.Count; i++)
+                Materials[i].Load(Shader, "uMaterials[" + i + "]");
 
                 _voxelData.Bind(TextureUnit.Texture0);
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
