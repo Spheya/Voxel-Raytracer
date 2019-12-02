@@ -50,7 +50,7 @@ vec4 voxelAmbientOcclusion(in samplerBuffer voxelBuffer, in ivec4 modelData, in 
 	return 1.0 - ao;
 }
 
-HitData traceModel(in samplerBuffer voxelBuffer, 
+HitData traceModel(in samplerBuffer voxelBuffer,
 				   in samplerBuffer modelDataBuffer,
 				   in samplerBuffer modelTransformsBuffer,
 				   in Ray ray,
@@ -98,12 +98,12 @@ HitData traceModel(in samplerBuffer voxelBuffer,
 	vec3 mapPos = floor(ray.origin + ray.direction * max(modelHitNear - 0.1, 0.0));
 	vec3 deltaDist = abs(vec3(length(ray.direction)) * invertedDirection);
 	vec3 rayStep = sign(ray.direction);
-	vec3 sideDist = (sign(ray.direction) * (mapPos - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist; 
+	vec3 sideDist = (sign(ray.direction) * (mapPos - ray.origin) + (sign(ray.direction) * 0.5) + 0.5) * deltaDist;
 	vec3 mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy);
 
 	sideDist += mask * deltaDist;
 	mapPos += mask * rayStep;;
-	
+
 	int material;
 
 	// Make sure we are in the model (to avoid artifacts)
@@ -114,7 +114,7 @@ HitData traceModel(in samplerBuffer voxelBuffer,
 		sideDist += mask * deltaDist;
 		mapPos += mask * rayStep;
 	}
-	
+
 	// Traverse through the grid
 	for(int i = 0; i < RENDER_DISTANCE; i++){
 		// Stop checking after leaving the grid
@@ -135,7 +135,7 @@ HitData traceModel(in samplerBuffer voxelBuffer,
 			vec3 endRayPos;
 			vec2 uv;
 			vec4 ambient;
-	
+
 			ambient = voxelAmbientOcclusion(voxelBuffer, modelData, mapPos - rayStep * mask, mask.zxy, mask.yzx);
 			endRayPos = ray.origin + ray.direction * hit;
 

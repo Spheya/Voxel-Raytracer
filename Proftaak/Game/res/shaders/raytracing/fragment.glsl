@@ -23,7 +23,7 @@ Ray generateRay() {
 	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
 }
 
-vec3 backgroundColour(vec3 direction){
+vec3 backgroundColour(vec3 direction) {
 	return vec3(0.7, 0.9, 1.0) + direction.y*0.8;
 }
 
@@ -38,6 +38,7 @@ void main () {
 		reflectionRays[i] = Ray(vec3(0.0), vec3(0.0));
 		reflectionHits[i] = HitData(WORLD_RENDER_DISTANCE, 0.0, vec3(-1.0), 0);
 	}
+	// NOTE: works fine for me without this shit, but doesn't affect performance at all it seems
 
 	reflectionRays[0] = generateRay();
 	reflectionHits[0] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[0]);

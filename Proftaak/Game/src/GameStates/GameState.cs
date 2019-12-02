@@ -58,21 +58,20 @@ namespace Game.GameStates
             for (int z = 0; z < 32; z++)
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
-
-            _model2 = _voxelRenderer.CreateModel(72, 126, 72,
-                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
-
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\monu9.vox", CastleVox);
             r.Read();
+
+            _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 
             //for (int x = -16; x < 16; x++)
             //for (int y = -16; y < 16; y++)
             //for (int z = -16; z < 16; z++)
             //    _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? (byte)1 : (byte)0;
-            for (int x = 0; x < 72; x++)
-            for (int y = 0; y < 126; y++)
-            for (int z = 0; z < 72; z++)
+            for (int x = 0; x < CastleVox.Width; x++)
+            for (int y = 0; y < CastleVox.Height; y++)
+            for (int z = 0; z < CastleVox.Depth; z++)
                 _model2[x,y,z] = CastleVox._data[x,y,z];
 
             Console.WriteLine("Epic");

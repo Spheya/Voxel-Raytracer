@@ -10,15 +10,23 @@ namespace VoxLoader
     {
         public VoxelGrid _data;
 
+        public int Width;
+        public int Height;
+        public int Depth;
+
+
+
         public void LoadModel(int sizeX, int sizeY, int sizeZ, byte[,,] data)
         {
             //throw new NotImplementedException();
             Console.WriteLine($"poggers (model size: {sizeX}; {sizeY}; {sizeZ})");
             _data = new VoxelGrid(sizeX, sizeY, sizeZ, data);
+            Width = sizeX; Height = sizeY; Depth = sizeZ;
         }
 
-        public void LoadPalette(uint[] palette)
+        public void LoadPalette(UInt32[] palette)
         {
+
             //throw new NotImplementedException();
         }
 

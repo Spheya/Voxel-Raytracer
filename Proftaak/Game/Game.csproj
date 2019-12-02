@@ -82,8 +82,14 @@
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="res\maps\castle.vox" />
+    <None Include="res\maps\gamercube.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="res\maps\map_city.vox" />
     <None Include="res\maps\monu10.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\maps\monu9.vox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="res\shaders\raytracing\fragment.glsl">

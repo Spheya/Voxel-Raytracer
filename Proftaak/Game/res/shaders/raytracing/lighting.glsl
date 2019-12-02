@@ -34,7 +34,7 @@ vec3 spheyaShading(vec3 lambertSum, Ray ray, Material material, vec3 normal, vec
 	// The amount of light that gets scattered when refracting
 	float scatterAmount = 1.0;
 
-	return reflectiveAmount * reflectiveColour + 
+	return reflectiveAmount * reflectiveColour +
 		   refractiveAmount * (
 				scatterAmount * lambertSum +
 				(1.0 - scatterAmount) * refractiveColour
@@ -46,13 +46,13 @@ vec3 lambertShading(Material material, vec3 normal, vec3 lightDir, vec3 lightCol
 	return material.baseColour * lightColour * diffuse * attenuation;
 }
 
-float softshadow(in samplerBuffer voxelBuffer, 
+float softshadow(in samplerBuffer voxelBuffer,
 				 in samplerBuffer modelDataBuffer,
 				 in samplerBuffer modelTransformsBuffer,
-				 in vec3 hitpos, 
+				 in vec3 hitpos,
 				 in vec3 lightDir) {
 
-	Ray ray = Ray(hitpos, lightDir);
+	Ray ray = Ray(hitpos + lightDir * 0.0002, lightDir);
 	HitData hit = trace(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray);
 
 	if (hit.dist < WORLD_RENDER_DISTANCE) {
@@ -63,7 +63,7 @@ float softshadow(in samplerBuffer voxelBuffer,
 	return float(hit.dist <  WORLD_RENDER_DISTANCE);
 }
 
-vec3 shading(in samplerBuffer voxelBuffer, 
+vec3 shading(in samplerBuffer voxelBuffer,
 			 in samplerBuffer modelDataBuffer,
 			 in samplerBuffer modelTransformsBuffer,
 			 Ray ray,
@@ -92,7 +92,7 @@ vec3 shading(in samplerBuffer voxelBuffer,
 
 	vec3 final = spheyaShading(lambertSum, ray, material, hit.normal, reflectiveColour, refractiveColour); // Do this once
 
-	
+
 
 	return final;
 }
