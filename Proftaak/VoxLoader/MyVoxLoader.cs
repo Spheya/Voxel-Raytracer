@@ -6,6 +6,18 @@ using VoxelData;
 
 namespace VoxLoader
 {
+    public struct PaletteMaterial
+    {
+        public byte r;
+        public byte g;
+        public byte b;
+        public byte a;
+
+        public float roughness;
+        public float metallic;
+        public float specular;
+    };
+
     public class MyVoxLoader : IVoxLoader
     {
         public VoxelGrid _data;
@@ -14,7 +26,7 @@ namespace VoxLoader
         public int Height;
         public int Depth;
 
-
+        public PaletteMaterial[] _materials = new PaletteMaterial[255];
 
         public void LoadModel(int sizeX, int sizeY, int sizeZ, byte[,,] data)
         {
@@ -26,7 +38,11 @@ namespace VoxLoader
 
         public void LoadPalette(UInt32[] palette)
         {
-
+            for (int i = 1; i < 255; i++)
+            {
+                _materials[i] = new PaletteMaterial();
+                palette[i].ToARGB(out _materials[i].a, out _materials[i].r, out _materials[i].g, out _materials[i].b);
+            }
             //throw new NotImplementedException();
         }
 
