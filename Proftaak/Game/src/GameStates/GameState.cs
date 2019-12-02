@@ -65,7 +65,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\nature.vox", CastleVox);
             r.Read();
 
             //Use palette of castlevox
