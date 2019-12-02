@@ -65,7 +65,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\room.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
             r.Read();
 
             //Use palette of castlevox
@@ -76,7 +76,7 @@ namespace Game.GameStates
                 //Vector3 color = new Vector3(1f, 0f, 0f);
                 materials.Add(new Material(color));
             }
-            _voxelRenderer.Materials = materials;
+            _voxelRenderer.Materials.Set(materials);
 
             _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
                 new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));

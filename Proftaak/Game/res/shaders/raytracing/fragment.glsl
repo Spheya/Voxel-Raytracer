@@ -49,14 +49,14 @@ void main () {
 	vec3 reflectionBackground;
 
 	// Setup rays
-	int reflections = 0;
+	int reflections = RAY_RECURSION;
 	for(int i = 1; i < RAY_RECURSION + 1; ++i) {
 		// Setup a reflection ray
 		reflectionRays[i] = Ray(reflectionRays[i-1].origin + reflectionRays[i-1].direction * reflectionHits[i-1].dist,
 			reflectionRays[i-1].direction - 2.0 * reflectionHits[i-1].normal * dot(reflectionRays[i-1].direction, reflectionHits[i-1].normal));
 		reflectionHits[i] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i]);
 
-		if(reflectionHits[i].dist >= WORLD_RENDER_DISTANCE) {
+		if(reflectionHits[i].dist >= WORLD_RENDER_DISTANCE || u_materials[reflectionHits[i].material].refractiveIndex < 1.0) {
 			reflections = i;
 			break;
 		}

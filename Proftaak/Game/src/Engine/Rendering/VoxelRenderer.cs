@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Game.Engine.Rendering
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
 
-        public List<Material> Materials { get; set; } = new List<Material>();
+        public MaterialPalette Materials { get; }
 
         /// <summary>
         /// The shader program used to render stuff
@@ -29,7 +30,7 @@ namespace Game.Engine.Rendering
         /// <param name="shader">The initial shader to render stuff</param>
         public VoxelRenderer(ShaderProgram shader)
         {
-            Materials.Add(new Material(Vector3.One));
+            Materials = new MaterialPalette(shader);
 
             _canvas = new Model(new[]{
                 -1.0f, -1.0f,
@@ -129,20 +130,26 @@ namespace Game.Engine.Rendering
 
             for (int i = 0; i < _models.Count; i++)
             {
-                _modelTransformations[i * 3 + 0] = _models[i].Transform.CalculateInverseMatrix();
-                _modelTransformations[i * 3 + 1] = _models[i].Transform.CalculateMatrix();
-                _modelTransformations[i * 3 + 2] = _models[i].Transform.CalculateNormalMatrix();
-            }
+                Matrix4 inverseModelMatrix = _models[i].Transform.CalculateInverseMatrix();
+                Matrix4 modelMatrix = _models[i].Transform.CalculateMatrix();
+                Matrix4 normalMatrix = _models[i].Transform.CalculateNormalMatrix();
 
+                // Check if the matrices are the same to avoid sending data the gpu already has
+                if (_modelTransformations[i * 3 + 0] != inverseModelMatrix)
+                    _modelTransformations[i * 3 + 0] = inverseModelMatrix;
+
+                if (_modelTransformations[i * 3 + 1] != modelMatrix)
+                    _modelTransformations[i * 3 + 1] = modelMatrix;
+
+                if (_modelTransformations[i * 3 + 2] != normalMatrix)
+                    _modelTransformations[i * 3 + 2] = normalMatrix;
+            }
             _modelTransformations.Update();
 
             Shader.Bind();
-
             GL.BindVertexArray(_canvas.Vao);
 
-            for (int i = 0; i < 255 && i < Materials.Count; i++)
-                Materials[i].Load(Shader, "u_materials[" + i + "]");
-
+            // Send the buffers containing the models
             _voxelData.Bind(TextureUnit.Texture0);
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
             _modelData.Bind(TextureUnit.Texture1);
@@ -150,8 +157,13 @@ namespace Game.Engine.Rendering
             _modelTransformations.Bind(TextureUnit.Texture2);
             GL.Uniform1(Shader.GetUniformLocation("u_modelTransformations"), 1, new[] { 2 });
 
+            // Send the materials
+            Materials.Bind("u_materials");
+
+            // Send the windowsize
             GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height });
 
+            // Send the camera
             GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
