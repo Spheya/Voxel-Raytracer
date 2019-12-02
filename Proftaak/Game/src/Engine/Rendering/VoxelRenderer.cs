@@ -141,9 +141,9 @@ namespace Game.Engine.Rendering
             GL.BindVertexArray(_canvas.Vao);
 
             for (int i = 0; i < 255 && i < Materials.Count; i++)
-                Materials[i].Load(Shader, "uMaterials[" + i + "]");
+                Materials[i].Load(Shader, "u_materials[" + i + "]");
 
-                _voxelData.Bind(TextureUnit.Texture0);
+            _voxelData.Bind(TextureUnit.Texture0);
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
             _modelData.Bind(TextureUnit.Texture1);
             GL.Uniform1(Shader.GetUniformLocation("u_modelData"), 1, new[] { 1 });
