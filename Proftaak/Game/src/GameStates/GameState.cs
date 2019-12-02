@@ -48,11 +48,11 @@ namespace Game.GameStates
                 throw;
             }
 
-            List<Material> materials = new List<Material>();
-            for (int i = 0; i < 256; i++)
-                materials.Add(new Material(Vector3.One, 1.5f));
+            //List<Material> materials = new List<Material>();
+            //for (int i = 0; i < 256; i++)
+            //    materials.Add(new Material(Vector3.One, 1.5f));
 
-            _voxelRenderer.Materials = materials;
+            //_voxelRenderer.Materials = materials;
 
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
@@ -73,6 +73,7 @@ namespace Game.GameStates
             for (int i = 0; i < 256; i++)
             {
                 Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
+                //Vector3 color = new Vector3(1f, 0f, 0f);
                 materials.Add(new Material(color));
             }
             _voxelRenderer.Materials = materials;
