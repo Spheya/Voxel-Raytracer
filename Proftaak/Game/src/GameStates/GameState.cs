@@ -48,6 +48,12 @@ namespace Game.GameStates
                 throw;
             }
 
+            List<Material> materials = new List<Material>();
+            for (int i = 0; i < 256; i++)
+                materials.Add(new Material(Vector3.One, 1.5f));
+
+            _voxelRenderer.Materials = materials;
+
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
             _model = _voxelRenderer.CreateModel(32, 32, 32,

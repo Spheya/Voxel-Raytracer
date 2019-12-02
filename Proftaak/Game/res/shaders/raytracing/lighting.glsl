@@ -29,7 +29,7 @@ vec3 spheyaShading(vec3 lambertSum, Ray ray, Material material, vec3 normal, vec
 	reflectiveCoefficient *= reflectiveCoefficient;
 
 	// Calculate the amount of reflection and refraction
-	float reflectiveAmount = fresnelSchlick(-dot(ray.direction, normal), reflectiveCoefficient);
+	float reflectiveAmount = fresnelSchlick(-dot(ray.direction, normal), reflectiveCoefficient) * float(reflectiveCoefficient < 0.0);
 	float refractiveAmount = 1.0 - reflectiveAmount;
 
 	// The amount of light that gets scattered when refracting
@@ -69,15 +69,11 @@ vec3 shading(in samplerBuffer voxelBuffer,
 			 in samplerBuffer modelTransformsBuffer,
 			 Ray ray,
 			 HitData hit,
+			 Material material,
 			 vec3 reflectiveColour,
 			 vec3 refractiveColour) {
 
 	//Testing variables
-	Material material = Material(
-		vec3(0.453, 0.742, 0.551),	// base colour
-		1.3							// refractive index
-	);
-
 	vec3 lightColour = vec3(1.0, 1.0, 1.0);
 	float lightIntensity = 1.0;
 	vec3 lightDir = normalize(vec3(-0.5, 1.5, -1.0));
