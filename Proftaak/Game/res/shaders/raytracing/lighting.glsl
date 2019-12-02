@@ -19,7 +19,8 @@ struct PointLight {
 };
 
 float fresnelSchlick(float cos_theta, float reflectiveIndex) {
-	return reflectiveIndex + (1.0 - reflectiveIndex) * pow(1.0 - cos_theta, 5.0);
+	float p = 1.0 - cos_theta; 
+	return reflectiveIndex + (1.0 - reflectiveIndex) * p * p * p * p * p;
 }
 
 vec3 spheyaShading(vec3 lambertSum, Ray ray, Material material, vec3 normal, vec3 reflectiveColour, vec3 refractiveColour) {

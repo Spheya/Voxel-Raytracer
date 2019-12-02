@@ -90,9 +90,8 @@ namespace Game.GameStates
 
             Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png"));
             _spriteRenderer.Add(crosshair);
-            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 0.5f);
+            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
             crosshair.Transform.Scale = new Vector3(64.0f, 64.0f, 1.0f);
-            crosshair.Transform.Position = Vector3.One;
         }
 
         public override void OnUpdate(float deltatime)

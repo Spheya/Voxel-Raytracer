@@ -1,0 +1,8 @@
+Maak een Splashscreen class aan die inherit van ApplicationState
+
+Je kan afbeeldingen renderen met Sprite.cs en SpriteRenderer.cs
+
+Maak een MenuState class die inherit van ApplicationState
+
+Maak een class voor de buttons op het menu
+zorg dat hier een onclick event in staat
