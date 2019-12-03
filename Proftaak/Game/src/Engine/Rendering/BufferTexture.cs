@@ -39,7 +39,6 @@ namespace Game.Engine.Rendering
 
                 _minDirty = Math.Min(_minDirty, index);
                 _maxDirty = Math.Max(_maxDirty, index + 1);
-
                 _dirtyFlag = true;
             }
         }
@@ -80,6 +79,10 @@ namespace Game.Engine.Rendering
             _bufferSize = _bufferData.Count;
             _bufferTextureId = GL.GenTexture();
             GL.BindBuffer(BufferTarget.TextureBuffer, 0);
+
+            GL.BindTexture(TextureTarget.TextureBuffer, _bufferTextureId);
+            GL.TexBuffer(TextureBufferTarget.TextureBuffer, _internalFormat, _bufferId);
+            GL.BindTexture(TextureTarget.TextureBuffer, 0);
         }
 
         /// <summary>
@@ -101,8 +104,6 @@ namespace Game.Engine.Rendering
                 }
                 GL.BindBuffer(BufferTarget.TextureBuffer, 0);
 
-
-
                 _maxDirty = int.MinValue;
                 _minDirty = int.MaxValue;
 
@@ -118,7 +119,6 @@ namespace Game.Engine.Rendering
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.TextureBuffer, _bufferTextureId);
-            GL.TexBuffer(TextureBufferTarget.TextureBuffer, _internalFormat, _bufferId);
         }
 
         public IEnumerator<T> GetEnumerator()

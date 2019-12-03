@@ -59,6 +59,7 @@
     <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
     <Compile Include="src\Engine\Rendering\Colour.cs" />
     <Compile Include="src\Engine\Rendering\Material.cs" />
+    <Compile Include="src\Engine\Rendering\MaterialPalette.cs" />
     <Compile Include="src\Engine\Rendering\Model.cs" />
     <Compile Include="src\Engine\Rendering\Sprite.cs" />
     <Compile Include="src\Engine\Rendering\SpriteRenderer.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="src\Engine\Shaders\ShaderPreprocessorException.cs" />
     <Compile Include="src\Engine\Shaders\ShaderProgram.cs" />
     <Compile Include="src\Engine\Window.cs" />
+    <Compile Include="src\Gameplay\Crosshair.cs" />
     <Compile Include="src\GameStates\GameState.cs" />
     <Compile Include="src\GameStates\ApplicationState.cs" />
     <Compile Include="src\GameStates\SplashScreenState.cs" />
@@ -86,7 +88,14 @@
     <None Include="res\maps\castle.vox" />
     <None Include="res\maps\gamercube.vox" />
     <None Include="res\maps\map_city.vox" />
-    <None Include="res\maps\monu10.vox" />
+    <None Include="res\maps\monu10.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\maps\monu9.vox" />
+    <None Include="res\maps\nature.vox" />
+    <None Include="res\maps\room.vox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="res\shaders\raytracing\fragment.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

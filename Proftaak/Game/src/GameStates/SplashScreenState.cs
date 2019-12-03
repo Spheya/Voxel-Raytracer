@@ -35,8 +35,22 @@ namespace Game.GameStates
                 Console.WriteLine(ex.ToString());
                 throw;
             }
-            //Colour Color2 = new Colour(0, 255, 0, 1f);
-        }
+//<<<<<<< HEAD:Proftaak/Game/src/GameStates/SplashScreenState.cs
+//            //Colour Color2 = new Colour(0, 255, 0, 1f);
+//        }
+//=======
+//            Texture texture;
+//            Vector3 vector1 = new Vector3(20, 30, 30);
+//           /* Transform transform1 = new Transform(vector1, Vector3.Zero, new Vector3(System.Windows.SystemParameters.PrimaryScreenWidth, wi2dow.Height, 30));
+//            float kleur = 0.5F;
+//            Colour kleurdit = new Colour(0, 255, 0);
+//            Texture texture1 = new Texture("res\\textures\\crosshair.png");
+//            Sprite sprite1 = new Sprite(tbeginTime
+//            renderer.Add(sprite1);
+//            sprite1.Colour = kleurdit;
+//            sprite1.Transform = transform1;
+//        */}
+//>>>>>>> 040c5403d3346bb4643f9089a47b66e0b43152a5:Proftaak/Game/src/GameStates/SpashScreenState.cs
 
 
         public override void OnDestroy()

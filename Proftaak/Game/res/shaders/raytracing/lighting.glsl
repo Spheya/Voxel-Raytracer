@@ -12,14 +12,13 @@ struct DirectionalLight {
 
 struct PointLight {
 	vec3 position;
-	vec3 direction;
 
 	float intensity;
 	vec3 colour;
 };
 
 float fresnelSchlick(float cos_theta, float reflectiveIndex) {
-	float p = 1.0 - cos_theta; 
+	float p = 1.0 - cos_theta;
 	return reflectiveIndex + (1.0 - reflectiveIndex) * p * p * p * p * p;
 }
 
@@ -56,12 +55,7 @@ float softshadow(in samplerBuffer voxelBuffer,
 	Ray ray = Ray(hitpos + lightDir * 0.0002, lightDir);
 	HitData hit = trace(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray);
 
-	if (hit.dist < WORLD_RENDER_DISTANCE) {
-		return 0.0;
-	} else {
-		return 1.0;
-	}
-	return float(hit.dist <  WORLD_RENDER_DISTANCE);
+	return float(hit.dist >=  WORLD_RENDER_DISTANCE);
 }
 
 vec3 shading(in samplerBuffer voxelBuffer,
@@ -85,7 +79,7 @@ vec3 shading(in samplerBuffer voxelBuffer,
 	// Calculate the colour using a lighting model
 	vec3 lambertSum = lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
 
-	lambertSum += vec3(0.05, 0.1, 0.15); // Do this for every ambient light source
+	// lambertSum += vec3(0.05, 0.1, 0.15); // Do this for every ambient light source
 
 	return spheyaShading(lambertSum, ray, material, hit.normal, reflectiveColour, refractiveColour); // Do this once
 }

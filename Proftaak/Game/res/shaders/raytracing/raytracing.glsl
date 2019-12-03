@@ -122,7 +122,7 @@ HitData traceModel(in samplerBuffer voxelBuffer,
 			return HitData(WORLD_RENDER_DISTANCE, 0.0, vec3(-1.0), 0);
 
 		material = getVoxelData(voxelBuffer, modelData, ivec3(mapPos));
-		if (material != 0) {
+		if (material > 0) {
 			vec3 normal = normalize((objectToWorldNormal * vec4(vec3(mask) * -sign(ray.direction), 0.0)).xyz);
 
 			// Calculate the distance to the hitpoint
@@ -162,7 +162,7 @@ HitData trace(in samplerBuffer voxelBuffer, in samplerBuffer modelDataBuffer, in
 
 	// Check for intersection with every model
 	for(int i = 0; i < MAX_MODELS; ++i){
-		if(i > nModels) break;
+		if(i >= nModels) break;
 
 		HitData newResult = traceModel(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray, i);
 		result = (newResult.dist < result.dist) ? newResult : result;
