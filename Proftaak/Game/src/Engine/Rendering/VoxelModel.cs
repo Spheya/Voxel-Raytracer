@@ -16,8 +16,6 @@ namespace Game.Engine.Rendering
         private readonly VoxelGrid _grid;
 
         private readonly BufferTexture<byte> _target;
-
-        private readonly DistanceField _distanceField;
         
         /// <summary>
         /// How the model is positioned in the world
@@ -63,15 +61,6 @@ namespace Game.Engine.Rendering
             {
                 _grid[x, y, z] = value;
 
-                if (value == 0)
-                {
-                    _distanceField.OnVoxelRemove(x,y,z);
-                }
-                else
-                {
-                    _distanceField.OnVoxelAdd(x,y,z);
-                }
-
                 // Mark the bounds of all the changes since the previous update
                 int index = Offset + x + y * Width + z * Width * Height;
                 _target[index] = value;
@@ -84,8 +73,8 @@ namespace Game.Engine.Rendering
         /// <param name="height">The height of the grid</param>
         /// <param name="depth">The depth of the grid</param>
         /// <param name="transform">How the model should be positioned in the world</param>
-        public VoxelModel(BufferTexture<byte> target, BufferTexture<byte> distanceFieldTarget, int offset, int width, int height, int depth, Transform transform) :
-            this(target, distanceFieldTarget, offset, width, height, depth)
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth, Transform transform) :
+            this(target, offset, width, height, depth)
         {
             Transform = transform;
         }
@@ -95,18 +84,12 @@ namespace Game.Engine.Rendering
         /// <param name="width">The width of the grid</param>
         /// <param name="height">The height of the grid</param>
         /// <param name="depth">The depth of the grid</param>
-        public VoxelModel(BufferTexture<byte> target, BufferTexture<byte> distanceFieldTarget, int offset, int width, int height, int depth)
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth)
         {
             _target = target;
             _grid = new VoxelGrid(width, height, depth);
             Offset = offset;
             Transform = new Transform(Vector3.Zero, Vector3.Zero, new Vector3(width, height, depth));
-            _distanceField = new DistanceField(_grid, distanceFieldTarget, offset);
-        }
-
-        public void Build()
-        {
-            _distanceField.Build();
         }
     }
 }
