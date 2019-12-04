@@ -64,8 +64,6 @@ namespace Game.GameStates
             for (int z = 0; z < 32; z++)
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
-            _model.Build();
-
             MyVoxLoader CastleVox = new MyVoxLoader();
             VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
             r.Read();
@@ -95,9 +93,6 @@ namespace Game.GameStates
             for (int z = 0; z < CastleVox.Depth; z++)
                 _model2[x,y,z] = CastleVox._data[x,y,z];
 
-
-            _model2.Build();
-
             Console.WriteLine("Epic");
 
 
@@ -109,8 +104,6 @@ namespace Game.GameStates
             for (int y = 0; y < 1; y++)
             for (int z = 0; z < s; z++)
                 model3[x,y,z] = (byte)1;
-
-            model3.Build();
 
             Console.WriteLine("Epic");
 
