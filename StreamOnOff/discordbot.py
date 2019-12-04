@@ -23,8 +23,6 @@ DISCORD_GUILD=os.getenv("DISCORD_GUILD")
     #             print(member.name)
                 # await member.send("test")
 
-global bericht
-import app
 @client.event
 async def on_message(message):
     global bericht
