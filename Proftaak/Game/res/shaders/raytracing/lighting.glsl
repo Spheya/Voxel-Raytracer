@@ -59,7 +59,7 @@ float softshadow(vec3 hitpos, vec3 lightDir, float maxDist) {
 	Ray ray = Ray(hitpos + lightDir * 0.0002, lightDir);
 	float hit = traceCheap(ray);
 
-	return float(hit.dist >= maxDist);
+	return float(hit >= maxDist);
 }
 
 vec3 shading(Ray ray,
@@ -86,7 +86,7 @@ vec3 shading(Ray ray,
 		vec3 lightColour = u_dirLights[i].colour;
 		float lightIntensity = u_dirLights[i].intensity;
 
-		float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir, WORLD_RENDER_DISTANCE);
+		float attenuation = softshadow(hitPos, lightDir, WORLD_RENDER_DISTANCE);
 		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
 	}
 	for (int i = 0; i < MAX_POINT_LIGHTS; ++i) {
@@ -96,7 +96,7 @@ vec3 shading(Ray ray,
 		// float lightIntensity = u_pointLights[i].intensity / ((hit.dist * hit.dist) / 40.0);
 		float lightIntensity = 1.0;
 
-		float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir, distance(u_pointLights[i].position, ray.origin)) * hit.ambientOcclusion;// / (hit.dist * hit.dist);
+		float attenuation = softshadow(hitPos, lightDir, distance(u_pointLights[i].position, ray.origin)) * hit.ambientOcclusion;// / (hit.dist * hit.dist);
 		//float attenuation = 1.0;
 		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
 	}
