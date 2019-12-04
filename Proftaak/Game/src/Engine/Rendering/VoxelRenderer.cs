@@ -18,6 +18,7 @@ namespace Game.Engine.Rendering
 
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<byte> _voxelData = new BufferTexture<byte>(SizedInternalFormat.R8ui);
+        private readonly BufferTexture<byte> _distanceFieldData = new BufferTexture<byte>(SizedInternalFormat.R8ui);
         private readonly BufferTexture<int> _modelData = new BufferTexture<int>(SizedInternalFormat.Rgba32i);
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
 
@@ -58,11 +59,12 @@ namespace Game.Engine.Rendering
         /// <returns>The created VoxelModel</returns>
         public VoxelModel CreateModel(int width, int height, int depth, Transform transform)
         {
-            VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth, transform);
+            VoxelModel model = new VoxelModel(_voxelData, _distanceFieldData, _voxelData.Count, width, height, depth, transform);
             _models.Add(model);
             _modelData[0] = (ushort) _models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new byte[model.Footprint]);
+            _distanceFieldData.AddRange(new byte[model.Footprint]);
             _modelTransformations.AddRange(
                 new [] {
                     model.Transform.CalculateInverseMatrix(),
@@ -82,11 +84,12 @@ namespace Game.Engine.Rendering
         /// <returns>The created VoxelModel</returns>
         public VoxelModel CreateModel(int width, int height, int depth)
         {
-            VoxelModel model = new VoxelModel(_voxelData, _voxelData.Count, width, height, depth);
+            VoxelModel model = new VoxelModel(_voxelData, _distanceFieldData, _voxelData.Count, width, height, depth);
             _models.Add(model);
             _modelData[0] = (ushort)_models.Count;
             _modelData.AddRange(new [] { width, height, depth, model.Offset });
             _voxelData.AddRange(new byte[model.Footprint]);
+            _distanceFieldData.AddRange(new byte[model.Footprint]);
             _modelTransformations.AddRange(
                     new[] {
                         model.Transform.CalculateInverseMatrix(),
@@ -111,6 +114,7 @@ namespace Game.Engine.Rendering
                 return false;
 
             _voxelData.Erase(model.Offset, model.Footprint);
+            _distanceFieldData.Erase(model.Offset, model.Footprint);
             _modelData.Erase((index + 1) * 4, 4);
             _modelTransformations.Erase(index * 3, 3);
 
@@ -130,6 +134,7 @@ namespace Game.Engine.Rendering
             Matrix4 mat = camera.CalculateMatrix();
 
             _voxelData.Update();
+            _distanceFieldData.Update();
             _modelData.Update();
 
             for (int i = 0; i < _models.Count; i++)
@@ -156,10 +161,12 @@ namespace Game.Engine.Rendering
             // Send the buffers containing the models
             _voxelData.Bind(TextureUnit.Texture0);
             GL.Uniform1(Shader.GetUniformLocation("u_voxelBuffer"), 1, new[] { 0 });
-            _modelData.Bind(TextureUnit.Texture1);
-            GL.Uniform1(Shader.GetUniformLocation("u_modelData"), 1, new[] { 1 });
-            _modelTransformations.Bind(TextureUnit.Texture2);
-            GL.Uniform1(Shader.GetUniformLocation("u_modelTransformations"), 1, new[] { 2 });
+            _distanceFieldData.Bind(TextureUnit.Texture1);
+            GL.Uniform1(Shader.GetUniformLocation("u_distanceField"), 1, new[] { 1 });
+            _modelData.Bind(TextureUnit.Texture2);
+            GL.Uniform1(Shader.GetUniformLocation("u_modelData"), 1, new[] { 2 });
+            _modelTransformations.Bind(TextureUnit.Texture3);
+            GL.Uniform1(Shader.GetUniformLocation("u_modelTransformations"), 1, new[] { 3 });
 
             // Send the materials
             Materials.Bind("u_materials");
