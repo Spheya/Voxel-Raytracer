@@ -111,6 +111,22 @@ namespace Game.GameStates
             _spriteRenderer.Add(crosshair);
             crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
             crosshair.Transform.Scale = new Vector3(128.0f, 128.0f, 0.25f);
+
+            //List<DirectionalLight> dirLights = new List<DirectionalLight>();
+            //var sun = new DirectionalLight();
+            //sun.direction = new Vector3(-0.5f, 1.5f, -1.0f);
+            //sun.intensity = 1f;
+            //sun.colour = new Vector3(1f, 1f, 1f);
+            //dirLights.Add(sun);
+            //_voxelRenderer._dirLights = dirLights;
+
+            List<PointLight> pointLights = new List<PointLight>();
+            var pointlight = new PointLight();
+            pointlight.position = new Vector3(0f, 0f, -20f);
+            pointlight.intensity = 5f;
+            pointlight.colour = new Vector3(1f, 1f, 1f);
+            pointLights.Add(pointlight);
+            _voxelRenderer._pointLights = pointLights;
         }
 
         public override void OnUpdate(float deltatime)
