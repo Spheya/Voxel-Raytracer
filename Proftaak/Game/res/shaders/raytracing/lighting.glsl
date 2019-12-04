@@ -46,22 +46,15 @@ vec3 lambertShading(Material material, vec3 normal, vec3 lightDir, vec3 lightCol
 	return material.baseColour * lightColour * diffuse * attenuation;
 }
 
-float softshadow(in samplerBuffer voxelBuffer,
-				 in samplerBuffer modelDataBuffer,
-				 in samplerBuffer modelTransformsBuffer,
-				 in vec3 hitpos,
-				 in vec3 lightDir) {
+float softshadow(vec3 hitpos, vec3 lightDir) {
 
 	Ray ray = Ray(hitpos + lightDir * 0.0002, lightDir);
-	HitData hit = trace(voxelBuffer, modelDataBuffer, modelTransformsBuffer, ray);
+	float hit = traceCheap(ray);
 
-	return float(hit.dist >=  WORLD_RENDER_DISTANCE);
+	return float(hit >=  WORLD_RENDER_DISTANCE);
 }
 
-vec3 shading(in samplerBuffer voxelBuffer,
-			 in samplerBuffer modelDataBuffer,
-			 in samplerBuffer modelTransformsBuffer,
-			 Ray ray,
+vec3 shading(Ray ray,
 			 HitData hit,
 			 Material material,
 			 vec3 reflectiveColour,
@@ -74,7 +67,7 @@ vec3 shading(in samplerBuffer voxelBuffer,
 	vec3 hitPos = ray.origin + ray.direction * hit.dist;
 
 	// Calculate the amount of light that hits the object
-	float attenuation = softshadow(voxelBuffer, modelDataBuffer, modelTransformsBuffer, hitPos, lightDir) * hit.ambientOcclusion;
+	float attenuation = softshadow(hitPos, lightDir) * hit.ambientOcclusion;
 
 	// Calculate the colour using a lighting model
 	vec3 lambertSum = lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source

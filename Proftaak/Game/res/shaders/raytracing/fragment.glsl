@@ -11,12 +11,6 @@ struct Camera {
 	float zoom;
 };
 
-uniform samplerBuffer u_voxelBuffer;
-uniform samplerBuffer u_modelData;
-uniform samplerBuffer u_modelTransformations;
-
-uniform Material u_materials[256];
-
 uniform vec2 u_windowSize;
 uniform Camera u_camera;
 
@@ -44,7 +38,7 @@ void main () {
 	// NOTE: works fine for me without this shit, but doesn't affect performance at all it seems
 
 	reflectionRays[0] = generateRay();
-	reflectionHits[0] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[0]);
+	reflectionHits[0] = trace(reflectionRays[0]);
 
 	vec3 reflectionBackground;
 
@@ -54,7 +48,7 @@ void main () {
 		// Setup a reflection ray
 		reflectionRays[i] = Ray(reflectionRays[i-1].origin + reflectionRays[i-1].direction * reflectionHits[i-1].dist,
 			reflectionRays[i-1].direction - 2.0 * reflectionHits[i-1].normal * dot(reflectionRays[i-1].direction, reflectionHits[i-1].normal));
-		reflectionHits[i] = trace(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i]);
+		reflectionHits[i] = trace(reflectionRays[i]);
 
 		if(reflectionHits[i].dist >= WORLD_RENDER_DISTANCE || u_materials[reflectionHits[i].material].refractiveIndex < 1.0) {
 			reflections = i;
@@ -68,7 +62,7 @@ void main () {
 	for(int i = RAY_RECURSION; i >= 0; --i) {
 		if(i > reflections) continue;
 
-		colour.rgb = shading(u_voxelBuffer, u_modelData, u_modelTransformations, reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material], colour.rgb, vec3(0.0));
+		colour.rgb = shading(reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material], colour.rgb, vec3(0.0));
 		if(reflectionHits[i].dist == WORLD_RENDER_DISTANCE) colour.rgb = backgroundColour(reflectionRays[i].direction);
 	}
 }

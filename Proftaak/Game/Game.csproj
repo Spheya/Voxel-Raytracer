@@ -93,9 +93,7 @@
     </None>
     <None Include="res\maps\monu9.vox" />
     <None Include="res\maps\nature.vox" />
-    <None Include="res\maps\room.vox">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="res\maps\room.vox" />
     <None Include="res\shaders\raytracing\fragment.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
