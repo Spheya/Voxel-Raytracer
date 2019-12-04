@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Game.Engine.Maths;
 using Game.Engine.Shaders;
+using Game.Engine.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
@@ -21,6 +22,9 @@ namespace Game.Engine.Rendering
         private readonly BufferTexture<Matrix4> _modelTransformations = new BufferTexture<Matrix4>(SizedInternalFormat.Rgba32f);
 
         public MaterialPalette Materials { get; }
+
+        public List<DirectionalLight> _dirLights = new List<DirectionalLight>();
+        public List<PointLight> _pointLights = new List<PointLight>();
 
         /// <summary>
         /// The shader program used to render stuff
@@ -166,6 +170,22 @@ namespace Game.Engine.Rendering
             // Send the camera
             GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
+
+            // Send the lights
+            GL.Uniform1(Shader.GetUniformLocation("u_dirLightCount"), _dirLights.Count());
+            for (int i = 0; i < _dirLights.Count(); i++)
+            {
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].direction"), _dirLights[i].direction);
+                GL.Uniform1(Shader.GetUniformLocation($"u_dirLights[{i}].intensity"), _dirLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].colour"), _dirLights[i].colour);
+            }
+            GL.Uniform1(Shader.GetUniformLocation("u_pointLightCount"), _pointLights.Count());
+            for (int i = 0; i < _pointLights.Count(); i++)
+            {
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].position"), _pointLights[i].position); //_pointLights[i].position
+                GL.Uniform1(Shader.GetUniformLocation($"u_pointLights[{i}].intensity"), _pointLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), _pointLights[i].colour);
+            }
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
 
