@@ -23,8 +23,8 @@ namespace Game.Engine.Rendering
 
         public MaterialPalette Materials { get; }
 
-        public List<DirectionalLight> _dirLights = new List<DirectionalLight>();
-        public List<PointLight> _pointLights = new List<PointLight>();
+        public List<DirectionalLight> DirectionalLights { get; set; } = new List<DirectionalLight>();
+        public List<PointLight> PointLights { get; set; } = new List<PointLight>();
 
         /// <summary>
         /// The shader program used to render stuff
@@ -172,19 +172,19 @@ namespace Game.Engine.Rendering
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
             // Send the lights
-            GL.Uniform1(Shader.GetUniformLocation("u_dirLightCount"), _dirLights.Count());
-            for (int i = 0; i < _dirLights.Count(); i++)
+            GL.Uniform1(Shader.GetUniformLocation("u_dirLightCount"), DirectionalLights.Count());
+            for (int i = 0; i < DirectionalLights.Count(); i++)
             {
-                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].direction"), _dirLights[i].direction);
-                GL.Uniform1(Shader.GetUniformLocation($"u_dirLights[{i}].intensity"), _dirLights[i].intensity);
-                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].colour"), _dirLights[i].colour);
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].direction"), DirectionalLights[i].direction);
+                GL.Uniform1(Shader.GetUniformLocation($"u_dirLights[{i}].intensity"), DirectionalLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].colour"), DirectionalLights[i].colour);
             }
-            GL.Uniform1(Shader.GetUniformLocation("u_pointLightCount"), _pointLights.Count());
-            for (int i = 0; i < _pointLights.Count(); i++)
+            GL.Uniform1(Shader.GetUniformLocation("u_pointLightCount"), PointLights.Count());
+            for (int i = 0; i < PointLights.Count(); i++)
             {
-                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].position"), _pointLights[i].position); //_pointLights[i].position
-                GL.Uniform1(Shader.GetUniformLocation($"u_pointLights[{i}].intensity"), _pointLights[i].intensity);
-                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), _pointLights[i].colour);
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].position"), PointLights[i].position); //_pointLights[i].position
+                GL.Uniform1(Shader.GetUniformLocation($"u_pointLights[{i}].intensity"), PointLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), PointLights[i].colour);
             }
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);

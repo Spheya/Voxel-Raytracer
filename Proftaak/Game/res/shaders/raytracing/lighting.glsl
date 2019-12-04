@@ -62,20 +62,7 @@ float softshadow(vec3 hitpos, vec3 lightDir, float maxDist) {
 	return float(hit >= maxDist);
 }
 
-vec3 shading(Ray ray,
-			 HitData hit,
-			 Material material,
-			 vec3 reflectiveColour,
-			 vec3 refractiveColour) {
-
-	//Testing variables
-	// vec3 lightColour = vec3(1.0, 1.0, 1.0);
-	// float lightIntensity = 1.0;
-	// vec3 lightDir = normalize(vec3(-0.5, 1.5, -1.0));
-	// vec3 hitPos = ray.origin + ray.direction * hit.dist;
-
-	// Calculate the amount of light that hits the object
-	//float attenuation = softshadow(hitPos, lightDir) * hit.ambientOcclusion;
+vec3 shading(Ray ray, HitData hit, Material material, vec3 reflectiveColour, vec3 refractiveColour) {
 
 	// Calculate the colour using a lighting model
 	vec3 hitPos = ray.origin + ray.direction * hit.dist;
@@ -87,21 +74,22 @@ vec3 shading(Ray ray,
 		float lightIntensity = u_dirLights[i].intensity;
 
 		float attenuation = softshadow(hitPos, lightDir, WORLD_RENDER_DISTANCE);
-		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
+		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation);
 	}
 	for (int i = 0; i < MAX_POINT_LIGHTS; ++i) {
 		if (i >= u_pointLightCount) break;
-		vec3 lightDir = normalize(u_pointLights[i].position - hitPos);
-		vec3 lightColour = u_pointLights[i].colour;
-		// float lightIntensity = u_pointLights[i].intensity / ((hit.dist * hit.dist) / 40.0);
-		float lightIntensity = 1.0;
 
-		float attenuation = softshadow(hitPos, lightDir, distance(u_pointLights[i].position, ray.origin)) * hit.ambientOcclusion;// / (hit.dist * hit.dist);
-		//float attenuation = 1.0;
-		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation); // Do this for every light source
+		vec3 lightDir = u_pointLights[i].position - hitPos;
+		float lightDist = length(lightDir);
+		lightDir = normalize(lightDir);
+		vec3 lightColour = u_pointLights[i].colour;
+		float lightIntensity = u_pointLights[i].intensity / ((lightDist * lightDist) * 0.01);
+
+		float attenuation = softshadow(hitPos, lightDir, distance(u_pointLights[i].position, ray.origin));
+		lambertSum += lambertShading(material, hit.normal, lightDir, lightColour * lightIntensity, attenuation);
 	}
 
-	//lambertSum *= hit.ambientOcclusion;
+	lambertSum *= hit.ambientOcclusion;
 
 	// lambertSum += vec3(0.05, 0.1, 0.15); // Do this for every ambient light source
 
