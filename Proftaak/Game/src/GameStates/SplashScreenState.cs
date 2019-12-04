@@ -35,6 +35,7 @@ namespace Game.GameStates
                 Console.WriteLine(ex.ToString());
                 throw;
             }
+        }
 //<<<<<<< HEAD:Proftaak/Game/src/GameStates/SplashScreenState.cs
 //            //Colour Color2 = new Colour(0, 255, 0, 1f);
 //        }
