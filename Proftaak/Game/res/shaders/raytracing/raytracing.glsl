@@ -5,6 +5,7 @@
 #define MAX_MODELS 512
 
 uniform samplerBuffer u_voxelBuffer;
+uniform samplerBuffer u_distanceField;
 uniform samplerBuffer u_modelData;
 uniform samplerBuffer u_modelTransformations;
 
@@ -22,6 +23,10 @@ struct HitData {
 
 int getVoxelData(ivec4 modelData, ivec3 pos) {
 	return floatBitsToInt(texelFetch(u_voxelBuffer, pos.x + pos.y * modelData.x + pos.z * modelData.x * modelData.y + modelData.w).r);
+}
+
+int getDistanceFieldData(ivec4 modelData, ivec3 pos){
+	return floatBitsToInt(texelFetch(u_distanceField, pos.x + pos.y * modelData.x + pos.z * modelData.x * modelData.y + modelData.w).r);
 }
 
 int getSafeVoxelData(ivec4 modelData, ivec3 pos) {
@@ -147,7 +152,7 @@ HitData traceModel(Ray ray,
 		}
 
 		// Move to the next cell in the grid
-		mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy);
+		mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy) * float(getDistanceFieldData(modelData, ivec3(mapPos)));
 		sideDist += mask * deltaDist;
 		mapPos += mask * rayStep;
 	}
@@ -248,7 +253,7 @@ float traceModelCheap(Ray ray, int modelIndex) {
 		}
 
 		// Move to the next cell in the grid
-		mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy);
+		mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy) * float(getDistanceFieldData(modelData, ivec3(mapPos)));
 		sideDist += mask * deltaDist;
 		mapPos += mask * rayStep;
 	}

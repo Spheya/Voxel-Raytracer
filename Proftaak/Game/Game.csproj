@@ -58,6 +58,7 @@
     <Compile Include="src\Engine\Maths\Transform.cs" />
     <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
     <Compile Include="src\Engine\Rendering\Colour.cs" />
+    <Compile Include="src\Engine\Rendering\DistanceField.cs" />
     <Compile Include="src\Engine\Rendering\Light.cs" />
     <Compile Include="src\Engine\Rendering\Material.cs" />
     <Compile Include="src\Engine\Rendering\MaterialPalette.cs" />
