@@ -11,6 +11,7 @@ namespace Networking
         ThreadLauncher.OnPacket Callback { set; }
 
         void Send(byte[] data);
+
         void Close();
     }
 }
