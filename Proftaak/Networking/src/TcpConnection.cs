@@ -7,7 +7,7 @@ namespace Networking
     /// <summary>
     /// A wrapper around a connection socket, works for both the client and the server
     /// </summary>
-    public class Connection
+    public sealed class TcpConnection : IConnection
     {
         private struct PacketData
         {
@@ -28,23 +28,17 @@ namespace Networking
         private readonly Socket _socket;
         private readonly ThreadLauncher _launcher;
 
-        /// <summary>
-        /// Set the callback you want to get dispatched when a packet gets received
-        /// </summary>
-        /// <param name="callback"></param>
-        public void SetCallback(ThreadLauncher.OnPacket callback)
-        {
-            _launcher.SetCallback(callback);
-        }
+
+        public ThreadLauncher.OnPacket Callback { set => _launcher.SetCallback(value); }
 
         /// <param name="target">The IP you want to connect to</param>
         /// <param name="port">The port you want to connect to</param>
         /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
-        public Connection(IPAddress target, int port, ThreadLauncher.OnPacket callback)
+        public TcpConnection(IPAddress target, int port, ThreadLauncher.OnPacket callback)
         {
             _launcher = new ThreadLauncher(this, callback);
 
-            // Setup a TCP Connection
+            // Setup a TCP TcpConnection
             byte[] buffer = new byte[1];
 
             _socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -52,7 +46,7 @@ namespace Networking
             _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
         }
 
-        private Connection(Socket socket, ThreadLauncher.OnPacket callback)
+        private TcpConnection(Socket socket, ThreadLauncher.OnPacket callback)
         {
             var threadLauncher = new ThreadLauncher(this, callback);
 
@@ -68,7 +62,7 @@ namespace Networking
         /// <param name="port">The port you want to open</param>
         /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
         /// <returns></returns>
-        public static Connection Listen(int port, ThreadLauncher.OnPacket callback)
+        public static TcpConnection Listen(int port, ThreadLauncher.OnPacket callback)
         {
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
             var listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -89,7 +83,7 @@ namespace Networking
                 listener.Close();
             }
 
-            return new Connection(socket, callback);
+            return new TcpConnection(socket, callback);
         }
 
         /// <summary>
