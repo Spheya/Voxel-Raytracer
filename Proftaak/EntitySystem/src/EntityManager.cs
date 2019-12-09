@@ -10,25 +10,22 @@ namespace EntitySystem
     {
         private readonly List<IEntity> _entities = new List<IEntity>();
 
-        public void Add(IEntity entity) => _entities.Add(entity);
+        public void Add(IEntity entity)
+        {
+            entity.OnAdd(this);
+            _entities.Add(entity);
+        }
 
         public void Update(float deltatime)
         {
             foreach (var entity in _entities)
-                entity.Update(deltatime);
+                entity.Update(this, deltatime);
         }
 
         public void FixedUpdate(float deltatime)
         {
             foreach(var entity in _entities)
-                entity.FixedUpdate(deltatime);
-        }
-
-        public void Draw(float deltatime)
-        {
-            foreach(var entity in _entities)
-                if(entity.Enabled)
-                    entity.Draw(deltatime);
+                entity.FixedUpdate(this, deltatime);
         }
 
         public void HandleDeletion()
@@ -37,6 +34,7 @@ namespace EntitySystem
             {
                 if (_entities[i].DeletionMark)
                 {
+                    _entities[i].OnRemove(this);
                     _entities.RemoveAt(i);
                     --i;
                 }
