@@ -11,8 +11,9 @@ namespace EntitySystem
         bool DeletionMark { get; set; }
         bool Enabled { get; set; }
 
-        void Update(float deltatime);
-        void FixedUpdate(float deltatime);
-        void Draw(float deltatime);
+        void OnAdd(EntityManager entityManager);
+        void Update(EntityManager entityManager, float deltatime);
+        void FixedUpdate(EntityManager entityManager, float deltatime);
+        void OnRemove(EntityManager entityManager);
     }
 }
