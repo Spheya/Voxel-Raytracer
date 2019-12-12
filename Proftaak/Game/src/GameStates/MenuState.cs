@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Game.Engine.Rendering;
 using Game.Engine.Shaders;
 using Game.UI;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using Game.Engine.Maths;
-using System.Threading;
-using System.Drawing;
 using Game.Engine.Input;
+using OpenTK.Input;
+using System.Collections.Generic;
 
 namespace Game.GameStates
 {
@@ -28,6 +24,10 @@ namespace Game.GameStates
         SpriteRenderer _renderer;
         Sprite _background;
         Button _playbutton;
+        Button _playbutton2;
+        Button _playbutton3;
+        Button _playbutton4;
+        List<Button> buttons = new List<Button>();
         public override void OnCreate()
         {
             try
@@ -48,8 +48,17 @@ namespace Game.GameStates
             Colour color1 = new Colour(1, 1, 1);
             _background.Colour = color1;
             _renderer.Add(_background);
-            _playbutton = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width/2, window.Height/2, 30)));
-            _playbutton.AddToRenderer(_renderer);
+            _playbutton = new Button(texture1, new Transform(new Vector3(200, 200, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            _playbutton2 = new Button(texture1, new Transform(new Vector3(300, 300, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            _playbutton3 = new Button(texture1, new Transform(new Vector3(400, 400, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            _playbutton4 = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+
+            for (int i = 0; i > -200; i-=100)
+            {
+                _playbutton = new Button(texture1, new Transform(new Vector3(i, i, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+                _playbutton.AddToRenderer(_renderer);
+                buttons.Add(_playbutton);
+            }
             //ButtonAdder();
         }
 
@@ -70,10 +79,26 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
+            ButtonState Mouse;
             _playbutton.Update();
             MouseInput.Update();
             Vector2 test = MouseInput.GetMousePos();
-            //Console.WriteLine(test.X);
+            Mouse = MouseInput.GetMouseLeftButton();
+            if (test.X > (buttons[0].GetPosition().X + 1f) * window.Width / 2f - buttons[0].GetSize().X / 2 && test.X < (buttons[0].GetPosition().X + 1f) * window.Width / 2f + buttons[0].GetSize().X / 2 && test.Y < (buttons[0].GetPosition().Y + 1f) * window.Height / 2f + buttons[0].GetSize().Y / 2 && test.Y > (buttons[0].GetPosition().Y + 1f) * window.Height / 2f - buttons[0].GetSize().Y / 2)
+            {
+                if(Mouse == ButtonState.Pressed)
+                {
+                    Console.WriteLine("1");
+                }
+                else
+                {
+                    Console.WriteLine("2");
+                }
+            }
+            else
+            {
+                Console.WriteLine("3");
+            }
         }
     }
 }

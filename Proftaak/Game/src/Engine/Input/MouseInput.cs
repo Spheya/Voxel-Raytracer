@@ -14,12 +14,14 @@ namespace Game.Engine.Input
         private static MouseState currentState = Mouse.GetState();
         private static Vector2 mouseDelta = new Vector2(0.0f);
         private static Vector2 absolutePos = new Vector2(0.0f);
+        private static ButtonState mouseClick = ButtonState.Released;
 
         public static void Update()
         {
             MouseState newState = Mouse.GetState();
             mouseDelta = new Vector2(newState.X - currentState.X, newState.Y - currentState.Y);
             currentState = newState;
+            mouseClick = newState.LeftButton;
         }
 
         public static void UpdateAbsolutePos(Vector2 absPos)
@@ -40,6 +42,10 @@ namespace Game.Engine.Input
         public static Vector2 GetMouseDelta()
         {
             return mouseDelta;
+        }
+        public static ButtonState GetMouseLeftButton()
+        {
+            return mouseClick;
         }
     }
 }

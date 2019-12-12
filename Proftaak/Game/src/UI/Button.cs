@@ -30,5 +30,13 @@ namespace Game.UI
         {
             _sprite = new Sprite(texture, transformation);
         }
+        public Vector2 GetPosition()
+        {
+            return new Vector2(_sprite.Transform.Position.X, _sprite.Transform.Position.Y);
+        }
+        public Vector2 GetSize()
+        {
+            return new Vector2(_sprite.Transform.Scale.X, _sprite.Transform.Scale.Y);
+        }
     }
 }
