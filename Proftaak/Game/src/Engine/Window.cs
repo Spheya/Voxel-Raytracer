@@ -121,5 +121,12 @@ namespace Game.Engine
                 _state.OnCreate();
             }
         }
+
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            //base.OnMouseMove(e);
+            //Console.WriteLine(new Vector2(e.X, e.Y));
+            MouseInput.UpdateAbsolutePos(new Vector2(e.X, e.Y));
+        }
     }
 }

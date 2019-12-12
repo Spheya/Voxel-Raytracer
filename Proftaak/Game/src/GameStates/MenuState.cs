@@ -71,8 +71,9 @@ namespace Game.GameStates
         public override void OnUpdate(float deltatime)
         {
             _playbutton.Update();
+            MouseInput.Update();
             Vector2 test = MouseInput.GetMousePos();
-            Console.WriteLine(test);
+            //Console.WriteLine(test.X);
         }
     }
 }
