@@ -9,6 +9,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
+using Game.Engine.Input;
 
 namespace Game.Engine
 {
@@ -60,6 +61,8 @@ namespace Game.Engine
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            //Vector2 test = MouseInput.GetMousePos();
+            //Console.WriteLine(test);
             base.OnUpdateFrame(e);
 
             _state.OnUpdate((float)e.Time);
