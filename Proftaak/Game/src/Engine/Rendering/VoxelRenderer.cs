@@ -26,13 +26,17 @@ namespace Game.Engine.Rendering
         public List<DirectionalLight> DirectionalLights { get; set; } = new List<DirectionalLight>();
         public List<PointLight> PointLights { get; set; } = new List<PointLight>();
 
+        private int _framebuffer;
+        private int _textureColorBuffer;
+
         /// <summary>
         /// The shader program used to render stuff
         /// </summary>
         public ShaderProgram Shader { get; set; }
+        public ShaderProgram ScaleShader { get; set; }
 
         /// <param name="shader">The initial shader to render stuff</param>
-        public VoxelRenderer(ShaderProgram shader)
+        public VoxelRenderer(ShaderProgram shader, ShaderProgram scaleShader)
         {
             Materials = new MaterialPalette(shader);
 
@@ -46,6 +50,7 @@ namespace Game.Engine.Rendering
             _modelData.AddRange(new int[] { 0,0,0,0 });
 
             Shader = shader;
+            ScaleShader = scaleShader;
         }
 
         /// <summary>
@@ -95,6 +100,34 @@ namespace Game.Engine.Rendering
             });
 
             return model;
+        }
+
+        public void GenerateFramebuffer(GameWindow window)
+        {
+            //Generate framebuffer
+            _framebuffer = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+
+            // create a RGBA color texture
+            GL.GenTextures(1, out _textureColorBuffer);
+            GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
+                                window.Width / 2, window.Height / 2,
+                                0, (PixelFormat)PixelInternalFormat.Rgba, PixelType.UnsignedByte,
+                                IntPtr.Zero);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+
+            ////Create color attachment texture
+            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, _textureColorBuffer, 0);
+
+            DrawBuffersEnum[] bufs = new DrawBuffersEnum[1] { (DrawBuffersEnum)FramebufferAttachment.ColorAttachment0};
+            GL.DrawBuffers(bufs.Length, bufs);
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
         /// <summary>
@@ -187,9 +220,21 @@ namespace Game.Engine.Rendering
                 GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), PointLights[i].colour);
             }
 
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             Shader.Unbind();
+
+            ScaleShader.Bind();
+            //GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
+            GL.Uniform1(ScaleShader.GetUniformLocation("u_framebuffer"), 1, new[] { 0 });
+            GL.Uniform2(ScaleShader.GetUniformLocation("u_resolution"), 1, new float[] { window.Width, window.Height });
+
+            GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
+
+            ScaleShader.Unbind();
         }
     }
 }

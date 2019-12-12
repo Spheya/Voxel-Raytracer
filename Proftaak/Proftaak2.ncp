@@ -1,0 +1,805 @@
+<Project>
+  <Name>Proftaak2</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Game.exe</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Program</Name>
+        <Access>Internal</Access>
+        <Location left="1913" top="1110" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public Program()</Member>
+        <Member type="Method">private static Void Main(String[] args)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GameState</Name>
+        <Access>Internal</Access>
+        <Location left="1179" top="802" />
+        <Size width="162" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly FreeCamera _camera</Member>
+        <Member type="Field">private VoxelRenderer _voxelRenderer</Member>
+        <Member type="Field">private SpriteRenderer _spriteRenderer</Member>
+        <Member type="Field">private VoxelModel _model</Member>
+        <Member type="Field">private VoxelModel _model2</Member>
+        <Member type="Field">private Single f</Member>
+        <Member type="Constructor">public GameState()</Member>
+        <Member type="Method">public override Void OnCreate()</Member>
+        <Member type="Method">public override Void OnUpdate(Single deltatime)</Member>
+        <Member type="Method">public override Void OnFixedUpdate(Single deltatime)</Member>
+        <Member type="Method">public override Void OnDraw(Single deltatime)</Member>
+        <Member type="Method">public override Void OnDestroy()</Member>
+        <Modifier>Sealed</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ApplicationState</Name>
+        <Access>Public</Access>
+        <Location left="1072" top="1405" />
+        <Size width="162" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private ApplicationState _requestedState</Member>
+        <Member type="Property">protected GameWindow window { get; private set; }</Member>
+        <Member type="Constructor">protected ApplicationState()</Member>
+        <Member type="Method">public Void AssignWindow(GameWindow window)</Member>
+        <Member type="Method">public abstract Void OnCreate()</Member>
+        <Member type="Method">public abstract Void OnUpdate(Single deltatime)</Member>
+        <Member type="Method">public abstract Void OnFixedUpdate(Single deltatime)</Member>
+        <Member type="Method">public abstract Void OnDraw(Single deltatime)</Member>
+        <Member type="Method">public abstract Void OnDestroy()</Member>
+        <Member type="Method">protected Void RequestState(ApplicationState state)</Member>
+        <Member type="Method">public Boolean IsStateRequested()</Member>
+        <Member type="Method">public ApplicationState GetRequestedState()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SplashScreenState</Name>
+        <Access>Internal</Access>
+        <Location left="860" top="1175" />
+        <Size width="162" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Single _count</Member>
+        <Member type="Field">private Single _fade</Member>
+        <Member type="Field">private SpriteRenderer _renderer</Member>
+        <Member type="Field">private Sprite _sprite1</Member>
+        <Member type="Field">private Transform _transform1</Member>
+        <Member type="Field">private const Single BEGIN_TIME = 0.2</Member>
+        <Member type="Field">private const Single SPEED_FADE = 1.5</Member>
+        <Member type="Constructor">public SplashScreenState()</Member>
+        <Member type="Method">public override Void OnCreate()</Member>
+        <Member type="Method">public override Void OnDestroy()</Member>
+        <Member type="Method">public override Void OnDraw(Single deltatime)</Member>
+        <Member type="Method">public override Void OnFixedUpdate(Single deltatime)</Member>
+        <Member type="Method">public override Void OnUpdate(Single deltatime)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Crosshair</Name>
+        <Access>Internal</Access>
+        <Location left="648" top="1175" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Sprite[] _edges</Member>
+        <Member type="Property">public Single Growth { get; set; }</Member>
+        <Member type="Constructor">public Crosshair()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ShaderPreprocessorException</Name>
+        <Access>Internal</Access>
+        <Location left="2101" top="411" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public ShaderPreprocessorException(String error)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GLGarbageCollector</Name>
+        <Access>Internal</Access>
+        <Location left="224" top="1175" />
+        <Size width="162" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Queue&lt;Int32&gt; _shaders</Member>
+        <Member type="Field">private Queue&lt;Int32&gt; _programs</Member>
+        <Member type="Field">private Queue&lt;Int32&gt; _buffers</Member>
+        <Member type="Field">private Queue&lt;Int32&gt; _vertexArrays</Member>
+        <Member type="Field">private Queue&lt;Int32&gt; _textures</Member>
+        <Member type="Constructor">public GLGarbageCollector()</Member>
+        <Member type="Constructor">static GLGarbageCollector()</Member>
+        <Member type="Method">public static Void AddShader(Int32 shader)</Member>
+        <Member type="Method">public static Void AddProgram(Int32 program)</Member>
+        <Member type="Method">public static Void AddBuffer(Int32 buffer)</Member>
+        <Member type="Method">public static Void AddVertexArray(Int32 vao)</Member>
+        <Member type="Method">public static Void AddTexture(Int32 texture)</Member>
+        <Member type="Method">public static Void Process()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Window</Name>
+        <Access>Public</Access>
+        <Location left="10" top="1511" />
+        <Size width="162" height="230" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private ApplicationState _state</Member>
+        <Member type="Constructor">public Window(ApplicationState state)</Member>
+        <Member type="Method">protected virtual Void OnLoad(EventArgs e)</Member>
+        <Member type="Method">protected virtual Void OnResize(EventArgs e)</Member>
+        <Member type="Method">protected virtual Void OnUpdateFrame(FrameEventArgs e)</Member>
+        <Member type="Method">private Void HandleKeyboard()</Member>
+        <Member type="Method">protected virtual Void OnRenderFrame(FrameEventArgs e)</Member>
+        <Member type="Method">protected virtual Void OnClosing(CancelEventArgs e)</Member>
+        <Member type="Method">private Void CheckForNewState()</Member>
+        <Modifier>Sealed</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Shader</Name>
+        <Access>Internal</Access>
+        <Location left="1913" top="411" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Int32 Id { get; }</Member>
+        <Member type="Constructor">public Shader(ShaderType type, String source)</Member>
+        <Member type="Method">protected virtual Void Finalize()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ShaderCompileException</Name>
+        <Access>Internal</Access>
+        <Location left="1913" top="640" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public ShaderCompileException(String error)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ShaderLinkException</Name>
+        <Access>Internal</Access>
+        <Location left="1913" top="181" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public ShaderLinkException(String error)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ShaderPreprocessor</Name>
+        <Access>Internal</Access>
+        <Location left="1913" top="876" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public static String Execute(String file)</Member>
+        <Member type="Method">private static String Include(String file, List&lt;String&gt; included)</Member>
+        <Modifier>Static</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ShaderProgram</Name>
+        <Access>Internal</Access>
+        <Location left="648" top="725" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Int32 _program</Member>
+        <Member type="Field">private readonly Dictionary&lt;String, Int32&gt; _uniforms</Member>
+        <Member type="Constructor">public ShaderProgram(IEnumerable&lt;Shader&gt; shaders)</Member>
+        <Member type="Method">public Int32 GetUniformLocation(String uniformName)</Member>
+        <Member type="Method">public Void Bind()</Member>
+        <Member type="Method">public Void Unbind()</Member>
+        <Member type="Method">protected virtual Void Finalize()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>BufferTexture&lt;T&gt;</Name>
+        <Access>Internal</Access>
+        <Location left="436" top="1004" />
+        <Size width="162" height="400" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly List&lt;T&gt; _bufferData</Member>
+        <Member type="Field">private Int32 _bufferSize</Member>
+        <Member type="Field">private readonly Int32 _bufferTextureId</Member>
+        <Member type="Field">private readonly Int32 _bufferId</Member>
+        <Member type="Field">private readonly SizedInternalFormat _internalFormat</Member>
+        <Member type="Field">private Boolean _dirtyFlag</Member>
+        <Member type="Field">private Int32 _minDirty</Member>
+        <Member type="Field">private Int32 _maxDirty</Member>
+        <Member type="Property">public T this[Int32 index] { get; set; }</Member>
+        <Member type="Property">public Int32 Count { get; }</Member>
+        <Member type="Constructor">public BufferTexture(SizedInternalFormat format)</Member>
+        <Member type="Method">public Void Erase(Int32 index, Int32 size = 1)</Member>
+        <Member type="Method">public Void Add(T t)</Member>
+        <Member type="Method">public Void AddRange(IEnumerable&lt;T&gt; collection)</Member>
+        <Member type="Method">public Void Update()</Member>
+        <Member type="Method">public Void Bind(TextureUnit unit)</Member>
+        <Member type="Method">public IEnumerator&lt;T&gt; GetEnumerator()</Member>
+        <Member type="Method">IEnumerator System.Collections.IEnumerable.GetEnumerator()</Member>
+        <Member type="Method">protected virtual Void Finalize()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Material</Name>
+        <Access>Internal</Access>
+        <Location left="237" top="725" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Vector3 BaseColour { get; set; }</Member>
+        <Member type="Property">public Single RefractiveIndex { get; set; }</Member>
+        <Member type="Constructor">public Material(Vector3 baseColour, Single refractiveIndex = 1.1)</Member>
+        <Member type="Method">public Void Load(ShaderProgram shader, String name)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MaterialPalette</Name>
+        <Access>Internal</Access>
+        <Location left="12" top="540" />
+        <Size width="162" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Material[] _materials</Member>
+        <Member type="Field">private Boolean _dirty</Member>
+        <Member type="Field">private ShaderProgram _shader</Member>
+        <Member type="Property">public ShaderProgram Shader { get; set; }</Member>
+        <Member type="Property">public Material this[Int32 index] { get; set; }</Member>
+        <Member type="Property">public Int32 Count { get; }</Member>
+        <Member type="Constructor">public MaterialPalette(ShaderProgram shader)</Member>
+        <Member type="Constructor">public MaterialPalette(ShaderProgram shader, IEnumerable&lt;Material&gt; materials)</Member>
+        <Member type="Method">public Void Set(IEnumerable&lt;Material&gt; materials)</Member>
+        <Member type="Method">public Void Bind(String name)</Member>
+        <Member type="Method">public IEnumerator&lt;Material&gt; GetEnumerator()</Member>
+        <Member type="Method">IEnumerator System.Collections.IEnumerable.GetEnumerator()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Model</Name>
+        <Access>Internal</Access>
+        <Location left="1496" top="292" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Int32 _vbo</Member>
+        <Member type="Property">public Int32 Vao { get; }</Member>
+        <Member type="Property">public PrimitiveType Type { get; }</Member>
+        <Member type="Property">public Int32 Count { get; }</Member>
+        <Member type="Constructor">public Model(Single[] vertexData, Int32 dimensions, PrimitiveType type)</Member>
+        <Member type="Method">protected virtual Void Finalize()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Sprite</Name>
+        <Access>Internal</Access>
+        <Location left="787" top="2198" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Transform Transform { get; set; }</Member>
+        <Member type="Property">public Colour Colour { get; set; }</Member>
+        <Member type="Property">public Texture Texture { get; set; }</Member>
+        <Member type="Constructor">public Sprite(Texture texture, Transform transform, Colour colour)</Member>
+        <Member type="Constructor">public Sprite(Texture texture, Transform transform)</Member>
+        <Member type="Constructor">public Sprite(Texture texture)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SpriteRenderer</Name>
+        <Access>Internal</Access>
+        <Location left="1072" top="292" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly List&lt;Sprite&gt; _sprites</Member>
+        <Member type="Field">private readonly Model _spriteModel</Member>
+        <Member type="Property">public ShaderProgram Shader { get; set; }</Member>
+        <Member type="Constructor">public SpriteRenderer(ShaderProgram shader)</Member>
+        <Member type="Method">public Void Add(Sprite sprite)</Member>
+        <Member type="Method">public Void Remove(Sprite sprite)</Member>
+        <Member type="Method">public Void Draw(GameWindow window)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Texture</Name>
+        <Access>Internal</Access>
+        <Location left="860" top="292" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Int32 _id</Member>
+        <Member type="Property">public Int32 Width { get; }</Member>
+        <Member type="Property">public Int32 Height { get; }</Member>
+        <Member type="Constructor">public Texture(Bitmap bitmap, TextureMinFilter minFilter = 9728, TextureMagFilter magFilter = 9728)</Member>
+        <Member type="Constructor">public Texture(String file, TextureMinFilter minFilter = 9728, TextureMagFilter magFilter = 9728)</Member>
+        <Member type="Method">public Void Bind(TextureUnit unit)</Member>
+        <Member type="Method">protected virtual Void Finalize()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>VoxelRenderer</Name>
+        <Access>Internal</Access>
+        <Location left="436" top="241" />
+        <Size width="162" height="383" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Model _canvas</Member>
+        <Member type="Field">private readonly List&lt;VoxelModel&gt; _models</Member>
+        <Member type="Field">private readonly BufferTexture&lt;Byte&gt; _voxelData</Member>
+        <Member type="Field">private readonly BufferTexture&lt;Int32&gt; _modelData</Member>
+        <Member type="Field">private readonly BufferTexture&lt;Matrix4&gt; _modelTransformations</Member>
+        <Member type="Field">private Int32 _framebuffer</Member>
+        <Member type="Field">private Int32 _textureColorBuffer</Member>
+        <Member type="Property">public MaterialPalette Materials { get; }</Member>
+        <Member type="Property">public List&lt;DirectionalLight&gt; DirectionalLights { get; set; }</Member>
+        <Member type="Property">public List&lt;PointLight&gt; PointLights { get; set; }</Member>
+        <Member type="Property">public ShaderProgram Shader { get; set; }</Member>
+        <Member type="Property">public ShaderProgram ScaleShader { get; set; }</Member>
+        <Member type="Constructor">public VoxelRenderer(ShaderProgram shader, ShaderProgram scaleShader)</Member>
+        <Member type="Method">public VoxelModel CreateModel(Int32 width, Int32 height, Int32 depth, Transform transform)</Member>
+        <Member type="Method">public VoxelModel CreateModel(Int32 width, Int32 height, Int32 depth)</Member>
+        <Member type="Method">public Void GenerateFramebuffer(GameWindow window)</Member>
+        <Member type="Method">public Boolean Remove(VoxelModel model)</Member>
+        <Member type="Method">public Void Draw(Camera camera, GameWindow window)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Camera</Name>
+        <Access>Internal</Access>
+        <Location left="2419" top="1057" />
+        <Size width="162" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public Transform _transform</Member>
+        <Member type="Property">public Single Near { get; set; }</Member>
+        <Member type="Property">public Single Far { get; set; }</Member>
+        <Member type="Property">public Single Fov { get; set; }</Member>
+        <Member type="Property">public Vector3 Position { get; }</Member>
+        <Member type="Property">public Vector3 Rotation { get; }</Member>
+        <Member type="Constructor">public Camera()</Member>
+        <Member type="Constructor">public Camera(Vector3 position, Vector3 rotation)</Member>
+        <Member type="Method">public Matrix4 CalculateMatrix()</Member>
+        <Member type="Method">public Matrix4 CalculateViewMatrix()</Member>
+        <Member type="Method">public Matrix4 CalculateProjectionMatrix(GameWindow window)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>VoxelModel</Name>
+        <Access>Internal</Access>
+        <Location left="201" top="2258" />
+        <Size width="162" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly VoxelGrid _grid</Member>
+        <Member type="Field">private readonly BufferTexture&lt;Byte&gt; _target</Member>
+        <Member type="Property">public Transform Transform { get; }</Member>
+        <Member type="Property">public Int32 Width { get; }</Member>
+        <Member type="Property">public Int32 Height { get; }</Member>
+        <Member type="Property">public Int32 Depth { get; }</Member>
+        <Member type="Property">public Int32 Footprint { get; }</Member>
+        <Member type="Property">public Int32 Offset { get; set; }</Member>
+        <Member type="Property">public Byte this[Int32 x, Int32 y, Int32 z] { get; set; }</Member>
+        <Member type="Constructor">public VoxelModel(BufferTexture&lt;Byte&gt; target, Int32 offset, Int32 width, Int32 height, Int32 depth, Transform transform)</Member>
+        <Member type="Constructor">public VoxelModel(BufferTexture&lt;Byte&gt; target, Int32 offset, Int32 width, Int32 height, Int32 depth)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Transform</Name>
+        <Access>Internal</Access>
+        <Location left="1762" top="2116" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Vector3 Position { get; set; }</Member>
+        <Member type="Property">public Vector3 Rotation { get; set; }</Member>
+        <Member type="Property">public Vector3 Scale { get; set; }</Member>
+        <Member type="Constructor">public Transform()</Member>
+        <Member type="Constructor">public Transform(Vector3 position, Vector3 rotation, Vector3 scale)</Member>
+        <Member type="Method">public Matrix4 CalculateMatrix()</Member>
+        <Member type="Method">public Matrix4 CalculateInverseMatrix()</Member>
+        <Member type="Method">public Matrix4 CalculateNormalMatrix()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ControllerInput</Name>
+        <Access>Internal</Access>
+        <Location left="2101" top="181" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public ControllerInput()</Member>
+        <Member type="Method">public static Single getForwardInput()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>FreeCamera</Name>
+        <Access>Internal</Access>
+        <Location left="2290" top="1530" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Single _speed</Member>
+        <Member type="Field">private static Single mouseSensitivity</Member>
+        <Member type="Constructor">public FreeCamera(Vector3 position, Vector3 rotation)</Member>
+        <Member type="Constructor">static FreeCamera()</Member>
+        <Member type="Method">public Void Update(Single deltatime)</Member>
+        <Modifier>Sealed</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>KeyboardInput</Name>
+        <Access>Internal</Access>
+        <Location left="1072" top="12" />
+        <Size width="162" height="230" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static KeyboardState currentState</Member>
+        <Member type="Constructor">public KeyboardInput()</Member>
+        <Member type="Method">public static Void Update()</Member>
+        <Member type="Method">public static Boolean IsUpDown()</Member>
+        <Member type="Method">public static Boolean IsDownDown()</Member>
+        <Member type="Method">public static Boolean IsForwardDown()</Member>
+        <Member type="Method">public static Boolean IsBackwardDown()</Member>
+        <Member type="Method">public static Boolean IsStrafeLeftDown()</Member>
+        <Member type="Method">public static Boolean IsStrafeRightDown()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MouseInput</Name>
+        <Access>Internal</Access>
+        <Location left="860" top="12" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static MouseState currentState</Member>
+        <Member type="Field">private static Vector2 mouseDelta</Member>
+        <Member type="Constructor">public MouseInput()</Member>
+        <Member type="Constructor">static MouseInput()</Member>
+        <Member type="Method">public static Void Update()</Member>
+        <Member type="Method">public static Vector2 GetMousePos()</Member>
+        <Member type="Method">public static Vector2 GetMouseDelta()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserInput</Name>
+        <Access>Internal</Access>
+        <Location left="648" top="12" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public UserInput()</Member>
+        <Member type="Method">public Void OnUpdate()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Colour</Name>
+        <Access>Internal</Access>
+        <Location left="436" top="12" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Single R { get; set; }</Member>
+        <Member type="Property">public Single G { get; set; }</Member>
+        <Member type="Property">public Single B { get; set; }</Member>
+        <Member type="Property">public Single A { get; set; }</Member>
+        <Member type="Constructor">public Colour(Single r, Single g, Single b, Single a = 1)</Member>
+        <Member type="Method">public Colour Mix(Colour col1, Colour col2, Single factor = 0.5)</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>DirectionalLight</Name>
+        <Access>Public</Access>
+        <Location left="224" top="12" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public Vector3 direction</Member>
+        <Member type="Field">public Single intensity</Member>
+        <Member type="Field">public Vector3 colour</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>PointLight</Name>
+        <Access>Public</Access>
+        <Location left="12" top="12" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public Vector3 position</Member>
+        <Member type="Field">public Single intensity</Member>
+        <Member type="Field">public Vector3 colour</Member>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Generalization" first="1" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1291</X>
+          <Y>1611</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="3" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="25" second="21">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2403</X>
+          <Y>1505</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="1" second="25">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1262</X>
+          <Y>1181</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_camera</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="1" second="20">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1300</X>
+          <Y>777</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>631</X>
+          <Y>593</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_voxelRenderer</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="1" second="18">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1165</X>
+          <Y>537</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_spriteRenderer</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="1" second="22">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1425</X>
+          <Y>906</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>327</X>
+          <Y>2157</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_model</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="1" second="22">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1336</X>
+          <Y>1204</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>221</X>
+          <Y>2230</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_model2</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1259</X>
+          <Y>1545</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>1380</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_requestedState</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="3" second="18">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1142</X>
+          <Y>533</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_renderer</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="3" second="17">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>871</X>
+          <Y>1510</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>899</X>
+          <Y>2024</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_sprite1</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="3" second="23">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_transform1</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="4" second="17">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_edges</StartRole>
+        <EndMultiplicity>*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="7" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_state</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="15" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>199</X>
+          <Y>750</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_materials</StartRole>
+        <EndMultiplicity>*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="15" second="12">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>211</X>
+          <Y>696</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>620</X>
+          <Y>771</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_shader</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="18" second="16">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_spriteModel</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="20" second="16">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1378</X>
+          <Y>263</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1386</X>
+          <Y>356</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_canvas</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="20" second="13">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>593</X>
+          <Y>675</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>560</X>
+          <Y>973</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_voxelData</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="20" second="13">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>530</X>
+          <Y>979</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_modelData</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="20" second="13">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>461</X>
+          <Y>671</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>502</X>
+          <Y>979</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_modelTransformations</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="21" second="23">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_transform</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="22" second="13">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>291</X>
+          <Y>2233</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartRole>_target</StartRole>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>

@@ -36,7 +36,8 @@ namespace Game.GameStates
 
                 Shader voxelVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\vertex.glsl"));
                 Shader voxelFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
-                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }));
+                Shader scaleFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\scale.glsl"));
+                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }), new ShaderProgram(new[] { voxelVertexShader, scaleFragmentShader }) );
 
                 Shader spriteVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\ui\vertex.glsl"));
                 Shader spriteFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\ui\fragment.glsl"));
@@ -47,6 +48,8 @@ namespace Game.GameStates
                 Console.WriteLine(ex.ToString());
                 throw;
             }
+
+            _voxelRenderer.GenerateFramebuffer(window);
 
             //List<Material> materials = new List<Material>();
             //for (int i = 0; i < 256; i++)
@@ -96,14 +99,14 @@ namespace Game.GameStates
             Console.WriteLine("Epic");
 
 
-            int s = 512;
-            VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
-                new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
+            //int s = 512;
+            //VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
+            //    new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
 
-            for (int x = 0; x < s; x++)
-            for (int y = 0; y < 1; y++)
-            for (int z = 0; z < s; z++)
-                model3[x,y,z] = (byte)1;
+            //for (int x = 0; x < s; x++)
+            //for (int y = 0; y < 1; y++)
+            //for (int z = 0; z < s; z++)
+            //    model3[x,y,z] = (byte)1;
 
             Console.WriteLine("Epic");
 
