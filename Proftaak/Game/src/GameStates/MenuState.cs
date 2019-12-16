@@ -49,7 +49,7 @@ namespace Game.GameStates
             _background = new Sprite(texture1, transform1);
             _background.Colour = color1;
             _renderer.Add(_background);
-            _playbutton = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)), color2);
+            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / 4, -window.Height / 4, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 0)), color2);
             //_playbutton2 = new Button(texture1, new Transform(new Vector3(300, 300, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
             //_playbutton3 = new Button(texture1, new Transform(new Vector3(400, 400, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
             //_playbutton4 = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
@@ -87,10 +87,10 @@ namespace Game.GameStates
             Button a = _playbutton;
             //Console.WriteLine(MousePos.X);
             //kijkt of het tussen de x-waardes zit (buitendste deel)
-            if (MousePos.X > a.GetPosition().X + window.Width / 2 - a.GetSize().X / 2 &&
-                MousePos.X < a.GetPosition().X + window.Width / 2 + a.GetSize().X / 2 &&
-                MousePos.Y < a.GetPosition().Y + window.Height / 2 + a.GetSize().Y / 2 &&
-                MousePos.Y > a.GetPosition().Y + window.Height / 2 - a.GetSize().Y / 2)
+            if (MousePos.X > a.GetPosition().X / 2f + window.Width / 2 - a.GetSize().X / 2f &&
+                MousePos.X < a.GetPosition().X / 2f + window.Width / 2 + a.GetSize().X / 2f &&
+                MousePos.Y < -a.GetPosition().Y / 2f + window.Height / 2 + a.GetSize().Y / 2f &&
+                MousePos.Y > -a.GetPosition().Y / 2f + window.Height / 2 - a.GetSize().Y / 2f)
             {
                 Console.WriteLine("werkt");
             }
