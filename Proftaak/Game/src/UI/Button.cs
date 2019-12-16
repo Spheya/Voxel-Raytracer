@@ -30,6 +30,10 @@ namespace Game.UI
         {
             _sprite = new Sprite(texture, transformation);
         }
+        public Button(Texture texture, Transform transformation, Colour color)
+        {
+            _sprite = new Sprite(texture, transformation, color);
+        }
         public Vector2 GetPosition()
         {
             return new Vector2(_sprite.Transform.Position.X, _sprite.Transform.Position.Y);

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Game.GameStates
 {
-    class MenuState:ApplicationState
+    class MenuState : ApplicationState
     {
         //public void ButtonAdder()
         //{
@@ -24,9 +24,9 @@ namespace Game.GameStates
         SpriteRenderer _renderer;
         Sprite _background;
         Button _playbutton;
-        Button _playbutton2;
-        Button _playbutton3;
-        Button _playbutton4;
+        //Button _playbutton2;
+        //Button _playbutton3;
+        //Button _playbutton4;
         List<Button> buttons = new List<Button>();
         public override void OnCreate()
         {
@@ -41,23 +41,24 @@ namespace Game.GameStates
                 Console.WriteLine(ex.ToString());
                 throw;
             }
-            
+
             Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
             Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
-            _background = new Sprite(texture1, transform1);
             Colour color1 = new Colour(1, 1, 1);
+            Colour color2 = new Colour(0, 0, 255, .5f);
+            _background = new Sprite(texture1, transform1);
             _background.Colour = color1;
             _renderer.Add(_background);
-            _playbutton = new Button(texture1, new Transform(new Vector3(200, 200, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-            _playbutton2 = new Button(texture1, new Transform(new Vector3(300, 300, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-            _playbutton3 = new Button(texture1, new Transform(new Vector3(400, 400, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-            _playbutton4 = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-
-            for (int i = 0; i > -200; i-=100)
+            _playbutton = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)), color2);
+            //_playbutton2 = new Button(texture1, new Transform(new Vector3(300, 300, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            //_playbutton3 = new Button(texture1, new Transform(new Vector3(400, 400, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            //_playbutton4 = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            buttons.Add(_playbutton);
+            Console.WriteLine("Button List: ");
+            foreach (Button button in buttons)
             {
-                _playbutton = new Button(texture1, new Transform(new Vector3(i, i, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-                _playbutton.AddToRenderer(_renderer);
-                buttons.Add(_playbutton);
+                Console.WriteLine(button);
+                button.AddToRenderer(_renderer);
             }
             //ButtonAdder();
         }
@@ -79,26 +80,38 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
-            ButtonState Mouse;
             _playbutton.Update();
             MouseInput.Update();
-            Vector2 test = MouseInput.GetMousePos();
-            Mouse = MouseInput.GetMouseLeftButton();
-            if (test.X > (buttons[0].GetPosition().X + 1f) * window.Width / 2f - buttons[0].GetSize().X / 2 && test.X < (buttons[0].GetPosition().X + 1f) * window.Width / 2f + buttons[0].GetSize().X / 2 && test.Y < (buttons[0].GetPosition().Y + 1f) * window.Height / 2f + buttons[0].GetSize().Y / 2 && test.Y > (buttons[0].GetPosition().Y + 1f) * window.Height / 2f - buttons[0].GetSize().Y / 2)
+            Vector2 MousePos = MouseInput.GetMousePos();
+            ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
+            Button a = _playbutton;
+            //Console.WriteLine(MousePos.X);
+            //kijkt of het tussen de x-waardes zit (buitendste deel)
+            if (MousePos.X > a.GetPosition().X + window.Width / 2 - a.GetSize().X / 2 &&
+                MousePos.X < a.GetPosition().X + window.Width / 2 + a.GetSize().X / 2 &&
+                MousePos.Y < a.GetPosition().Y + window.Height / 2 + a.GetSize().Y / 2 &&
+                MousePos.Y > a.GetPosition().Y + window.Height / 2 - a.GetSize().Y / 2)
             {
-                if(Mouse == ButtonState.Pressed)
-                {
-                    Console.WriteLine("1");
-                }
-                else
-                {
-                    Console.WriteLine("2");
-                }
+                Console.WriteLine("werkt");
             }
             else
             {
-                Console.WriteLine("3");
+                Console.WriteLine("werkt niet");
             }
+                //kijkt of het tussen de y-waardes zit
+                //if (MousePos.Y > a.GetPosition().Y / 2 + window.Width / 2 - a.GetSize().Y / 2 && MousePos.X < a.GetPosition().X + window.Width / 2 + a.GetSize().X / 2)
+                //{
+                //    Console.WriteLine("in alles");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("buiten Y");
+                //}
+                //Console.WriteLine("in X");
+            }
+            //else
+            //{
+            //    Console.WriteLine("buiten X");
+            //}
         }
     }
-}
