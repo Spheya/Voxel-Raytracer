@@ -8,6 +8,8 @@ using Game.Engine.Maths;
 using Game.Engine.Input;
 using OpenTK.Input;
 using System.Collections.Generic;
+using Game.Engine;
+using Game.GameStates;
 
 namespace Game.GameStates
 {
@@ -24,9 +26,9 @@ namespace Game.GameStates
         SpriteRenderer _renderer;
         Sprite _background;
         Button _playbutton;
-        //Button _playbutton2;
-        //Button _playbutton3;
-        //Button _playbutton4;
+        Button _playbutton2;
+        Button _playbutton3;
+        Button _playbutton4;
         List<Button> buttons = new List<Button>();
         public override void OnCreate()
         {
@@ -46,26 +48,52 @@ namespace Game.GameStates
             Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
             Colour color1 = new Colour(1, 1, 1);
             Colour color2 = new Colour(0, 0, 255, .5f);
+            Colour color3 = new Colour(255, 0, 0, .5f);
             _background = new Sprite(texture1, transform1);
             _background.Colour = color1;
             _renderer.Add(_background);
-            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / 4, -window.Height / 4, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 0)), color2);
-            //_playbutton2 = new Button(texture1, new Transform(new Vector3(300, 300, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-            //_playbutton3 = new Button(texture1, new Transform(new Vector3(400, 400, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
-            //_playbutton4 = new Button(texture1, new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width / 2, window.Height / 2, 30)));
+            int size = 200;
+            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / 4, -window.Height / 4, 0), Vector3.Zero, new Vector3(size, size, 0)), color2);
+            _playbutton2 = new Button(texture1, new Transform(new Vector3(window.Width / 4, -window.Height / 4, 0), Vector3.Zero, new Vector3(size, size, 0)), color2);
+            _playbutton3 = new Button(texture1, new Transform(new Vector3(-window.Width / 4, window.Height / 4, 0), Vector3.Zero, new Vector3(size, size, 0)), color2);
+            _playbutton4 = new Button(texture1, new Transform(new Vector3(window.Width / 4, window.Height / 4, 0), Vector3.Zero, new Vector3(size, size, 0)), color3);
             buttons.Add(_playbutton);
+            buttons.Add(_playbutton2);
+            buttons.Add(_playbutton3);
+            buttons.Add(_playbutton4);
             Console.WriteLine("Button List: ");
             foreach (Button button in buttons)
             {
-                Console.WriteLine(button);
+                //Console.WriteLine(button);
                 button.AddToRenderer(_renderer);
             }
             //ButtonAdder();
+            _playbutton.OnClick += _playbutton_OnClick;
+            _playbutton2.OnClick += _playbutton2_OnClick;
+            _playbutton3.OnClick += _playbutton3_OnClick;
+            _playbutton4.OnClick += _playbutton4_OnClick;
+        }
+        private void _playbutton_OnClick(object sender, EventArgs e)
+        {
+            //Console.WriteLine("2");
+        }
+        private void _playbutton2_OnClick(object sender, EventArgs e)
+        {
+            Console.WriteLine("3");
+        }
+        private void _playbutton3_OnClick(object sender, EventArgs e)
+        {
+            Console.WriteLine("1");
+        }
+
+        private void _playbutton4_OnClick(object sender, EventArgs e)
+        {
+            new Window(new GameState()).Run();
         }
 
         public override void OnDestroy()
         {
-            
+
         }
 
         public override void OnDraw(float deltatime)
@@ -80,38 +108,43 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
-            _playbutton.Update();
-            MouseInput.Update();
-            Vector2 MousePos = MouseInput.GetMousePos();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            Button a = _playbutton;
+            foreach (Button button in buttons)
+            {
+                button.Update(window);
+            }
+            //_playbutton.Update();
+            //MouseInput.Update();
+            //Vector2 MousePos = MouseInput.GetMousePos();
+            //ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
             //Console.WriteLine(MousePos.X);
             //kijkt of het tussen de x-waardes zit (buitendste deel)
-            if (MousePos.X > a.GetPosition().X / 2f + window.Width / 2 - a.GetSize().X / 2f &&
-                MousePos.X < a.GetPosition().X / 2f + window.Width / 2 + a.GetSize().X / 2f &&
-                MousePos.Y < -a.GetPosition().Y / 2f + window.Height / 2 + a.GetSize().Y / 2f &&
-                MousePos.Y > -a.GetPosition().Y / 2f + window.Height / 2 - a.GetSize().Y / 2f)
-            {
-                Console.WriteLine("werkt");
-            }
-            else
-            {
-                Console.WriteLine("werkt niet");
-            }
-                //kijkt of het tussen de y-waardes zit
-                //if (MousePos.Y > a.GetPosition().Y / 2 + window.Width / 2 - a.GetSize().Y / 2 && MousePos.X < a.GetPosition().X + window.Width / 2 + a.GetSize().X / 2)
-                //{
-                //    Console.WriteLine("in alles");
-                //}
-                //else
-                //{
-                //    Console.WriteLine("buiten Y");
-                //}
-                //Console.WriteLine("in X");
-            }
+            //for (int i = 0; i < buttons.Count; i++)
+            //{
+            //    Button a = buttons[i];
+            //    if (MousePos.X > a.GetPosition().X / 2f + window.Width / 2 - a.GetSize().X / 2f &&
+            //        MousePos.X < a.GetPosition().X / 2f + window.Width / 2 + a.GetSize().X / 2f &&
+            //        MousePos.Y < -a.GetPosition().Y / 2f + window.Height / 2 + a.GetSize().Y / 2f &&
+            //        MousePos.Y > -a.GetPosition().Y / 2f + window.Height / 2 - a.GetSize().Y / 2f)
+            //    {
+            //        //Console.WriteLine("1");
+            //        //Console.WriteLine("2");
+            //        //Console.WriteLine(a);
+            //        if (a == _playbutton2)
+            //        {
+            //            if (MouseLeft == ButtonState.Pressed)
+            //            {
+            //                //Console.WriteLine('1');
+            //                //Console.WriteLine('2');
+            //new Window(new GameState()).Run();
+            //            }
+            //        }
+            //    }
             //else
             //{
-            //    Console.WriteLine("buiten X");
+            //    Console.WriteLine("1");
+            //    Console.WriteLine("2");
             //}
+        }
         }
     }
