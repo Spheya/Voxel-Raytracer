@@ -12,7 +12,7 @@ namespace Game
     {
         static void Main(string[] args)
         {
-            new Window(new SplashScreenState()).Run();
+            new Window(new GameState()).Run();
             //new Window(new GameState()).Run();
         }
     }
