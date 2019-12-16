@@ -15,6 +15,7 @@ namespace Game.Engine.Rendering
     class VoxelRenderer
     {
         private readonly Model _canvas;
+        private readonly Model _canvasFB;
 
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<byte> _voxelData = new BufferTexture<byte>(SizedInternalFormat.R8ui);
@@ -45,6 +46,13 @@ namespace Game.Engine.Rendering
                 1.0f, -1.0f,
                 1.0f,  1.0f,
                 -1.0f,  1.0f
+            }, 2, PrimitiveType.TriangleFan);
+
+            _canvasFB = new Model(new[]{
+                -1.0f, -1.0f,
+                0.0f, -1.0f,
+                0.0f, 0.0f,
+                -1.0f,  0.0f
             }, 2, PrimitiveType.TriangleFan);
 
             _modelData.AddRange(new int[] { 0,0,0,0 });
@@ -116,8 +124,8 @@ namespace Game.Engine.Rendering
                                 0, (PixelFormat)PixelInternalFormat.Rgba, PixelType.UnsignedByte,
                                 IntPtr.Zero);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
 
@@ -184,7 +192,7 @@ namespace Game.Engine.Rendering
             _modelTransformations.Update();
 
             Shader.Bind();
-            GL.BindVertexArray(_canvas.Vao);
+            GL.BindVertexArray(_canvasFB.Vao);
 
             // Send the buffers containing the models
             _voxelData.Bind(TextureUnit.Texture0);
@@ -198,7 +206,7 @@ namespace Game.Engine.Rendering
             Materials.Bind("u_materials");
 
             // Send the windowsize
-            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height });
+            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width / 2, window.Height / 2 });
 
             // Send the camera
             GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
@@ -221,16 +229,20 @@ namespace Game.Engine.Rendering
             }
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+            //GL.Viewport(window.Width / 2, window.Height / 2, window.Width / 2, window.Height / 2);
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             Shader.Unbind();
 
             ScaleShader.Bind();
-            //GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindVertexArray(_canvas.Vao);
+            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
             GL.Uniform1(ScaleShader.GetUniformLocation("u_framebuffer"), 1, new[] { 0 });
             GL.Uniform2(ScaleShader.GetUniformLocation("u_resolution"), 1, new float[] { window.Width, window.Height });
+
+            //GL.Viewport(0,0, window.Width,window.Height);
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
 

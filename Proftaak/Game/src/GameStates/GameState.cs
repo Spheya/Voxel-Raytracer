@@ -31,7 +31,7 @@ namespace Game.GameStates
         {
             try
             {
-                
+
                 Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
 
                 Shader voxelVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\vertex.glsl"));
@@ -80,7 +80,7 @@ namespace Game.GameStates
                 //if (i == 252) ior = 1.1f;
                 //if (i == 254) ior = 1.1f;
                 //Vector3 color = new Vector3(1f, 0f, 0f);
-                materials.Add(new Material(color, 1.5f));
+                materials.Add(new Material(color, ior));
             }
             _voxelRenderer.Materials.Set(materials);
 
