@@ -47,7 +47,7 @@ namespace Game.GameStates
             Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
             Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
             Colour color1 = new Colour(1, 1, 1);
-            Colour color2 = new Colour(0, 0, 255, .5f);
+            Colour color2 = new Colour(0, 0, 255);
             Colour color3 = new Colour(255, 0, 0, .5f);
             _background = new Sprite(texture1, transform1);
             _background.Colour = color1;
@@ -75,7 +75,7 @@ namespace Game.GameStates
         }
         private void _playbutton_OnClick(object sender, EventArgs e)
         {
-            //Console.WriteLine("2");
+            Console.WriteLine("2");
         }
         private void _playbutton2_OnClick(object sender, EventArgs e)
         {
