@@ -10,11 +10,11 @@ namespace Game.GameStates
 {
     public abstract class ApplicationState
     {
-        protected GameWindow Window { get; private set; }
+        protected GameWindow window { get; private set; }
 
         public void AssignWindow(GameWindow window)
         {
-            Window = window;
+            this.window = window;
         }
 
         public abstract void OnCreate();

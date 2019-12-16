@@ -13,17 +13,17 @@ namespace VoxelData
         public int Height { get; }
         public int Depth { get; }
 
-        private readonly Voxel[,,] _voxels;
+        private readonly byte[,,] _voxels;
 
         public ushort[] VoxelMaterials { get; }
 
-        public Voxel this[int x, int y, int z]
+        public byte this[int x, int y, int z]
         {
             get => _voxels[x, y, z];
             set {
                 _voxels[x, y, z] = value;
 
-                VoxelMaterials[x + y * Width + z * Width * Height] = value.materialId;
+                VoxelMaterials[x + y * Width + z * Width * Height] = value;
             }
         }
 
@@ -37,7 +37,22 @@ namespace VoxelData
             Height = height;
             Depth = depth;
 
-            _voxels = new Voxel[width, height, depth];
+            _voxels = new byte[width, height, depth];
+
+            VoxelMaterials = new ushort[width * height * depth];
+        }
+
+        public VoxelGrid(int width, int height, int depth, byte[,,] data)
+        {
+            Debug.Assert(width > 0);
+            Debug.Assert(height > 0);
+            Debug.Assert(depth > 0);
+
+            Width = width;
+            Height = height;
+            Depth = depth;
+
+            _voxels = data;
 
             VoxelMaterials = new ushort[width * height * depth];
         }

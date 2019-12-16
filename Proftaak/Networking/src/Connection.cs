@@ -4,6 +4,9 @@ using System.Net.Sockets;
 
 namespace Networking
 {
+    /// <summary>
+    /// A wrapper around a connection socket, works for both the client and the server
+    /// </summary>
     public class Connection
     {
         private struct PacketData
@@ -25,11 +28,18 @@ namespace Networking
         private readonly Socket _socket;
         private readonly ThreadLauncher _launcher;
 
+        /// <summary>
+        /// Set the callback you want to get dispatched when a packet gets received
+        /// </summary>
+        /// <param name="callback"></param>
         public void SetCallback(ThreadLauncher.OnPacket callback)
         {
             _launcher.SetCallback(callback);
         }
 
+        /// <param name="target">The IP you want to connect to</param>
+        /// <param name="port">The port you want to connect to</param>
+        /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
         public Connection(IPAddress target, int port, ThreadLauncher.OnPacket callback)
         {
             _launcher = new ThreadLauncher(this, callback);
@@ -52,6 +62,12 @@ namespace Networking
             _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, threadLauncher));
         }
 
+        /// <summary>
+        /// Open a port and wait for someone to connect
+        /// </summary>
+        /// <param name="port">The port you want to open</param>
+        /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
+        /// <returns></returns>
         public static Connection Listen(int port, ThreadLauncher.OnPacket callback)
         {
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
@@ -76,12 +92,19 @@ namespace Networking
             return new Connection(socket, callback);
         }
 
+        /// <summary>
+        /// Send some data over the socket
+        /// </summary>
+        /// <param name="data">The data you want the other side to reveive</param>
         public void Send(byte[] data)
         {
             _socket.Send(new[] { (byte)data.Length }, 0, 1, 0);
             _socket.Send(data, 0, data.Length, 0);
         }
 
+        /// <summary>
+        /// Close the connection
+        /// </summary>
         public void Close()
         {
             _socket.Close();

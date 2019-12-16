@@ -22,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Game.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,11 +49,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Engine\GLGarbageCollector.cs" />
+    <Compile Include="src\Engine\Input\ControllerInput.cs" />
+    <Compile Include="src\Engine\Input\FreeCamera.cs" />
+    <Compile Include="src\Engine\Input\KeyboardInput.cs" />
+    <Compile Include="src\Engine\Input\MouseInput.cs" />
+    <Compile Include="src\Engine\Input\UserInput.cs" />
+    <Compile Include="src\Engine\Maths\Transform.cs" />
+    <Compile Include="src\Engine\Rendering\BufferTexture.cs" />
+    <Compile Include="src\Engine\Rendering\Colour.cs" />
+    <Compile Include="src\Engine\Rendering\Light.cs" />
+    <Compile Include="src\Engine\Rendering\Material.cs" />
+    <Compile Include="src\Engine\Rendering\MaterialPalette.cs" />
+    <Compile Include="src\Engine\Rendering\Model.cs" />
+    <Compile Include="src\Engine\Rendering\Sprite.cs" />
+    <Compile Include="src\Engine\Rendering\SpriteRenderer.cs" />
+    <Compile Include="src\Engine\Rendering\Texture.cs" />
+    <Compile Include="src\Engine\Rendering\VoxelRenderer.cs" />
+    <Compile Include="src\Engine\Shaders\Shader.cs" />
     <Compile Include="src\Engine\Rendering\Camera.cs" />
     <Compile Include="src\Engine\Rendering\VoxelModel.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderCompileException.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderLinkException.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderPreprocessor.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderPreprocessorException.cs" />
+    <Compile Include="src\Engine\Shaders\ShaderProgram.cs" />
     <Compile Include="src\Engine\Window.cs" />
+    <Compile Include="src\Gameplay\Crosshair.cs" />
     <Compile Include="src\GameStates\GameState.cs" />
     <Compile Include="src\GameStates\ApplicationState.cs" />
+    <Compile Include="src\GameStates\SplashScreenState.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,10 +86,34 @@
     <None Include="App.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="res\fragment.glsl">
+    <None Include="res\maps\castle.vox" />
+    <None Include="res\maps\gamercube.vox" />
+    <None Include="res\maps\map_city.vox" />
+    <None Include="res\maps\monu10.vox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="res\vertex.glsl">
+    <None Include="res\maps\monu9.vox" />
+    <None Include="res\maps\nature.vox" />
+    <None Include="res\maps\room.vox" />
+    <None Include="res\shaders\raytracing\fragment.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\raytracing\lighting.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\raytracing\material.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\raytracing\raytracing.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\raytracing\vertex.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\ui\fragment.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\shaders\ui\vertex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -79,12 +130,24 @@
       <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
       <Name>VoxelData</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VoxLoader\VoxLoader.csproj">
+      <Project>{ff8b2784-3111-43a2-9075-2f7ab8c496a6}</Project>
+      <Name>VoxLoader</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Networking\Networking.csproj">
       <Project>{a9d5d548-c519-40b1-af5e-dd04b5d4be19}</Project>
       <Name>Networking</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="res\textures\crosshair.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\textures\mini_yoda.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

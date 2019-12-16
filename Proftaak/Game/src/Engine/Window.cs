@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,9 @@ namespace Game.Engine
                 GraphicsContextFlags.ForwardCompatible
             )
         {
+            Console.WriteLine(GL.GetString(StringName.Renderer));
+            Console.WriteLine(GL.GetInteger(GetPName.MaxFragmentUniformVectors));
+
             _state = state;
 
             Title += ": OpenGL " + GL.GetString(StringName.Version);
@@ -39,22 +43,33 @@ namespace Game.Engine
 
         protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
+
             CursorVisible = true;
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
 
         protected override void OnResize(EventArgs e)
         {
+            base.OnResize(e);
+
             GL.Viewport(0,0, Width, Height);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            base.OnUpdateFrame(e);
+
             _state.OnUpdate((float)e.Time);
             CheckForNewState();
             
             //TODO: Actually do a fixed update
             _state.OnFixedUpdate((float)e.Time);
             CheckForNewState();
+
+            GLGarbageCollector.Process();
         }
 
         private void HandleKeyboard()
@@ -67,7 +82,9 @@ namespace Game.Engine
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            //Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
+            base.OnRenderFrame(e);
+
+            Title = $"(Vsync: {VSync}) FPS: {1f / e.Time:0}";
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -81,6 +98,14 @@ namespace Game.Engine
             _state.OnDraw((float)e.Time);
 
             SwapBuffers();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            _state.OnDestroy();
+            GLGarbageCollector.Process();
         }
 
         private void CheckForNewState()

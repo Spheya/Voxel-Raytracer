@@ -4,131 +4,159 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CsharpVoxReader;
+using Game.Engine.Input;
+using Game.Engine.Maths;
 using Game.Engine.Rendering;
+using Game.Engine.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Input;
 using VoxelData;
+using VoxLoader;
 
 namespace Game.GameStates
 {
     sealed class GameState : ApplicationState
     {
-        int Shader;
 
-        int VertexArray;
-        int Buffer;
+        private readonly FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
-        private VoxelModel model;
+        private VoxelRenderer _voxelRenderer;
+        private SpriteRenderer _spriteRenderer;
 
-        Vector2[] QuadVertices = new Vector2[4] {
-            new Vector2(-1f, -1f),
-            new Vector2(1f, -1f),
-            new Vector2(1f, 1f),
-            new Vector2(-1f, 1f)
-        };
-
+        private VoxelModel _model;
+        private VoxelModel _model2;
         public override void OnCreate()
         {
-            Random rand = new Random();
-            model = new VoxelModel(32, 32, 32);
-            for(int x = 0; x < 32; x++)
-                for(int y = 0; y < 32; y++)
-                    for(int z = 0; z < 32; z++) 
-                        model[x,y,z] = new Voxel(1);
-
             try
             {
-                var vertexShader = GL.CreateShader(ShaderType.VertexShader);
-                GL.ShaderSource(vertexShader, File.ReadAllText(@"res\vertex.glsl"));
-                GL.CompileShader(vertexShader);
-                var info = GL.GetShaderInfoLog(vertexShader);
-                if (!string.IsNullOrWhiteSpace(info))
-                    throw new Exception($"CompileShader {ShaderType.VertexShader} had errors: {info}");
+                
+                Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
 
-                var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-                GL.ShaderSource(fragmentShader, File.ReadAllText(@"res\fragment.glsl"));
-                GL.CompileShader(fragmentShader);
-                info = GL.GetShaderInfoLog(fragmentShader);
-                if (!string.IsNullOrWhiteSpace(info))
-                    throw new Exception($"CompileShader {ShaderType.FragmentShader} had errors: {info}");
+                Shader voxelVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\vertex.glsl"));
+                Shader voxelFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
+                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }));
 
-                Shader = GL.CreateProgram();
-                GL.AttachShader(Shader, vertexShader);
-                GL.AttachShader(Shader, fragmentShader);
-                GL.LinkProgram(Shader);
+                Shader spriteVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\ui\vertex.glsl"));
+                Shader spriteFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\ui\fragment.glsl"));
+                _spriteRenderer = new SpriteRenderer(new ShaderProgram(new[] { spriteVertexShader, spriteFragmentShader }));
 
-                info = GL.GetProgramInfoLog(Shader);
-                if (!string.IsNullOrWhiteSpace(info))
-                    throw new Exception($"CompileShaders ProgramLinking had errors: {info}");
-
-                GL.DetachShader(Shader, vertexShader);
-                GL.DetachShader(Shader, fragmentShader);
-                GL.DeleteShader(vertexShader);
-                GL.DeleteShader(fragmentShader);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 throw;
             }
 
+            //List<Material> materials = new List<Material>();
+            //for (int i = 0; i < 256; i++)
+            //    materials.Add(new Material(Vector3.One, 1.5f));
+
+            //_voxelRenderer.Materials = materials;
+
             Console.WriteLine("Shader compiled <o/"); //epic it work
 
-            //Epic
-            VertexArray = GL.GenVertexArray();
-            Buffer = GL.GenBuffer();
+            _model = _voxelRenderer.CreateModel(32, 32, 32,
+                new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
-            GL.BindVertexArray(VertexArray);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Buffer);
+            for (int x = 0; x < 32; x++)
+            for (int y = 0; y < 32; y++)
+            for (int z = 0; z < 32; z++)
+                _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
-            GL.NamedBufferStorage(
-                Buffer,
-                8 * 4,
-                QuadVertices,
-                BufferStorageFlags.MapWriteBit
-            );
+            MyVoxLoader CastleVox = new MyVoxLoader();
+            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
+            r.Read();
 
-            GL.VertexArrayAttribBinding(VertexArray, 0, 0);
-            GL.EnableVertexArrayAttrib(VertexArray, 0);
-            GL.VertexArrayAttribFormat(
-                VertexArray,
-                0,                      // attribute index, from the shader location = 0
-                2,                      // size of attribute, vec2
-                VertexAttribType.Float, // contains floats
-                false,                  // does not need to be normalized as it is already, floats ignore this flag anyway
-                0);                     // relative offset, first item
+            //Use palette of castlevox
+            List<Material> materials = new List<Material>();
+            for (int i = 0; i < 256; i++)
+            {
+                Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
+                float ior = 0f;
+                if (i == 252) ior = 1.1f;
+                if (i == 254) ior = 1.1f;
+                //Vector3 color = new Vector3(1f, 0f, 0f);
+                materials.Add(new Material(color, ior));
+            }
+            _voxelRenderer.Materials.Set(materials);
 
-            GL.VertexArrayVertexBuffer(VertexArray, 0, Buffer, IntPtr.Zero, 8);
+            _model2 = _voxelRenderer.CreateModel(CastleVox.Width, CastleVox.Height, CastleVox.Depth,
+                new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
+
+            //for (int x = -16; x < 16; x++)
+            //for (int y = -16; y < 16; y++)
+            //for (int z = -16; z < 16; z++)
+            //    _model2[x + 16, y + 16, z + 16] = (x * x + y * y + z * z < 16 * 16) ? (byte)1 : (byte)0;
+            for (int x = 0; x < CastleVox.Width; x++)
+            for (int y = 0; y < CastleVox.Height; y++)
+            for (int z = 0; z < CastleVox.Depth; z++)
+                _model2[x,y,z] = CastleVox._data[x,y,z];
 
             Console.WriteLine("Epic");
+
+
+            int s = 512;
+            VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
+                new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
+
+            for (int x = 0; x < s; x++)
+            for (int y = 0; y < 1; y++)
+            for (int z = 0; z < s; z++)
+                model3[x,y,z] = (byte)1;
+
+            Console.WriteLine("Epic");
+
+            Sprite crosshair = new Sprite(new Texture("res/textures/crosshair.png", TextureMinFilter.Linear, TextureMagFilter.Linear));
+            _spriteRenderer.Add(crosshair);
+            crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
+            crosshair.Transform.Scale = new Vector3(128.0f, 128.0f, 0.25f);
+
+            //List<DirectionalLight> dirLights = new List<DirectionalLight>();
+            //var sun = new DirectionalLight();
+            //sun.direction = new Vector3(-0.5f, 1.5f, -1.0f);
+            //sun.intensity = 1f;
+            //sun.colour = new Vector3(1f, 1f, 1f);
+            //dirLights.Add(sun);
+            //_voxelRenderer._dirLights = dirLights;
+
+            List<PointLight> pointLights = new List<PointLight>();
+            var pointlight = new PointLight();
+            pointlight.position = new Vector3(0f, 0f, -20f);
+            pointlight.intensity = 5f;
+            pointlight.colour = new Vector3(1f, 1f, 1f);
+            pointLights.Add(pointlight);
+            _voxelRenderer._pointLights = pointLights;
         }
 
         public override void OnUpdate(float deltatime)
         {
+            window.CursorVisible = !window.Focused;
+            if (!window.CursorVisible)
+                Mouse.SetPosition(window.X + window.Width * 0.5, window.Y + window.Height * 0.5);
+
+            _model.Transform.Rotation += new Vector3(deltatime, deltatime, deltatime);
+            //_model2.Transform.Rotation -= new Vector3(0.0f, deltatime * 0.25f, 0.0f);
+
+            //Console.WriteLine(_model.Transform.Rotation);
+
+            KeyboardInput.Update();
+            MouseInput.Update();
+            //Random rand = new Random();
+            //_model[rand.Next(_model.Width), rand.Next(_model.Height), rand.Next(_model.Depth)] = new Voxel(1);
+            _camera.Update(deltatime);
+
+            //Console.WriteLine(_model.Transform.CalculateInverseMatrix().Column0);
         }
 
         public override void OnFixedUpdate(float deltatime)
         {
         }
 
-        private float f;
         public override void OnDraw(float deltatime)
         {
-
-            f += deltatime;
-
-            model.UpdateBufferTexture();
-
-            GL.UseProgram(Shader);
-            GL.BindVertexArray(VertexArray);
-
-            model.BindTexture(TextureUnit.Texture0);
-            GL.Uniform1(GL.GetUniformLocation(Shader, "u_voxelBuffer"), 1, new[] { 0 });
-            GL.Uniform3(GL.GetUniformLocation(Shader, "u_bufferDimensions"), 1, new[] { model.Width, model.Height, model.Depth });
-            GL.Uniform2(GL.GetUniformLocation(Shader, "u_windowSize"), 1, new float [] { Window.Width, Window.Height });
-            GL.Uniform1(GL.GetUniformLocation(Shader, "u_zoom"), 1, new []{ (Window.Height * 0.5f) / (float)Math.Tan(90.0f * (Math.PI / 360.0f)) });
-            GL.Uniform1(GL.GetUniformLocation(Shader, "f"), 1, new []{ f });
-
-            GL.DrawArrays(PrimitiveType.TriangleFan, 0,4);
+           _voxelRenderer.Draw(_camera, window);
+           _spriteRenderer.Draw(window);
         }
 
         public override void OnDestroy()

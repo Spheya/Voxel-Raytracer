@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Game.Engine.Maths;
 using VoxelData;
 
 using OpenTK;
@@ -15,18 +15,46 @@ namespace Game.Engine.Rendering
     {
         private readonly VoxelGrid _grid;
 
-        private bool _dirtyFlag;
-        private int _minDirty = int.MaxValue;
-        private int _maxDirty = int.MinValue;
+        private readonly BufferTexture<byte> _target;
+        
+        /// <summary>
+        /// How the model is positioned in the world
+        /// </summary>
+        public Transform Transform { get; }
 
-        private readonly int _bufferTextureId;
-        private readonly int _bufferId;
-
+        /// <summary>
+        /// The width of the underlying grid
+        /// </summary>
         public int Width => _grid.Width;
+        
+        /// <summary>
+        /// The height of the underlying grid
+        /// </summary>
         public int Height => _grid.Height;
+
+        /// <summary>
+        /// The depth of the underlying grid
+        /// </summary>
         public int Depth => _grid.Depth;
 
-        public Voxel this[int x, int y, int z]
+        /// <summary>
+        /// The amount of ushorts this object stores into the buffertexture
+        /// </summary>
+        public int Footprint => Width * Height * Depth;
+
+        /// <summary>
+        /// The offset into the buffertexture
+        /// </summary>
+        public int Offset { get; set; }
+
+        /// <summary>
+        /// Write a voxel into the underlying grid and the buffertexture
+        /// </summary>
+        /// <param name="x">The x coordinate of the voxel</param>
+        /// <param name="y">The y coordinate of the voxel</param>
+        /// <param name="z">The z coordinate of the voxel</param>
+        /// <returns></returns>
+        public byte this[int x, int y, int z]
         {
             get => _grid[x, y, z];
             set
@@ -34,46 +62,34 @@ namespace Game.Engine.Rendering
                 _grid[x, y, z] = value;
 
                 // Mark the bounds of all the changes since the previous update
-                int index = x + y * Width + z * Width * Height;
-                _minDirty = Math.Min(_minDirty, index);
-                _maxDirty = Math.Max(_maxDirty, index + 1);
-
-                _dirtyFlag = true;
+                int index = Offset + x + y * Width + z * Width * Height;
+                _target[index] = value;
             }
         }
 
-        public VoxelModel(int width, int height, int depth)
+        /// <param name="target">The buffertexture this should be part of</param>
+        /// <param name="offset">The offset into the buffertexture</param>
+        /// <param name="width">The width of the grid</param>
+        /// <param name="height">The height of the grid</param>
+        /// <param name="depth">The depth of the grid</param>
+        /// <param name="transform">How the model should be positioned in the world</param>
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth, Transform transform) :
+            this(target, offset, width, height, depth)
         {
+            Transform = transform;
+        }
+
+        /// <param name="target">The buffertexture this should be part of</param>
+        /// <param name="offset">The offset into the buffertexture</param>
+        /// <param name="width">The width of the grid</param>
+        /// <param name="height">The height of the grid</param>
+        /// <param name="depth">The depth of the grid</param>
+        public VoxelModel(BufferTexture<byte> target, int offset, int width, int height, int depth)
+        {
+            _target = target;
             _grid = new VoxelGrid(width, height, depth);
-
-            // Generate the buffer
-            _bufferId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
-            GL.BufferData(BufferTarget.TextureBuffer, sizeof(ushort) * _grid.VoxelMaterials.Length, _grid.VoxelMaterials, BufferUsageHint.DynamicDraw);
-            _bufferTextureId = GL.GenTexture();
-            GL.BindBuffer(BufferTarget.TextureBuffer, 0);
-        }
-
-        public void UpdateBufferTexture()
-        {
-            if (_dirtyFlag)
-            {
-                GL.BindBuffer(BufferTarget.TextureBuffer, _bufferId);
-                GL.BufferSubData(BufferTarget.TextureBuffer, IntPtr.Zero + _minDirty, sizeof(ushort) * (_maxDirty - _minDirty), _grid.VoxelMaterials.Skip(_minDirty).ToArray());
-                GL.BindBuffer(BufferTarget.TextureBuffer, 0);
-
-                _maxDirty = int.MinValue;
-                _minDirty = int.MaxValue;
-
-                _dirtyFlag = false;
-            }
-        }
-
-        public void BindTexture(TextureUnit unit)
-        {
-            GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.TextureBuffer, _bufferTextureId);
-            GL.TexBuffer(TextureBufferTarget.TextureBuffer, SizedInternalFormat.R16ui, _bufferId);
+            Offset = offset;
+            Transform = new Transform(Vector3.Zero, Vector3.Zero, new Vector3(width, height, depth));
         }
     }
 }
