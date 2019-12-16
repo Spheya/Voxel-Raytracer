@@ -16,7 +16,7 @@ void main() {
   colour = texture(u_framebuffer, uvCoords);
    
   
-  if(mod(uvCoords, uvPixel).x < 0.2) {
+  if(mod(uvCoords, uvPixel).x > 0.0009) {
 	colour = vec4(0.0);
   }
 
