@@ -50,8 +50,8 @@ namespace Game.Engine.Rendering
 
             _canvasFB = new Model(new[]{
                 -1.0f, -1.0f,
-                0.0f, -1.0f,
-                0.0f, 0.0f,
+                1.0f, -1.0f,
+                1.0f, 0.0f,
                 -1.0f,  0.0f
             }, 2, PrimitiveType.TriangleFan);
 
@@ -120,7 +120,7 @@ namespace Game.Engine.Rendering
             GL.GenTextures(1, out _textureColorBuffer);
             GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-                                window.Width / 2, window.Height / 2,
+                                window.Width, window.Height / 2,
                                 0, (PixelFormat)PixelInternalFormat.Rgba, PixelType.UnsignedByte,
                                 IntPtr.Zero);
 
@@ -206,7 +206,7 @@ namespace Game.Engine.Rendering
             Materials.Bind("u_materials");
 
             // Send the windowsize
-            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width / 2, window.Height / 2 });
+            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height / 2 });
 
             // Send the camera
             GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });

@@ -65,4 +65,6 @@ void main () {
 		colour.rgb = shading(reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material], colour.rgb, vec3(0.0));
 		if(reflectionHits[i].dist == WORLD_RENDER_DISTANCE) colour.rgb = backgroundColour(reflectionRays[i].direction);
 	}
+
+	//colour = vec4(1.0, 0.0, 1.0, 1.0);
 }

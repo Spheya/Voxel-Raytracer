@@ -6,20 +6,19 @@ uniform vec2 u_resolution;
 out vec4 colour;
 
 void main() {
-  ivec2 bufSize = textureSize(u_framebuffer, 1);
-  vec2 pixelStride = u_resolution / bufSize;
-  vec2 pixelSize = 1.0 / pixelStride;
+  ivec2 bufSize = textureSize(u_framebuffer, 0);
+  
+  vec2 pixelSize = u_resolution / bufSize;
+  vec2 uvPixel = pixelSize / u_resolution;
 
-  vec2 uvCoords = gl_FragCoord.xy / pixelStride;
-  if ((int(gl_FragCoord.x) & 2) == 0) {
-    uvCoords.y += pixelSize.y;
+  vec2 uvCoords = gl_FragCoord.xy / u_resolution;
+
+  colour = texture(u_framebuffer, uvCoords);
+   
+  
+  if(mod(uvCoords, uvPixel).x < 0.2) {
+	colour = vec4(0.0);
   }
 
-  colour = texture(u_framebuffer, (uvCoords / bufSize));
-  // colour = texture(u_framebuffer, gl_FragCoord.xy / u_resolution);
-  // colour = vec4(1.0);
-
-  // colour = vec4(uvCoords, 0.0, 1.0);
-
-  // colour = vec4(gl_FragCoord.xy / u_resolution, 0.0, 1.0);
+  //colour = vec4(vec2(bufSize), 0.0, 1.0);
 }
