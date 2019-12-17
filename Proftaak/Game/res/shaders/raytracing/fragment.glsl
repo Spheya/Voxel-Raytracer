@@ -17,7 +17,7 @@ uniform Camera u_camera;
 out vec4 colour;
 
 Ray generateRay() {
-	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3(gl_FragCoord.xy - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
+	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3((gl_FragCoord.xy + vec2(0.0, int(gl_FragCoord.x) & 1)) - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
 }
 
 vec3 backgroundColour(vec3 direction) {
@@ -65,4 +65,6 @@ void main () {
 		colour.rgb = shading(reflectionRays[i], reflectionHits[i], u_materials[reflectionHits[i].material], colour.rgb, vec3(0.0));
 		if(reflectionHits[i].dist == WORLD_RENDER_DISTANCE) colour.rgb = backgroundColour(reflectionRays[i].direction);
 	}
+
+	//colour = vec4(1.0, 0.0, 1.0, 1.0);
 }

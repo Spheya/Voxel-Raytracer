@@ -15,6 +15,7 @@ namespace Game.Engine.Rendering
     class VoxelRenderer
     {
         private readonly Model _canvas;
+        private readonly Model _canvasFB;
 
         private readonly List<VoxelModel> _models = new List<VoxelModel>();
         private readonly BufferTexture<byte> _voxelData = new BufferTexture<byte>(SizedInternalFormat.R8ui);
@@ -23,16 +24,20 @@ namespace Game.Engine.Rendering
 
         public MaterialPalette Materials { get; }
 
-        public List<DirectionalLight> _dirLights = new List<DirectionalLight>();
-        public List<PointLight> _pointLights = new List<PointLight>();
+        public List<DirectionalLight> DirectionalLights { get; set; } = new List<DirectionalLight>();
+        public List<PointLight> PointLights { get; set; } = new List<PointLight>();
+
+        private int _framebuffer;
+        private int _textureColorBuffer;
 
         /// <summary>
         /// The shader program used to render stuff
         /// </summary>
         public ShaderProgram Shader { get; set; }
+        public ShaderProgram ScaleShader { get; set; }
 
         /// <param name="shader">The initial shader to render stuff</param>
-        public VoxelRenderer(ShaderProgram shader)
+        public VoxelRenderer(ShaderProgram shader, ShaderProgram scaleShader)
         {
             Materials = new MaterialPalette(shader);
 
@@ -43,9 +48,17 @@ namespace Game.Engine.Rendering
                 -1.0f,  1.0f
             }, 2, PrimitiveType.TriangleFan);
 
+            _canvasFB = new Model(new[]{
+                -1.0f, -1.0f,
+                1.0f, -1.0f,
+                1.0f, 0.0f,
+                -1.0f,  0.0f
+            }, 2, PrimitiveType.TriangleFan);
+
             _modelData.AddRange(new int[] { 0,0,0,0 });
 
             Shader = shader;
+            ScaleShader = scaleShader;
         }
 
         /// <summary>
@@ -95,6 +108,34 @@ namespace Game.Engine.Rendering
             });
 
             return model;
+        }
+
+        public void GenerateFramebuffer(GameWindow window)
+        {
+            //Generate framebuffer
+            _framebuffer = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+
+            // create a RGBA color texture
+            GL.GenTextures(1, out _textureColorBuffer);
+            GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
+                                window.Width, window.Height / 2,
+                                0, (PixelFormat)PixelInternalFormat.Rgba, PixelType.UnsignedByte,
+                                IntPtr.Zero);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+
+            ////Create color attachment texture
+            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, _textureColorBuffer, 0);
+
+            DrawBuffersEnum[] bufs = new DrawBuffersEnum[1] { (DrawBuffersEnum)FramebufferAttachment.ColorAttachment0};
+            GL.DrawBuffers(bufs.Length, bufs);
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
         /// <summary>
@@ -151,7 +192,7 @@ namespace Game.Engine.Rendering
             _modelTransformations.Update();
 
             Shader.Bind();
-            GL.BindVertexArray(_canvas.Vao);
+            GL.BindVertexArray(_canvasFB.Vao);
 
             // Send the buffers containing the models
             _voxelData.Bind(TextureUnit.Texture0);
@@ -165,31 +206,47 @@ namespace Game.Engine.Rendering
             Materials.Bind("u_materials");
 
             // Send the windowsize
-            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height });
+            GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height / 2 });
 
             // Send the camera
             GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
             // Send the lights
-            GL.Uniform1(Shader.GetUniformLocation("u_dirLightCount"), _dirLights.Count());
-            for (int i = 0; i < _dirLights.Count(); i++)
+            GL.Uniform1(Shader.GetUniformLocation("u_dirLightCount"), DirectionalLights.Count());
+            for (int i = 0; i < DirectionalLights.Count(); i++)
             {
-                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].direction"), _dirLights[i].direction);
-                GL.Uniform1(Shader.GetUniformLocation($"u_dirLights[{i}].intensity"), _dirLights[i].intensity);
-                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].colour"), _dirLights[i].colour);
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].direction"), DirectionalLights[i].direction);
+                GL.Uniform1(Shader.GetUniformLocation($"u_dirLights[{i}].intensity"), DirectionalLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_dirLights[{i}].colour"), DirectionalLights[i].colour);
             }
-            GL.Uniform1(Shader.GetUniformLocation("u_pointLightCount"), _pointLights.Count());
-            for (int i = 0; i < _pointLights.Count(); i++)
+            GL.Uniform1(Shader.GetUniformLocation("u_pointLightCount"), PointLights.Count());
+            for (int i = 0; i < PointLights.Count(); i++)
             {
-                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].position"), _pointLights[i].position); //_pointLights[i].position
-                GL.Uniform1(Shader.GetUniformLocation($"u_pointLights[{i}].intensity"), _pointLights[i].intensity);
-                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), _pointLights[i].colour);
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].position"), PointLights[i].position); //_pointLights[i].position
+                GL.Uniform1(Shader.GetUniformLocation($"u_pointLights[{i}].intensity"), PointLights[i].intensity);
+                GL.Uniform3(Shader.GetUniformLocation($"u_pointLights[{i}].colour"), PointLights[i].colour);
             }
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+            //GL.Viewport(window.Width / 2, window.Height / 2, window.Width / 2, window.Height / 2);
+            GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            Shader.Unbind();
+
+            ScaleShader.Bind();
+            GL.BindVertexArray(_canvas.Vao);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, _textureColorBuffer);
+            GL.Uniform1(ScaleShader.GetUniformLocation("u_framebuffer"), 1, new[] { 0 });
+            GL.Uniform2(ScaleShader.GetUniformLocation("u_resolution"), 1, new float[] { window.Width, window.Height });
+
+            //GL.Viewport(0,0, window.Width,window.Height);
 
             GL.DrawArrays(PrimitiveType.TriangleFan, 0, 4);
 
-            Shader.Unbind();
+            ScaleShader.Unbind();
         }
     }
 }

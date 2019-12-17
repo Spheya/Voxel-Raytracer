@@ -32,7 +32,10 @@ namespace Game.GameStates
         {
             return _requestedState != null;
         }
-
+        public GameWindow windowdit()
+        {
+            return window;
+        }
         public ApplicationState GetRequestedState()
         {
             Debug.Assert(_requestedState != null);

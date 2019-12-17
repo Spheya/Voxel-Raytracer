@@ -31,12 +31,13 @@ namespace Game.GameStates
         {
             try
             {
-                
+
                 Console.WriteLine(ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
 
                 Shader voxelVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\vertex.glsl"));
                 Shader voxelFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\fragment.glsl"));
-                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }));
+                Shader scaleFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\raytracing\scale.glsl"));
+                _voxelRenderer = new VoxelRenderer(new ShaderProgram(new[] { voxelVertexShader, voxelFragmentShader }), new ShaderProgram(new[] { voxelVertexShader, scaleFragmentShader }) );
 
                 Shader spriteVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\ui\vertex.glsl"));
                 Shader spriteFragmentShader = new Shader(ShaderType.FragmentShader, ShaderPreprocessor.Execute(@"res\shaders\ui\fragment.glsl"));
@@ -47,6 +48,8 @@ namespace Game.GameStates
                 Console.WriteLine(ex.ToString());
                 throw;
             }
+
+            _voxelRenderer.GenerateFramebuffer(window);
 
             //List<Material> materials = new List<Material>();
             //for (int i = 0; i < 256; i++)
@@ -96,14 +99,14 @@ namespace Game.GameStates
             Console.WriteLine("Epic");
 
 
-            int s = 512;
-            VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
-                new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
+            //int s = 512;
+            //VoxelModel model3 = _voxelRenderer.CreateModel(s,1,s,
+            //    new Transform(new Vector3(0.0f, -48.0f, 0.0f), Vector3.Zero, new Vector3(1.0f)));
 
-            for (int x = 0; x < s; x++)
-            for (int y = 0; y < 1; y++)
-            for (int z = 0; z < s; z++)
-                model3[x,y,z] = (byte)1;
+            //for (int x = 0; x < s; x++)
+            //for (int y = 0; y < 1; y++)
+            //for (int z = 0; z < s; z++)
+            //    model3[x,y,z] = (byte)1;
 
             Console.WriteLine("Epic");
 
@@ -112,25 +115,46 @@ namespace Game.GameStates
             crosshair.Colour = new Colour(1.0f, 1.0f, 1.0f, 1.0f);
             crosshair.Transform.Scale = new Vector3(128.0f, 128.0f, 0.25f);
 
-            //List<DirectionalLight> dirLights = new List<DirectionalLight>();
-            //var sun = new DirectionalLight();
-            //sun.direction = new Vector3(-0.5f, 1.5f, -1.0f);
-            //sun.intensity = 1f;
-            //sun.colour = new Vector3(1f, 1f, 1f);
-            //dirLights.Add(sun);
-            //_voxelRenderer._dirLights = dirLights;
+            List<DirectionalLight> dirLights = new List<DirectionalLight>();
+            var sun = new DirectionalLight();
+            sun.direction = new Vector3(-0.5f, 1.5f, -1.0f);
+            sun.intensity = 0.8f;
+            sun.colour = new Vector3(1f, 1f, 1f);
+            dirLights.Add(sun);
+
+            var sun2 = new DirectionalLight();
+            sun2.direction = new Vector3(-0.4f, 1.5f, 0.8f);
+            sun2.intensity = 0.6f;
+            sun2.colour = new Vector3(0.7f, 0.8f, 1f);
+            dirLights.Add(sun2);
+
+            var sun3 = new DirectionalLight();
+            sun3.direction = new Vector3(0.4f, 0.1f, 0.2f);
+            sun3.intensity = 0.6f;
+            sun3.colour = new Vector3(0.4f, 0.8f, 1f);
+            dirLights.Add(sun3);
+            _voxelRenderer.DirectionalLights = dirLights;
 
             List<PointLight> pointLights = new List<PointLight>();
             var pointlight = new PointLight();
             pointlight.position = new Vector3(0f, 0f, -20f);
-            pointlight.intensity = 5f;
-            pointlight.colour = new Vector3(1f, 1f, 1f);
+            pointlight.intensity = 0.5f;
+            pointlight.colour = new Vector3(1f, 0.0f, 0.0f);
             pointLights.Add(pointlight);
-            _voxelRenderer._pointLights = pointLights;
+            _voxelRenderer.PointLights = pointLights;
         }
+
+        private float f = 0.0f;
 
         public override void OnUpdate(float deltatime)
         {
+            f += deltatime;
+            var pointlight = new PointLight();
+            pointlight.position = new Vector3((float)Math.Sin(f) * 40.0f, 0.0f, -30.0f);
+            pointlight.intensity = 2.0f;
+            pointlight.colour = new Vector3(1f, 0.4f, 0.8f);
+            _voxelRenderer.PointLights[0] = pointlight;
+
             window.CursorVisible = !window.Focused;
             if (!window.CursorVisible)
                 Mouse.SetPosition(window.X + window.Width * 0.5, window.Y + window.Height * 0.5);

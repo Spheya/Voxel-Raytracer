@@ -25,7 +25,11 @@ namespace Game.Engine.Rendering
         { }
 
         public Sprite (Texture texture) :
-            this(texture, new Transform(Vector3.Zero, Vector3.Zero, new Vector3(32.0f)))
+            this(texture, new Transform(Vector3.Zero, Vector3.Zero, new Vector3(1.0f)))
         { }
+
+        public Sprite(Transform transformation, Colour color)
+        {
+        }
     }
 }

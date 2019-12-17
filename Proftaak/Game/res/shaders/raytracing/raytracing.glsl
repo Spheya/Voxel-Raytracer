@@ -224,9 +224,7 @@ float traceModelCheap(Ray ray, int modelIndex) {
 	int material;
 
 	// Make sure we are in the model (to avoid artifacts)
-	for(int i = 0; i < 1; i++){
-		if (!(any(greaterThanEqual(mapPos, vec3(modelData.xyz))) || any(lessThan(mapPos, vec3(0.0))))) continue;
-
+	if (any(greaterThanEqual(mapPos, vec3(modelData.xyz))) || any(lessThan(mapPos, vec3(0.0)))) {
 		mask = step(sideDist.xyz, sideDist.yzx) * step(sideDist.xyz, sideDist.zxy);
 		sideDist += mask * deltaDist;
 		mapPos += mask * rayStep;
