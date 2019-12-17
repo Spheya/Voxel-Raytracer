@@ -13,12 +13,13 @@ namespace Game.Engine.Rendering
     {
         private readonly List<Sprite> _sprites = new List<Sprite>();
 
-        private readonly Model _spriteModel = new Model(new[]{
-            -1.0f, -1.0f,
-            1.0f, -1.0f,
-            1.0f,  1.0f,
-            -1.0f,  1.0f
-        }, 2, PrimitiveType.TriangleFan);
+        private readonly Model _spriteModel = new Model(new float[]
+        {
+            0.5f, -0.5f,
+            0.5f,  0.5f,
+            -0.5f, -0.5f,
+            -0.5f,  0.5f
+        }, 2, PrimitiveType.TriangleStrip);
 
 
         public ShaderProgram Shader { get; set; }
@@ -38,8 +39,8 @@ namespace Game.Engine.Rendering
 
             // Bind the projection uniform
             Matrix4 projection = new Matrix4(
-                1.0f / window.Width, 0.0f, 0.0f, 0.0f,
-                0.0f, 1.0f / window.Height, 0.0f, 0.0f,
+                2.0f / window.Width, 0.0f, 0.0f, 0.0f,
+                0.0f, 2.0f / window.Height, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f
             );

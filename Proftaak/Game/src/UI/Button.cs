@@ -48,6 +48,7 @@ namespace Game.UI
                 }
             }
         }
+
         Sprite _sprite;
         public Button(Texture texture, Transform transformation)
         {

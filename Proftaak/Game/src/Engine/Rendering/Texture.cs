@@ -43,7 +43,7 @@ namespace Game.Engine.Rendering
         public void Bind(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.TextureBuffer, _id);
+            GL.BindTexture(TextureTarget.Texture2D, _id);
         }
 
         ~Texture()
