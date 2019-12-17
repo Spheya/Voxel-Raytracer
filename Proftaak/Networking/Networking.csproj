@@ -48,9 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\NetworkEntity.cs" />
-    <Compile Include="src\NetworkEntityBuffer.cs" />
-    <Compile Include="src\NetworkVariable.cs" />
     <Compile Include="src\TcpConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\IConnection.cs" />
