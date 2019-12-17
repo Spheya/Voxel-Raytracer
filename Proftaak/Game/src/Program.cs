@@ -14,6 +14,7 @@ namespace Game
         {
             //new Window(new SplashScreenState()).Run();
             new Window(new MenuState()).Run();
+            // new Window(new SplashScreenState()).Run();
         }
     }
 }
