@@ -41,5 +41,9 @@ namespace Game.Engine.Input
         {
             return currentState.IsKeyDown(Key.D);
         }
+        public static bool IsMDown()
+        {
+            return currentState.IsKeyDown(Key.BackSpace);
+        }
     }
 }

@@ -25,28 +25,30 @@ namespace Game.UI
         {
             renderer.Remove(_sprite);
         }
+        int i = 0;
         public void Update(GameWindow window)
         {
             //Console.WriteLine("updated");
             MouseInput.Update();
             Vector2 MousePos = MouseInput.GetMousePos();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            if (MouseLeft == ButtonState.Released)
-            {
-                            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X / 2f &&
+            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X / 2f &&
                     MousePos.X < GetPosition().X / 2f + window.Width / 2 + GetSize().X / 2f &&
                     MousePos.Y < -GetPosition().Y / 2f + window.Height / 2 + GetSize().Y / 2f &&
                     MousePos.Y > -GetPosition().Y / 2f + window.Height / 2 - GetSize().Y / 2f)
             {
-                if (MouseLeft == ButtonState.Pressed)
+                if (MouseLeft == ButtonState.Pressed && i==0)
                 {
+                    i = 1;
                     OnClick?.Invoke(this, EventArgs.Empty);
                 }
-            }
-            //Vector2 test = MouseInput.GetMousePos();
-            //Console.WriteLine(test);
+                if (MouseLeft == ButtonState.Released)
+                {
+                    i = 0;
+                }
             }
         }
+
         Sprite _sprite;
         public Button(Texture texture, Transform transformation)
         {
