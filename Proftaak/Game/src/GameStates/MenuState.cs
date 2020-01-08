@@ -13,6 +13,7 @@ using Game.GameStates;
 using System.Windows.Documents;
 using System.Net;
 using System.IO;
+using Networking.src;
 
 namespace Game.GameStates
 {
@@ -36,7 +37,7 @@ namespace Game.GameStates
         public override void OnCreate()
         {
             List<string> fontPictures = new List<string>();
-            string[] allFiles = Directory.GetFiles(@"C:\Users\mikel\Pictures\FontName");
+            string[] allFiles = Directory.GetFiles(@"res\font\");
             foreach (string file in allFiles)
             {
                 Console.WriteLine(file);
@@ -45,15 +46,14 @@ namespace Game.GameStates
             var a = Dns.GetHostEntry(Dns.GetHostName());
             Console.WriteLine(a.HostName);
             var b = a.AddressList;
-            Console.WriteLine(b[1]);
-            //foreach (var adress in b)
-            //{
-            //    Console.WriteLine(adress);
-            //}
+            foreach (var adress in b)
+            {
+                Console.WriteLine(adress);
+            }
             List<string> usernames = new List<string>();
-            string text = System.IO.File.ReadAllText(@"res\variables.txt");
-            string[] text2 = text.Split(',');
-            foreach (string username in text2)
+            string text = File.ReadAllText(@"res\variables.txt");
+            string[] splitUsernames = text.Split(',');
+            foreach (string username in splitUsernames)
             {
                 Console.WriteLine(username);
                 usernames.Add(username);
@@ -85,23 +85,24 @@ namespace Game.GameStates
                 i += 200;
             }
             Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
-            //Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
-            //Texture texture2 = new Texture("res\\textures\\babyyodasoup.png");
-            //Texture texture3 = new Texture("res\\textures\\yodawithsword.png");
+            Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
+            Texture texture2 = new Texture("res\\textures\\babyyodasoup.png");
+            Texture texture3 = new Texture("res\\textures\\yodawithsword.png");
             Colour color1 = new Colour(1, 1, 1);
             Colour color2 = new Colour(0, 0, 255);
             Colour color3 = new Colour(255, 0, 0, .5f);
-            //_background = new Sprite(texture1, transform1);
-            //_background.Colour = color1;
-            //_renderer.Add(_background);
+            Colour color4 = new Colour(0, 255, 0, .5f);
+            _background = new Sprite(texture1, transform1);
+            _background.Colour = color1;
+            _renderer.Add(_background);
             int buttonWidth = 400;
             int buttonHeight = 200;
-            int gedeeldDoor = 3;
-            int plus = -200;
-            //_playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, -window.Height / 4 + plus, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color2);
-            //_playbutton2 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, -window.Height / 4 + plus, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)));
-            //_playbutton3 = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, window.Height / 4 + plus, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color2);
-            //_playbutton4 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, window.Height / 4 + plus, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color3);
+            int gedeeldDoor = 5;
+            int gedeeldDoor2 = 5;
+            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, -window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color2);
+            _playbutton2 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, -window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)));
+            _playbutton3 = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color4);
+            _playbutton4 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color3);
             buttons.Add(_playbutton);
             buttons.Add(_playbutton2);
             buttons.Add(_playbutton3);
@@ -109,13 +110,13 @@ namespace Game.GameStates
             foreach (Button button in buttons)
             {
                 //Console.WriteLine(button);
-                //button.AddToRenderer(_renderer);
+                button.AddToRenderer(_renderer);
             }
             //ButtonAdder();
-            //_playbutton.OnClick += _playbutton_OnClick;
-            //_playbutton2.OnClick += _playbutton2_OnClick;
-            //_playbutton3.OnClick += _playbutton3_OnClick;
-            //_playbutton4.OnClick += _playbutton4_OnClick;
+            _playbutton.OnClick += _playbutton_OnClick;
+            _playbutton2.OnClick += _playbutton2_OnClick;
+            _playbutton3.OnClick += _playbutton3_OnClick;
+            _playbutton4.OnClick += _playbutton4_OnClick;
         }
         private void _playbutton_OnClick(object sender, EventArgs e)
         {
@@ -124,16 +125,20 @@ namespace Game.GameStates
         private void _playbutton2_OnClick(object sender, EventArgs e)
         {
             Console.WriteLine("3");
+            UDP.dit();
         }
         private void _playbutton3_OnClick(object sender, EventArgs e)
         {
             Console.WriteLine("1");
+            bool currentKeyboardState = KeyboardInput.UpdateReturn();
+            Console.WriteLine(currentKeyboardState);
         }
 
         private void _playbutton4_OnClick(object sender, EventArgs e)
         {
             //new Window(new GameState()).Run();
             RequestState(new GameState());
+            //new Window(new SplashScreenState()).Run();
         }
 
         public override void OnDestroy()
@@ -153,45 +158,13 @@ namespace Game.GameStates
 
         public override void OnUpdate(float deltatime)
         {
-            bool c = KeyboardInput.IsMDown();
-            Console.WriteLine(c);
+            //bool c = KeyboardInput.IsMDown();
+            //Console.WriteLine(c);
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
             foreach (Button button in buttons)
             {
-                //button.Update(window);
+                button.Update(window);
             }
-            //_playbutton.Update();
-            //MouseInput.Update();
-            //Vector2 MousePos = MouseInput.GetMousePos();
-            //ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            //Console.WriteLine(MousePos.X);
-            //kijkt of het tussen de x-waardes zit (buitendste deel)
-            //for (int i = 0; i < buttons.Count; i++)
-            //{
-            //    Button a = buttons[i];
-            //    if (MousePos.X > a.GetPosition().X / 2f + window.Width / 2 - a.GetSize().X / 2f &&
-            //        MousePos.X < a.GetPosition().X / 2f + window.Width / 2 + a.GetSize().X / 2f &&
-            //        MousePos.Y < -a.GetPosition().Y / 2f + window.Height / 2 + a.GetSize().Y / 2f &&
-            //        MousePos.Y > -a.GetPosition().Y / 2f + window.Height / 2 - a.GetSize().Y / 2f)
-            //    {
-            //        //Console.WriteLine("1");
-            //        //Console.WriteLine("2");
-            //        //Console.WriteLine(a);
-            //        if (a == _playbutton2)
-            //        {
-            //            if (MouseLeft == ButtonState.Pressed)
-            //            {
-            //                //Console.WriteLine('1');
-            //                //Console.WriteLine('2');
-            //new Window(new GameState()).Run();
-            //            }
-            //        }
-            //    }
-            //else
-            //{
-            //    Console.WriteLine("1");
-            //    Console.WriteLine("2");
-            //}
         }
         }
     }

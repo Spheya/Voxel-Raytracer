@@ -11,6 +11,10 @@ namespace Game.Engine.Input
         {
             currentState = Keyboard.GetState();
         }
+        public static bool UpdateReturn()
+        {
+            return currentState.IsAnyKeyDown;
+        }
 
         public static bool IsUpDown()
         {
