@@ -4,7 +4,7 @@
 #include "lighting.glsl"
 #include "material.glsl"
 
-#define RAY_RECURSION 0
+#define RAY_RECURSION 2
 
 struct Camera {
 	mat4 matrix;

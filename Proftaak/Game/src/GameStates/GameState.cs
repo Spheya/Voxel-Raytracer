@@ -62,6 +62,10 @@ namespace Game.GameStates
             _model = _voxelRenderer.CreateModel(32, 32, 32,
                 new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
+            Colour col;
+            col.R = 1.0f;
+
+
             for (int x = 0; x < 32; x++)
             for (int y = 0; y < 32; y++)
             for (int z = 0; z < 32; z++)
@@ -76,7 +80,7 @@ namespace Game.GameStates
             for (int i = 0; i < 256; i++)
             {
                 Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
-                float ior = 0f;
+                float ior = 1.5f;
                 if (i == 252) ior = 1.1f;
                 if (i == 254) ior = 1.1f;
                 //Vector3 color = new Vector3(1f, 0f, 0f);
