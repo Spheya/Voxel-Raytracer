@@ -44,7 +44,7 @@ namespace Networking
         {
             long timestamp = (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).Ticks;
 
-            return new byte[] { 0 }.Concat(BitConverter.GetBytes(timestamp)).Concat(getBytes(GetNetworkData())).ToArray();
+            return new byte[] { 0 }.Concat(BitConverter.GetBytes(timestamp)).Concat(GetBytes(GetNetworkData())).ToArray();
         }
 
         public override void ProcessPacket(byte[] packet)
