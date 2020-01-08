@@ -62,10 +62,6 @@ namespace Game.GameStates
             _model = _voxelRenderer.CreateModel(32, 32, 32,
                 new Transform(new Vector3(24.0f, 0.0f, 0.0f), Vector3.Zero, new Vector3(0.5f)));
 
-            Colour col;
-            col.R = 1.0f;
-
-
             for (int x = 0; x < 32; x++)
             for (int y = 0; y < 32; y++)
             for (int z = 0; z < 32; z++)

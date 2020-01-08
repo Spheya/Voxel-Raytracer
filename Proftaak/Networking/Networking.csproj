@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\NetworkEntity.cs" />
+    <Compile Include="src\PacketSender.cs" />
     <Compile Include="src\UDP.cs" />
     <Compile Include="src\TcpConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
