@@ -12,7 +12,8 @@ namespace Networking
     public abstract class _NetworkEntity : IEntity
     {
         public ulong Id { get; }
-        public bool ImOwner { get; }
+        public ulong OwnerId { get; }
+        public ulong TypeId { get; }
 
         public bool DeletionMark { get; set; }
         public bool Enabled { get; set; }
@@ -27,7 +28,7 @@ namespace Networking
         public abstract void Update(EntityManager entityManager, float deltatime);
 
         public abstract byte[] GetPacket();
-        public abstract void ProcessPacket(byte[] packet);
+        public abstract void ProcessPacket(byte[] packet, ulong MyId);
     }
 
     public abstract class NetworkEntity<T> : _NetworkEntity
@@ -44,18 +45,22 @@ namespace Networking
         {
             long timestamp = (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).Ticks;
 
-            return new byte[] { 0 }.Concat(BitConverter.GetBytes(timestamp)).Concat(GetBytes(GetNetworkData())).ToArray();
+            return new byte[] { 0 }.Concat(BitConverter.GetBytes(Id)).Concat(BitConverter.GetBytes(OwnerId)).Concat(BitConverter.GetBytes(timestamp)).Concat(GetBytes(GetNetworkData())).ToArray();
         }
 
-        public override void ProcessPacket(byte[] packet)
+        public override void ProcessPacket(byte[] packet, ulong myId)
         {
-            long timestamp = BitConverter.ToInt64(packet, 1);
-            if (timestamp <= _prevTimestamp)
-                return;
+            ulong owner = BitConverter.ToUInt64(packet, 1 + 8);
+            if (owner != myId)
+            {
+                long timestamp = BitConverter.ToInt64(packet, 1 + 8 + 8);
+                if (timestamp <= _prevTimestamp)
+                    return;
 
-            _prevTimestamp = timestamp;
+                _prevTimestamp = timestamp;
 
-            NetworkUpdate(FromBytes(packet.Skip(9).ToArray()));
+                NetworkUpdate(FromBytes(packet.Skip(1 + 8 + 8 + 8).ToArray()));
+            }
         }
 
         private byte[] GetBytes(T str)
@@ -83,6 +88,22 @@ namespace Networking
             Marshal.FreeHGlobal(ptr);
 
             return str;
+        }
+
+        public static void HandlePacket(EntityManager manager, byte[] data, ulong myId)
+        {
+            if (data[0] == 0)
+            {
+                ulong id = BitConverter.ToUInt64(data, 1);
+
+                foreach (var entity in manager.OfType<_NetworkEntity>())
+                {
+                    if(entity.Id == id)
+                    {
+                        entity.ProcessPacket(myId);
+                    }
+                }
+            }
         }
     }
 }
