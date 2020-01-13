@@ -1,5 +1,6 @@
 using OpenTK;
 using OpenTK.Input;
+using System;
 
 namespace Game.Engine.Input
 {
@@ -47,7 +48,27 @@ namespace Game.Engine.Input
         }
         public static bool IsMDown()
         {
+            return currentState.IsKeyDown(Key.M);
+        }
+        public static bool IsIDown()
+        {
+            return currentState.IsKeyDown(Key.I);
+        }
+        public static bool IsKDown()
+        {
+            return currentState.IsKeyDown(Key.K);
+        }
+        public static bool IsEDown()
+        {
+            return currentState.IsKeyDown(Key.E);
+        }
+        public static bool IsBackspaceDown()
+        {
             return currentState.IsKeyDown(Key.BackSpace);
+        }
+        public static bool IsAnyDown()
+        {
+            return currentState.IsAnyKeyDown;
         }
     }
 }
