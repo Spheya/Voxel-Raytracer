@@ -32,10 +32,10 @@ namespace Game.UI
             MouseInput.Update();
             Vector2 MousePos = MouseInput.GetMousePos();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X / 2f &&
-                    MousePos.X < GetPosition().X / 2f + window.Width / 2 + GetSize().X / 2f &&
-                    MousePos.Y < -GetPosition().Y / 2f + window.Height / 2 + GetSize().Y / 2f &&
-                    MousePos.Y > -GetPosition().Y / 2f + window.Height / 2 - GetSize().Y / 2f)
+            if (MousePos.X > GetPosition().X / 2f + window.Width / 2f - GetSize().X / 2f &&
+                    MousePos.X < GetPosition().X / 2f + window.Width / 2f + GetSize().X / 2f &&
+                    MousePos.Y < -GetPosition().Y / 2f + window.Height / 2f + GetSize().Y / 2f &&
+                    MousePos.Y > -GetPosition().Y / 2f + window.Height / 2f - GetSize().Y / 2f)
             {
                 if (MouseLeft == ButtonState.Pressed && i==0)
                 {

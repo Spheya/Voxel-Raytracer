@@ -17,6 +17,11 @@ namespace Game.Engine.Input
             return currentState.IsAnyKeyDown;
         }
 
+        public static bool IsKeyDown(Key key)
+        {
+            return currentState.IsKeyDown(key);
+        }
+
         public static bool IsUpDown()
         {
             return currentState.IsKeyDown(Key.Space);
