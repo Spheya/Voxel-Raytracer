@@ -181,6 +181,8 @@ namespace Game.GameStates
             _camera.Update(deltatime);
 
             //Console.WriteLine(_model.Transform.CalculateInverseMatrix().Column0);
+
+            
         }
 
         public override void OnFixedUpdate(float deltatime)
