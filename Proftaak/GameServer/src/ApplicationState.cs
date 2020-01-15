@@ -10,12 +10,13 @@ namespace GameServer
 {
     abstract class ApplicationState
     {
-        Dictionary<ulong, Client> Clients { get; set; }
-        PacketSender BroadCaster { get; set; }
+        protected Dictionary<IConnection, Client> Clients { get; set; }
+        protected PacketSender BroadCaster { get; set; }
 
         public abstract void OnCreate();
         public abstract void Update(float deltatime);
         public abstract void ProcessPacket(IConnection sender, byte[] data);
+        public abstract void OnConnect(IConnection connection, ulong userId);
         public abstract void OnDestroy();
 
         protected void RequestState(ApplicationState state)

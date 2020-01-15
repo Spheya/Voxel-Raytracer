@@ -14,7 +14,7 @@ namespace GameServer
     {
         private ApplicationState _applicationState = new GameState();
 
-        private Dictionary<ulong, Client> _clients = new Dictionary<ulong, Client>();
+        private Dictionary<IConnection, Client> _clients = new Dictionary<ulong, Client>();
 
         private readonly PacketSender _packetSender = new PacketSender();
         private readonly ServerConnection _connection;
@@ -67,13 +67,16 @@ namespace GameServer
 
         private void OnConnect(object sender, ConnectionEventArgs args)
         {
-            for(ulong i = 0; true; i++)
+            for(ulong i = 1; true; i++)
             {
-                if (!_clients.ContainsKey(i))
+                if (!_clients.ContainsKey(args.Socket))
                 {
-                    _clients.Add(i, new Client() { Id = i, Connection = args.Socket });
+                    _clients.Add(args.Socket, new Client() { Id = i, Connection = args.Socket });
 
                     args.Socket.Send(new byte[] { 1 }.Concat(BitConverter.GetBytes(i)).ToArray()); // Send Id packet
+
+                    lock (_applicationState)
+                        _applicationState.OnConnect(args.Socket, i);
 
                     break;
                 }
