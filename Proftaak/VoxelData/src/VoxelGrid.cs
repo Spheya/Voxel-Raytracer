@@ -56,16 +56,5 @@ namespace VoxelData
 
             VoxelMaterials = new ushort[width * height * depth];
         }
-
-        public static byte[] Serialize(VoxelGrid obj)
-        {
-            return
-                new BitConverter.GetBytes(obj.Width)
-        }
-
-        public static VoxelGrid Deserialize(byte[] data)
-        {
-
-        }
     }
 }
