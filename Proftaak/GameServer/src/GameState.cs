@@ -12,8 +12,8 @@ namespace GameServer
 {
     class GameState : ApplicationState
     {
-        private EntityManager _entityManager;
-        private EntityIdGenerator _idGenerator;
+        private EntityManager _entityManager = new EntityManager();
+        private EntityIdGenerator _idGenerator = new EntityIdGenerator();
 
         public override void OnConnect(IConnection connection, ulong userId)
         {
