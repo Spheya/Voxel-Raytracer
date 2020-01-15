@@ -80,6 +80,10 @@
       <Project>{a4f50b57-017b-43a1-b5e8-1fa68add2244}</Project>
       <Name>EntitySystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VoxelData\VoxelData.csproj">
+      <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
+      <Name>VoxelData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
