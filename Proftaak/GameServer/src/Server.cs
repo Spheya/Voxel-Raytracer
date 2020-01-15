@@ -14,7 +14,7 @@ namespace GameServer
     {
         private ApplicationState _applicationState = new GameState();
 
-        private Dictionary<IConnection, Client> _clients = new Dictionary<ulong, Client>();
+        private Dictionary<IConnection, Client> _clients = new Dictionary<IConnection, Client>();
 
         private readonly PacketSender _packetSender = new PacketSender();
         private readonly ServerConnection _connection;
