@@ -28,6 +28,10 @@ namespace GameServer
             _connection = new ServerConnection(() => TcpConnection.Listen(port, OnPacketReceived));
             _connection.OnConnection += OnConnect;
 
+            _applicationState.BroadCaster = _packetSender;
+            _applicationState.Clients = _clients;
+            _applicationState.OnCreate();
+
             _updateLoop = new Thread(() =>
             {
                 while (true)
@@ -42,6 +46,8 @@ namespace GameServer
                             {
                                 _applicationState.OnDestroy();
                                 _applicationState = _applicationState.GetRequestedState();
+                                _applicationState.BroadCaster = _packetSender;
+                                _applicationState.Clients = _clients;
                                 _applicationState.OnCreate();
                             }
                         }
