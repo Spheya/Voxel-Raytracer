@@ -14,7 +14,7 @@ namespace GameServer
     {
         private ApplicationState _applicationState = new GameState();
 
-        private Dictionary<IConnection, Client> _clients = new Dictionary<ulong, Client>();
+        private Dictionary<IConnection, Client> _clients = new Dictionary<IConnection, Client>();
 
         private readonly PacketSender _packetSender = new PacketSender();
         private readonly ServerConnection _connection;
@@ -28,26 +28,35 @@ namespace GameServer
             _connection = new ServerConnection(() => TcpConnection.Listen(port, OnPacketReceived));
             _connection.OnConnection += OnConnect;
 
+            _applicationState.BroadCaster = _packetSender;
+            _applicationState.Clients = _clients;
+            _applicationState.OnCreate();
+
             _updateLoop = new Thread(() =>
             {
                 while (true)
                 {
-                    lock (_applicationState)
+                    lock (_packetSender)
                     {
-                        _applicationState.Update(0.01f);
-
-                        if (_applicationState.IsStateRequested())
+                        lock (_applicationState)
                         {
-                            _applicationState.OnDestroy();
-                            _applicationState = _applicationState.GetRequestedState();
-                            _applicationState.OnCreate();
-                        }
-                    }
+                            _applicationState.Update(0.01f);
 
-                    lock(_packetSender)
+                            if (_applicationState.IsStateRequested())
+                            {
+                                _applicationState.OnDestroy();
+                                _applicationState = _applicationState.GetRequestedState();
+                                _applicationState.BroadCaster = _packetSender;
+                                _applicationState.Clients = _clients;
+                                _applicationState.OnCreate();
+                            }
+                        }
+
+
                         _packetSender.Send();
 
-                    Thread.Sleep(100);
+                        Thread.Sleep(100);
+                    }
                 }
             });
             _updateLoop.Start();
