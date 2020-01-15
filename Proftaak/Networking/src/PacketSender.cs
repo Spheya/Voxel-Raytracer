@@ -13,6 +13,8 @@ namespace Networking
         private readonly List<IConnection> _receivers = new List<IConnection>();
         private readonly Queue<byte[]> _packetQueue = new Queue<byte[]>();
 
+        public event EventHandler<ConnectionEventArgs> OnDisconnect;
+
         public void AddReceiver(IConnection connection) => _receivers.Add(connection);
         public bool RemoveReceiver(IConnection connection) => _receivers.Remove(connection);
 
@@ -24,8 +26,21 @@ namespace Networking
             {
                 byte[] packet = _packetQueue.Dequeue();
 
-                foreach (var receiver in _receivers)
-                    receiver.Send(packet);
+                for (int i = 0; i < _receivers.Count; i++)
+                {
+                    var receiver = _receivers[i];
+
+                    try
+                    {
+                        receiver.Send(packet);
+                    }
+                    catch (Exception)
+                    {
+                        OnDisconnect?.Invoke(this, new ConnectionEventArgs() { Socket = receiver });
+                        _receivers.RemoveAt(i);
+                        --i;
+                    }
+                }
             }
         }
     }

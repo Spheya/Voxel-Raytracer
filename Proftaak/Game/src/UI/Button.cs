@@ -32,18 +32,13 @@ namespace Game.UI
             MouseInput.Update();
             Vector2 MousePos = MouseInput.GetMousePos();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            Colour color2 = new Colour(1f, 1f, 1f);
-            _sprite.Colour = color2;
-
-            //Console.Write(MousePos.X + ", " + MousePos.Y + "             \r");
-
-            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X &&
-                    MousePos.X < GetPosition().X / 2f + window.Width / 2 + GetSize().X / 2f &&
-                    MousePos.Y < -GetPosition().Y / 2f + window.Height / 2 + GetSize().Y / 2f &&
-                    MousePos.Y > -GetPosition().Y / 2f + window.Height / 2 - GetSize().Y / 2f)
+            if (MousePos.X > GetPosition().X + window.Width / 2f - GetSize().X / 2f &&
+                    MousePos.X < GetPosition().X  + window.Width / 2f + GetSize().X / 2f &&
+                    MousePos.Y < -GetPosition().Y + window.Height / 2f + GetSize().Y / 2f &&
+                    MousePos.Y > -GetPosition().Y + window.Height / 2f - GetSize().Y / 2f)
             {
-                Colour color1 = new Colour(0.5f, 0.5f, 0.5f);
-                _sprite.Colour = color1;
+                _sprite.Colour = new Colour(0.5f, 0.5f, 0.5f);
+
                 if (MouseLeft == ButtonState.Pressed && i==0)
                 {
                     i = 1;
@@ -53,6 +48,11 @@ namespace Game.UI
                 {
                     i = 0;
                 }
+            }
+            else
+            {
+
+                _sprite.Colour = new Colour(1.0f, 1.0f, 1.0f);
             }
         }
 

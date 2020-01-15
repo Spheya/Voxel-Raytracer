@@ -27,6 +27,7 @@ namespace GameServer
 
             _connection = new ServerConnection(() => TcpConnection.Listen(port, OnPacketReceived));
             _connection.OnConnection += OnConnect;
+            _packetSender.OnDisconnect += OnDisconnect;
 
             _applicationState.BroadCaster = _packetSender;
             _applicationState.Clients = _clients;
@@ -92,6 +93,14 @@ namespace GameServer
             }
 
             _packetSender.AddReceiver(args.Socket);
+        }
+
+        private void OnDisconnect(object sender, ConnectionEventArgs args)
+        {
+            lock (_applicationState)
+                _applicationState.OnDisconnect(args.Socket, _clients[args.Socket].Id);
+
+            _clients.Remove(args.Socket);
         }
 
         public void Close()
