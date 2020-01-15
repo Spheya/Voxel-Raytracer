@@ -10,8 +10,8 @@ namespace GameServer
 {
     abstract class ApplicationState
     {
-        protected Dictionary<IConnection, Client> Clients { get; set; }
-        protected PacketSender BroadCaster { get; set; }
+        public Dictionary<IConnection, Client> Clients { get; set; }
+        public PacketSender BroadCaster { get; set; }
 
         public abstract void OnCreate();
         public abstract void Update(float deltatime);
