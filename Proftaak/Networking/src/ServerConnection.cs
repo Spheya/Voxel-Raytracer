@@ -17,7 +17,6 @@ namespace Networking
         public delegate IConnection CreateConnection();
         public event EventHandler<ConnectionEventArgs> OnConnection;
 
-        private readonly List<IConnection> _clients = new List<IConnection>();
         private readonly Thread _thread;
 
         public ServerConnection(CreateConnection creator)
@@ -28,18 +27,10 @@ namespace Networking
                 {
                     IConnection connection = creator();
 
-                    lock(_clients)
-                        _clients.Add(connection);
-
                     OnConnection?.Invoke(this, new ConnectionEventArgs { Socket = connection });
                 }
             });
             _thread.Start();
-        }
-
-        public List<IConnection> GetClients()
-        {
-            return _clients;
         }
 
         public void Close()

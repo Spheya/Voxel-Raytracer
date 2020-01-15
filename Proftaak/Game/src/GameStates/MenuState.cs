@@ -92,11 +92,14 @@ namespace Game.GameStates
             buttons.Add(_playbutton2);
             buttons.Add(_playbutton3);
             buttons.Add(_playbutton4);
+            buttons.Add(new Button(texture1, new Transform(new Vector3(-window.Width * 0.5f, -window.Height * 0.5f, 0.0f), Vector3.Zero, Vector3.One * 64.0f)));
+
             foreach (Button button in buttons)
             {
                 //Console.WriteLine(button);
                 button.AddToRenderer(_renderer);
             }
+            
             //ButtonAdder();
             _playbutton.OnClick += _playbutton_OnClick;
             _playbutton2.OnClick += _playbutton2_OnClick;
@@ -136,6 +139,7 @@ namespace Game.GameStates
         private void AddText()
         {
             int i2 = i - window.Width/2;
+            //TODO: Change to isKeyDown(Key key)
             bool M = KeyboardInput.IsMDown();
             bool I = KeyboardInput.IsIDown();
             bool K = KeyboardInput.IsKDown();

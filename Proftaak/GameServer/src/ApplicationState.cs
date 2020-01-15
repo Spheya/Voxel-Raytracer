@@ -17,6 +17,7 @@ namespace GameServer
         public abstract void Update(float deltatime);
         public abstract void ProcessPacket(IConnection sender, byte[] data);
         public abstract void OnConnect(IConnection connection, ulong userId);
+        public abstract void OnDisconnect(IConnection connection, ulong userId);
         public abstract void OnDestroy();
 
         protected void RequestState(ApplicationState state)

@@ -26,6 +26,9 @@ namespace GameServer
         public override void OnDestroy()
         {}
 
+        public override void OnDisconnect(IConnection connection, ulong userId)
+        {}
+
         public override void ProcessPacket(IConnection sender, byte[] data)
         {
             ulong owner = BitConverter.ToUInt64(data, 1 + 8);

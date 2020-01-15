@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", 
 	ProjectSection(ProjectDependencies) = postProject
 		{A9D5D548-C519-40B1-AF5E-DD04B5D4BE19} = {A9D5D548-C519-40B1-AF5E-DD04B5D4BE19}
 		{A4F50B57-017B-43A1-B5E8-1FA68ADD2244} = {A4F50B57-017B-43A1-B5E8-1FA68ADD2244}
+		{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3} = {4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{4BE4FB8C-9D01-46D2-91B8-AE23ED236AB3}"
@@ -23,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelData", "VoxelData\Voxe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoInput", "ArduinoInput\ArduinoInput.csproj", "{75937AB6-3C9E-4F65-B9A2-4CE2C0B91B8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxLoader", "VoxLoader\VoxLoader.csproj", "{FF8B2784-3111-43A2-9075-2F7AB8C496A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoxLoader", "VoxLoader\VoxLoader.csproj", "{FF8B2784-3111-43A2-9075-2F7AB8C496A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
