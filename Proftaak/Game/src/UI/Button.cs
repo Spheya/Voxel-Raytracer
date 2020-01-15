@@ -32,11 +32,18 @@ namespace Game.UI
             MouseInput.Update();
             Vector2 MousePos = MouseInput.GetMousePos();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
-            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X / 2f &&
+            Colour color2 = new Colour(1f, 1f, 1f);
+            _sprite.Colour = color2;
+
+            //Console.Write(MousePos.X + ", " + MousePos.Y + "             \r");
+
+            if (MousePos.X > GetPosition().X / 2f + window.Width / 2 - GetSize().X &&
                     MousePos.X < GetPosition().X / 2f + window.Width / 2 + GetSize().X / 2f &&
                     MousePos.Y < -GetPosition().Y / 2f + window.Height / 2 + GetSize().Y / 2f &&
                     MousePos.Y > -GetPosition().Y / 2f + window.Height / 2 - GetSize().Y / 2f)
             {
+                Colour color1 = new Colour(0.5f, 0.5f, 0.5f);
+                _sprite.Colour = color1;
                 if (MouseLeft == ButtonState.Pressed && i==0)
                 {
                     i = 1;
