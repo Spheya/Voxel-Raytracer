@@ -32,22 +32,25 @@ namespace GameServer
             {
                 while (true)
                 {
-                    lock (_applicationState)
+                    lock (_packetSender)
                     {
-                        _applicationState.Update(0.01f);
-
-                        if (_applicationState.IsStateRequested())
+                        lock (_applicationState)
                         {
-                            _applicationState.OnDestroy();
-                            _applicationState = _applicationState.GetRequestedState();
-                            _applicationState.OnCreate();
-                        }
-                    }
+                            _applicationState.Update(0.01f);
 
-                    lock(_packetSender)
+                            if (_applicationState.IsStateRequested())
+                            {
+                                _applicationState.OnDestroy();
+                                _applicationState = _applicationState.GetRequestedState();
+                                _applicationState.OnCreate();
+                            }
+                        }
+
+
                         _packetSender.Send();
 
-                    Thread.Sleep(100);
+                        Thread.Sleep(100);
+                    }
                 }
             });
             _updateLoop.Start();
