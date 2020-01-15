@@ -62,7 +62,7 @@ namespace Networking
         /// <param name="port">The port you want to open</param>
         /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
         /// <returns></returns>
-        public static TcpConnection Listen(int port, ThreadLauncher.OnPacket callback)
+        public static IConnection Listen(int port, ThreadLauncher.OnPacket callback)
         {
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
             var listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

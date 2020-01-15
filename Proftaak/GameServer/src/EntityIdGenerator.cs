@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
 
-using Networking;
-
-namespace GameServer
+namespace GameServer.Entities
 {
-    class Program
+    class EntityIdGenerator
     {
-        static void Main(string[] args)
+        private ulong _id = 0;
+        public ulong Generate()
         {
-            new Server(42069);
+            return _id++;
         }
     }
 }

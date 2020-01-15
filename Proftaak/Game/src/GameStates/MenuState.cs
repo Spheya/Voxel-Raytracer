@@ -201,8 +201,8 @@ namespace Game.GameStates
             if (NewTextCount != TextCount)
             {
                 AddText();
-        }
-        NewTextCount = TextCount;
+            }
+            NewTextCount = TextCount;
             KeyboardInput.Update();
             ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
             foreach (Button button in buttons)
@@ -210,5 +210,5 @@ namespace Game.GameStates
                 button.Update(window);
             }
         }
-        }
     }
+}

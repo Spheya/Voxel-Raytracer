@@ -9,16 +9,24 @@ using EntitySystem;
 
 namespace Networking
 {
-    public abstract class _NetworkEntity : IEntity
+    public abstract class NetworkEntity : IEntity
     {
+        public enum Type : byte
+        {
+            PLAYER
+        }
+
         public ulong Id { get; }
-        public bool ImOwner { get; }
+        public ulong OwnerId { get; }
+        public Type TypeId { get; }
 
         public bool DeletionMark { get; set; }
         public bool Enabled { get; set; }
 
-        protected _NetworkEntity(ulong id) {
+        protected NetworkEntity(ulong id, ulong ownerId, Type type) {
             Id = id;
+            OwnerId = ownerId;
+            TypeId = type;
         }
 
         public abstract void FixedUpdate(EntityManager entityManager, float deltatime);
@@ -27,15 +35,31 @@ namespace Networking
         public abstract void Update(EntityManager entityManager, float deltatime);
 
         public abstract byte[] GetPacket();
-        public abstract void ProcessPacket(byte[] packet);
+        public abstract void ProcessPacket(byte[] packet, ulong MyId);
+
+        public static void HandlePacket(EntityManager manager, byte[] data, ulong myId)
+        {
+            if (data[0] == 0)
+            {
+                ulong id = BitConverter.ToUInt64(data, 1);
+
+                foreach (var entity in manager.OfType<NetworkEntity>())
+                {
+                    if (entity.Id == id)
+                    {
+                        entity.ProcessPacket(data, myId);
+                    }
+                }
+            }
+        }
     }
 
-    public abstract class NetworkEntity<T> : _NetworkEntity
+    public abstract class NetworkEntity<T> : NetworkEntity
         where T : struct
     {
         private long _prevTimestamp = long.MinValue;
 
-        protected NetworkEntity(ulong id) : base(id) {}
+        protected NetworkEntity(ulong id, ulong ownerId, Type type) : base(id, ownerId, type) {}
 
         public abstract void NetworkUpdate(T packet);
         public abstract T GetNetworkData();
@@ -44,18 +68,28 @@ namespace Networking
         {
             long timestamp = (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).Ticks;
 
-            return new byte[] { 0 }.Concat(BitConverter.GetBytes(timestamp)).Concat(GetBytes(GetNetworkData())).ToArray();
+            return
+                new byte[] { 0 }
+                .Concat(BitConverter.GetBytes(Id))
+                .Concat(BitConverter.GetBytes(OwnerId))
+                .Append((byte) TypeId)
+                .Concat(BitConverter.GetBytes(timestamp))
+                .Concat(GetBytes(GetNetworkData())).ToArray();
         }
 
-        public override void ProcessPacket(byte[] packet)
+        public override void ProcessPacket(byte[] packet, ulong myId)
         {
-            long timestamp = BitConverter.ToInt64(packet, 1);
-            if (timestamp <= _prevTimestamp)
-                return;
+            ulong owner = BitConverter.ToUInt64(packet, 1 + 8);
+            if (owner != myId)
+            {
+                long timestamp = BitConverter.ToInt64(packet, 1 + 8 + 8 + 1);
+                if (timestamp <= _prevTimestamp)
+                    return;
 
-            _prevTimestamp = timestamp;
+                _prevTimestamp = timestamp;
 
-            NetworkUpdate(FromBytes(packet.Skip(9).ToArray()));
+                NetworkUpdate(FromBytes(packet.Skip(1 + 8 + 8 + 1 + 8).ToArray()));
+            }
         }
 
         private byte[] GetBytes(T str)

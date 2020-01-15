@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="src\NetworkEntity.cs" />
     <Compile Include="src\PacketSender.cs" />
+    <Compile Include="src\ServerConnection.cs" />
     <Compile Include="src\UDP.cs" />
     <Compile Include="src\TcpConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +79,10 @@
     <ProjectReference Include="..\EntitySystem\EntitySystem.csproj">
       <Project>{a4f50b57-017b-43a1-b5e8-1fa68add2244}</Project>
       <Name>EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoxelData\VoxelData.csproj">
+      <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
+      <Name>VoxelData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

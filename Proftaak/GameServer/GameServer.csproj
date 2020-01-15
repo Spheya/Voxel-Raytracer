@@ -61,8 +61,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ApplicationState.cs" />
+    <Compile Include="src\Client.cs" />
+    <Compile Include="src\Entities\EntityIdGenerator.cs" />
+    <Compile Include="src\Entities\Player.cs" />
+    <Compile Include="src\GameState.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Server.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -82,5 +88,6 @@
       <Name>VoxelData</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

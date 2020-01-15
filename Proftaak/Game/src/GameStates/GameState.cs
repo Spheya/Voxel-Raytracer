@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using CsharpVoxReader;
 using Game.Engine.Input;
 using Game.Engine.Maths;
@@ -14,6 +15,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using VoxelData;
 using VoxLoader;
+using Networking;
 
 namespace Game.GameStates
 {
@@ -68,7 +70,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\map.vox", CastleVox);
             r.Read();
 
             //Use palette of castlevox
@@ -142,6 +144,14 @@ namespace Game.GameStates
             pointlight.colour = new Vector3(1f, 0.0f, 0.0f);
             pointLights.Add(pointlight);
             _voxelRenderer.PointLights = pointLights;
+
+            TcpConnection connection = new TcpConnection(IPAddress.Parse("127.0.0.1"), 42069, (IConnection c, byte[] data) =>
+            {
+                if(data[0] == 1)
+                {
+                    Console.WriteLine("I'm Player " + BitConverter.ToUInt64(data, 1));
+                }
+            });
         }
 
         private float f = 0.0f;

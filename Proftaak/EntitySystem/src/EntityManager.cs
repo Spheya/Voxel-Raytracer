@@ -25,7 +25,7 @@ namespace EntitySystem
 
         public void FixedUpdate(float deltatime)
         {
-            foreach(var entity in _entities)
+            foreach (var entity in _entities)
                 entity.FixedUpdate(this, deltatime);
         }
 

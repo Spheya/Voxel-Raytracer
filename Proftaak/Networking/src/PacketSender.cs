@@ -10,8 +10,8 @@ namespace Networking
 {
     public class PacketSender
     {
-        private List<IConnection> _receivers;
-        private Queue<byte[]> _packetQueue;
+        private readonly List<IConnection> _receivers = new List<IConnection>();
+        private readonly Queue<byte[]> _packetQueue = new Queue<byte[]>();
 
         public void AddReceiver(IConnection connection) => _receivers.Add(connection);
         public bool RemoveReceiver(IConnection connection) => _receivers.Remove(connection);

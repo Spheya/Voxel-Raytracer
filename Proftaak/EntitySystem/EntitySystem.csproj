@@ -69,5 +69,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VoxelData\VoxelData.csproj">
+      <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
+      <Name>VoxelData</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
