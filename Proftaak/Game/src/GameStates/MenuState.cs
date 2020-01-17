@@ -14,35 +14,37 @@ using System.Windows.Documents;
 using System.Net;
 using System.IO;
 using Networking.src;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Diagnostics;
+using Game.src.UI;
 
 namespace Game.GameStates
 {
     class MenuState : ApplicationState
     {
-        //public void ButtonAdder()
-        //{
-        //    Transform _transform2 = new Transform(vector1, Vector3.Zero, new Vector3(window.Width/2, window.Height/2, 30));
-        //    _sprite2 = new Sprite(texture1);
-        //    _sprite2.Colour = color1;
-        //    _sprite2.Transform = _transform2;
-        //    _renderer.Add(_sprite2);
-        //}
-        SpriteRenderer _renderer;
+        public static SpriteRenderer _renderer;
         Sprite _background;
         Button _playbutton;
         Button _playbutton2;
         Button _playbutton3;
         Button _playbutton4;
         List<Button> buttons = new List<Button>();
-        List<string> fontPictures = new List<string>();
+        public static string sayString = "Test";
         public override void OnCreate()
         {
-            string[] allFiles = Directory.GetFiles(@"res\font\");
-            foreach (string file in allFiles)
-            {
-                Console.WriteLine(file);
-                fontPictures.Add(file);
-            }
+            //Make WinImage
+            //Process cmd = new Process();
+            //cmd.StartInfo.FileName = @"C:\Users\mikel\Desktop\runFIRST.cmd";
+            //cmd.StartInfo.RedirectStandardInput = true;
+            //cmd.StartInfo.RedirectStandardOutput = true;
+            //cmd.StartInfo.CreateNoWindow = true;
+            //cmd.StartInfo.UseShellExecute = false;
+            //cmd.Start();
+
+            //Get usernames
+            //Text.FontList();
             //var a = Dns.GetHostEntry(Dns.GetHostName());
             //Console.WriteLine(a.HostName);
             //var b = a.AddressList;
@@ -58,6 +60,7 @@ namespace Game.GameStates
             //    Console.WriteLine(username);
             //    usernames.Add(username);
             //}
+
             try
             {
                 Shader spriteVertexShader = new Shader(ShaderType.VertexShader, ShaderPreprocessor.Execute(@"res\shaders\ui\vertex.glsl"));
@@ -70,7 +73,7 @@ namespace Game.GameStates
                 throw;
             }
             Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
-            Texture texture1 = new Texture("res\\textures\\mini_yoda.png");
+            Texture texture1 = new Texture("res\\textures\\Button.png");
             Texture texture2 = new Texture("res\\textures\\babyyodasoup.png");
             Texture texture3 = new Texture("res\\textures\\yodawithsword.png");
             Colour color1 = new Colour(1, 1, 1);
@@ -92,15 +95,11 @@ namespace Game.GameStates
             buttons.Add(_playbutton2);
             buttons.Add(_playbutton3);
             buttons.Add(_playbutton4);
-            buttons.Add(new Button(texture1, new Transform(new Vector3(-window.Width * 0.5f, -window.Height * 0.5f, 0.0f), Vector3.Zero, Vector3.One * 64.0f)));
-
             foreach (Button button in buttons)
             {
                 //Console.WriteLine(button);
                 button.AddToRenderer(_renderer);
             }
-            
-            //ButtonAdder();
             _playbutton.OnClick += _playbutton_OnClick;
             _playbutton2.OnClick += _playbutton2_OnClick;
             _playbutton3.OnClick += _playbutton3_OnClick;
@@ -111,72 +110,47 @@ namespace Game.GameStates
             //    AddFont(i, 0, textureFont);
             //    i += 200;
             //}
+            if (!string.IsNullOrEmpty(sayString))
+            {
+                //Adds text that sayString holds
+                //double RowCount = sayString.Length / 20f;
+                //RowCount = Math.Ceiling(RowCount);
+                //Console.WriteLine(RowCount);
+                //int i = 0;
+                //int tijdelijk = 0;
+                //for (int VerPos = 0; i < RowCount; VerPos += 15)
+                //{
+                //    var normal = sayString.Substring(tijdelijk, 20);
+                //    if (i == 5)
+                //    {
+                //        normal = sayString.Substring(tijdelijk);
+                //    }
+                //    //Console.WriteLine(VerPos);
+                //    Console.WriteLine(tijdelijk);
+                //Text.AddStringText(normal, window, VerPos);
+                Text.AddStringText(sayString, window, 0);
+                //    tijdelijk += 20;
+                //    i++;
+                //    Text.posSayString = 0;
+                //}
+            }
         }
         private void _playbutton_OnClick(object sender, EventArgs e)
         {
-
-        }
-        void AddFont(int x, int y, Texture texture)
-        {
-            int dit = 7;
-            Colour colorFont = new Colour(1, 1, 1);
-            Transform transformFont = new Transform(new Vector3(x, y, 0), Vector3.Zero, new Vector3(1000 / dit, 500 / dit, 0));
-            Sprite Font = new Sprite(texture, transformFont, colorFont);
-            _renderer.Add(Font);
+            Console.WriteLine("1");
         }
         private void _playbutton2_OnClick(object sender, EventArgs e)
         {
-            Console.WriteLine("3");
-            //UDP.dit();
+            Console.WriteLine("2");
+            UDP.dit();
         }
         private void _playbutton3_OnClick(object sender, EventArgs e)
         {
-            Console.WriteLine("1");
+            Console.WriteLine("3");
             //bool currentKeyboardState = KeyboardInput.UpdateReturn();
             //Console.WriteLine(currentKeyboardState);
         }
-        int i = 0;
-        private void AddText()
-        {
-            int i2 = i - window.Width/2;
-            //TODO: Change to isKeyDown(Key key)
-            bool M = KeyboardInput.IsMDown();
-            bool I = KeyboardInput.IsIDown();
-            bool K = KeyboardInput.IsKDown();
-            bool E = KeyboardInput.IsEDown();
-            bool Backspace = KeyboardInput.IsBackspaceDown();
-            Texture textureFont;
-            if (Backspace == true)
-            {
-                textureFont = new Texture(fontPictures[fontPictures.IndexOf("res\\font\\M.png")]);
-                AddFont(i2, 0, textureFont);
-                i += 200;
-            }
-            if (M == true)
-            {
-                textureFont = new Texture(fontPictures[fontPictures.IndexOf("res\\font\\M.png")]);
-                AddFont(i2+1000/7, 0, textureFont);
-                i += 200;
-            }
-            if (I == true)
-            {
-                textureFont = new Texture(fontPictures[fontPictures.IndexOf("res\\font\\I.png")]);
-                AddFont(i2, 0, textureFont);
-                i += 200;
-            }
-            if (K == true)
-            {
-                textureFont = new Texture(fontPictures[fontPictures.IndexOf("res\\font\\K.png")]);
-                AddFont(i2, 0, textureFont);
-                i += 200;
-            }
-            if (E == true)
-            {
-                textureFont = new Texture(fontPictures[fontPictures.IndexOf("res\\font\\E.png")]);
-                AddFont(i2, 0, textureFont);
-                i += 200;
-            }
-        }
+        
         private void _playbutton4_OnClick(object sender, EventArgs e)
         {
             //new Window(new GameState()).Run();
@@ -196,19 +170,45 @@ namespace Game.GameStates
 
         public override void OnFixedUpdate(float deltatime)
         {
-
+            
         }
         bool NewTextCount=false;
+        int CW;
+        int CH;
         public override void OnUpdate(float deltatime)
         {
+            int ConsoleWidth = window.Width;
+            int ConsoleHeight = window.Height;
+            if (CW != ConsoleWidth || CH != ConsoleHeight)
+            {
+                Console.WriteLine("Window Size Changed");
+                Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
+                Texture texture1 = new Texture("res\\textures\\background2.png");
+                _renderer.Remove(_background);
+                _background = new Sprite(texture1, transform1);
+                _renderer.Add(_background);
+                _playbutton.AddToRenderer(_renderer);
+                _playbutton2.AddToRenderer(_renderer);
+                _playbutton3.AddToRenderer(_renderer);
+                _playbutton4.AddToRenderer(_renderer);
+                foreach (Sprite Font in Text.TextArray)
+                {
+                    MenuState._renderer.Remove(Font);
+                    MenuState._renderer.Add(Font);
+                }
+            }
+            CW = ConsoleWidth;
+            CH = ConsoleHeight;
             bool TextCount = KeyboardInput.IsAnyDown();
             if (NewTextCount != TextCount)
             {
-                AddText();
+                if (NewTextCount == false)
+                {
+                    Text.AddText();
+                }
             }
             NewTextCount = TextCount;
             KeyboardInput.Update();
-            ButtonState MouseLeft = MouseInput.GetMouseLeftButton();
             foreach (Button button in buttons)
             {
                 button.Update(window);
