@@ -209,7 +209,7 @@ namespace Game.Engine.Rendering
             GL.Uniform2(Shader.GetUniformLocation("u_windowSize"), 1, new float[] { window.Width, window.Height / 2 });
 
             // Send the camera
-            GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height * 0.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
+            GL.Uniform1(Shader.GetUniformLocation("u_camera.zoom"), 1, new[] { (window.Height / 1.5f) / (float)Math.Tan(camera.Fov * (Math.PI / 360.0f)) });
             GL.UniformMatrix4(Shader.GetUniformLocation("u_camera.matrix"), false, ref mat);
 
             // Send the lights

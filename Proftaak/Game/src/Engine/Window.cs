@@ -16,6 +16,7 @@ namespace Game.Engine
     public sealed class Window : GameWindow
     {
         private ApplicationState _state;
+        private float totalTime = 0f;
 
         public Window(ApplicationState state) : base(
                 1280,
@@ -65,12 +66,19 @@ namespace Game.Engine
             //Console.WriteLine(test);
             base.OnUpdateFrame(e);
 
-            _state.OnUpdate((float)e.Time);
+            float deltatime = (float)e.Time;
+            totalTime += deltatime;
+
+            _state.OnUpdate(deltatime);
             CheckForNewState();
-            
+
             //TODO: Actually do a fixed update
-            _state.OnFixedUpdate((float)e.Time);
-            CheckForNewState();
+            while (totalTime > 1f / 30f)
+            {
+                _state.OnFixedUpdate(1f / 30f);
+                CheckForNewState();
+                totalTime -= 1f / 30f;
+            }
 
             GLGarbageCollector.Process();
         }

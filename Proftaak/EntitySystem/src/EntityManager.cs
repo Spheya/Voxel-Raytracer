@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EntitySystem
 {
-    public class EntityManager
+    public class EntityManager : IEnumerable<IEntity>
     {
         private readonly List<IEntity> _entities = new List<IEntity>();
 
@@ -24,7 +25,7 @@ namespace EntitySystem
 
         public void FixedUpdate(float deltatime)
         {
-            foreach(var entity in _entities)
+            foreach (var entity in _entities)
                 entity.FixedUpdate(this, deltatime);
         }
 
@@ -39,6 +40,16 @@ namespace EntitySystem
                     --i;
                 }
             }
+        }
+
+        public IEnumerator<IEntity> GetEnumerator()
+        {
+            return this._entities.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._entities.GetEnumerator();
         }
     }
 }

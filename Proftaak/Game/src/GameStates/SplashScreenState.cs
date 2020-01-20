@@ -18,7 +18,7 @@ namespace Game.GameStates
         const float SPEED_FADE = 1.5f;
 
         float _count = 0;
-        float _fade = 1.0f;
+        float _fade = 5.0f;
 
         SpriteRenderer _renderer;
         Sprite _sprite1;

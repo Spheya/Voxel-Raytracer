@@ -42,8 +42,8 @@ namespace Networking
             byte[] buffer = new byte[1];
 
             _socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            _socket.Connect(new IPEndPoint(target, port));
-            _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
+            //_socket.Connect(new IPEndPoint(target, port));
+            //_socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
         }
 
         private TcpConnection(Socket socket, ThreadLauncher.OnPacket callback)
@@ -62,7 +62,7 @@ namespace Networking
         /// <param name="port">The port you want to open</param>
         /// <param name="callback">The callback you want to get dispatched when a packet gets received</param>
         /// <returns></returns>
-        public static TcpConnection Listen(int port, ThreadLauncher.OnPacket callback)
+        public static IConnection Listen(int port, ThreadLauncher.OnPacket callback)
         {
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
             var listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

@@ -17,7 +17,7 @@ uniform Camera u_camera;
 out vec4 colour;
 
 Ray generateRay() {
-	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3((gl_FragCoord.xy + vec2(0.0, int(gl_FragCoord.x) & 1)) - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
+	return Ray((u_camera.matrix * vec4(0,0,0,1)).xyz, (u_camera.matrix * vec4(normalize(vec3((gl_FragCoord.xy * vec2(1.0, 2.0) + vec2(0.0, int(gl_FragCoord.x) & 1)) - u_windowSize * 0.5, u_camera.zoom)), 0.0)).xyz);
 }
 
 vec3 backgroundColour(vec3 direction) {

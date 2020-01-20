@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using CsharpVoxReader;
 using Game.Engine.Input;
 using Game.Engine.Maths;
@@ -14,11 +15,17 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using VoxelData;
 using VoxLoader;
+using Networking;
+using EntitySystem;
 
 namespace Game.GameStates
 {
     sealed class GameState : ApplicationState
     {
+
+        private ulong _playerId = 0;
+        private EntityManager _entityManager = new EntityManager();
+        private PacketSender _packetSender = new PacketSender();
 
         private readonly FreeCamera _camera = new FreeCamera(new Vector3(0.0f, 0.0f, -32.0f), new Vector3(0.0f, 0.0f, 0.0f));
 
@@ -68,7 +75,7 @@ namespace Game.GameStates
                 _model[x, y, z] = (byte)((x+y+z)&1);//new Voxel((ushort) ((x + y + z) & 1));
 
             MyVoxLoader CastleVox = new MyVoxLoader();
-            VoxReader r = new VoxReader(@"res\maps\monu10.vox", CastleVox);
+            VoxReader r = new VoxReader(@"res\maps\map.vox", CastleVox);
             r.Read();
 
             //Use palette of castlevox
@@ -76,7 +83,7 @@ namespace Game.GameStates
             for (int i = 0; i < 256; i++)
             {
                 Vector3 color = new Vector3((float)CastleVox._materials[i].r / 255f, (float)CastleVox._materials[i].g / 255f, (float)CastleVox._materials[i].b / 255f);
-                float ior = 0f;
+                float ior = 1.01f;
                 if (i == 252) ior = 1.1f;
                 if (i == 254) ior = 1.1f;
                 //Vector3 color = new Vector3(1f, 0f, 0f);
@@ -142,6 +149,16 @@ namespace Game.GameStates
             pointlight.colour = new Vector3(1f, 0.0f, 0.0f);
             pointLights.Add(pointlight);
             _voxelRenderer.PointLights = pointLights;
+
+            TcpConnection connection = new TcpConnection(IPAddress.Parse("127.0.0.1"), 42069, (IConnection c, byte[] data) =>
+            {
+                if(data[0] == 1)
+                {
+                    _playerId = BitConverter.ToUInt64(data, 1);
+                }
+            });
+
+            _packetSender.AddReceiver(connection);
         }
 
         private float f = 0.0f;
@@ -171,10 +188,18 @@ namespace Game.GameStates
             _camera.Update(deltatime);
 
             //Console.WriteLine(_model.Transform.CalculateInverseMatrix().Column0);
+
+            
         }
 
         public override void OnFixedUpdate(float deltatime)
         {
+            _entityManager.FixedUpdate(deltatime);
+
+            foreach(var entity in _entityManager.OfType<NetworkEntity>())
+                _packetSender.EnqueuePacket(entity.GetPacket());
+
+            _packetSender.Send();
         }
 
         public override void OnDraw(float deltatime)

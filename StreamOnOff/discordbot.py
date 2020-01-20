@@ -5,10 +5,16 @@ import webbrowser
 
 client = discord.Client()
 
-load_dotenv(dotenv_path=r'C:\Users\mikel\Desktop\Proftaak 2.0\discordbot.env')
+load_dotenv(dotenv_path='C://Users//mikel//Desktop//ENV//discordbot.env')
 
 DISCORD_TOKEN=os.getenv("DISCORD_TOKEN")
 DISCORD_GUILD=os.getenv("DISCORD_GUILD")
+
+import mysql.connector
+conn = mysql.connector.connect (user='root', password='test',
+                               host='localhost')
+cursor = conn.cursor()
+
 
 # @client.event
 # async def on_ready():
@@ -27,11 +33,10 @@ DISCORD_GUILD=os.getenv("DISCORD_GUILD")
 async def on_message(message):
     global bericht
     bericht = message.content
-    if bericht == "aan":
-        print("aan")
-        # webbrowser.open ('http://localhost/admin?state=aan')
-    elif bericht == "uit":
-        print("uit")
+    cursor.execute("use world")
+    a = str(bericht)
+    b = a.replace("'", '"')
+    cursor.execute(b)
         # webbrowser.open ('http://localhost/admin?state=uit')
 # @client.event
 # async def on_member_join(member):

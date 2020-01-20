@@ -56,6 +56,7 @@ namespace VoxLoader
             //throw new NotImplementedException();
         }
 
+        //TODO: Tell Melissa to put all the physical properties in the materials in Magica Voxel, so we can just load them here
         public void NewMaterial(int id, Dictionary<string, byte[]> attributes)
         {
             //throw new NotImplementedException();

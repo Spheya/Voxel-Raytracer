@@ -38,8 +38,21 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BepuPhysics, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BepuPhysics.2.0.0\lib\netstandard2.0\BepuPhysics.dll</HintPath>
+    </Reference>
+    <Reference Include="BepuUtilities, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,8 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\NetworkEntity.cs" />
-    <Compile Include="src\NetworkEntityBuffer.cs" />
-    <Compile Include="src\NetworkVariable.cs" />
+    <Compile Include="src\PacketSender.cs" />
+    <Compile Include="src\ServerConnection.cs" />
+    <Compile Include="src\UDP.cs" />
     <Compile Include="src\TcpConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\IConnection.cs" />
@@ -59,11 +73,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntitySystem\EntitySystem.csproj">
       <Project>{a4f50b57-017b-43a1-b5e8-1fa68add2244}</Project>
       <Name>EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoxelData\VoxelData.csproj">
+      <Project>{fe82b5ba-5dfc-4366-8453-243560b0a5a9}</Project>
+      <Name>VoxelData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
