@@ -30,8 +30,9 @@ namespace Game.GameStates
         Button _playbutton2;
         Button _playbutton3;
         Button _playbutton4;
+        Sprite buttonBackground;
         List<Button> buttons = new List<Button>();
-        public static string sayString = "Test";
+        public static string sayString = "Dit is onze renderer. Veel plezier.";
         public override void OnCreate()
         {
             //Make WinImage
@@ -73,7 +74,7 @@ namespace Game.GameStates
                 throw;
             }
             Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
-            Texture texture1 = new Texture("res\\textures\\Button.png");
+            Texture texture1 = new Texture("res\\textures\\CustomButton1.png");
             Texture texture2 = new Texture("res\\textures\\babyyodasoup.png");
             Texture texture3 = new Texture("res\\textures\\yodawithsword.png");
             Colour color1 = new Colour(1, 1, 1);
@@ -87,10 +88,16 @@ namespace Game.GameStates
             int buttonHeight = 200;
             int gedeeldDoor = 5;
             int gedeeldDoor2 = 5;
-            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, -window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color2);
-            _playbutton2 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, -window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)));
-            _playbutton3 = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color4);
-            _playbutton4 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, window.Height / gedeeldDoor2, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color3);
+            int toBelow = 50;
+            _playbutton = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, -window.Height / gedeeldDoor2-toBelow, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color2);
+            _playbutton2 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, -window.Height / gedeeldDoor2-toBelow, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)));
+            _playbutton3 = new Button(texture1, new Transform(new Vector3(-window.Width / gedeeldDoor, window.Height / gedeeldDoor2-toBelow, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color4);
+            _playbutton4 = new Button(texture1, new Transform(new Vector3(window.Width / gedeeldDoor, window.Height / gedeeldDoor2-toBelow, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight, 0)), color3);
+            Colour colorBackground = new Colour(0, 0, 255);
+            Texture textureBackground = texture2;
+            Transform transformationBackground = new Transform(new Vector3(-window.Width/2+225, window.Height / gedeeldDoor2 + 130, 0), Vector3.Zero, new Vector3(buttonWidth, buttonHeight/4, 0));
+            buttonBackground = new Sprite(textureBackground, transformationBackground, colorBackground);
+            _renderer.Add(buttonBackground);
             buttons.Add(_playbutton);
             buttons.Add(_playbutton2);
             buttons.Add(_playbutton3);
@@ -113,26 +120,25 @@ namespace Game.GameStates
             if (!string.IsNullOrEmpty(sayString))
             {
                 //Adds text that sayString holds
-                //double RowCount = sayString.Length / 20f;
-                //RowCount = Math.Ceiling(RowCount);
-                //Console.WriteLine(RowCount);
-                //int i = 0;
-                //int tijdelijk = 0;
-                //for (int VerPos = 0; i < RowCount; VerPos += 15)
-                //{
-                //    var normal = sayString.Substring(tijdelijk, 20);
-                //    if (i == 5)
-                //    {
-                //        normal = sayString.Substring(tijdelijk);
-                //    }
-                //    //Console.WriteLine(VerPos);
-                //    Console.WriteLine(tijdelijk);
-                //Text.AddStringText(normal, window, VerPos);
-                Text.AddStringText(sayString, window, 0);
-                //    tijdelijk += 20;
-                //    i++;
-                //    Text.posSayString = 0;
-                //}
+                string[] sayStringSplit = sayString.Split(' ');
+                int verPos = 0;
+                int newdit = 0;
+                int totLenght = 0;
+                foreach (string word in sayStringSplit)
+                {
+                    Text.AddStringText(word, window, verPos);
+                    totLenght += word.Length;
+                    if (totLenght > 5)
+                    {
+                        verPos += 15;
+                        Text.posSayString = 0;
+                        totLenght = 0;
+                    }
+                    else
+                    {
+                        Text.AddStringText(" ", window, verPos);
+                    }
+                }
             }
         }
         private void _playbutton_OnClick(object sender, EventArgs e)
@@ -142,13 +148,11 @@ namespace Game.GameStates
         private void _playbutton2_OnClick(object sender, EventArgs e)
         {
             Console.WriteLine("2");
-            UDP.dit();
+            //UDP.dit();
         }
         private void _playbutton3_OnClick(object sender, EventArgs e)
         {
             Console.WriteLine("3");
-            //bool currentKeyboardState = KeyboardInput.UpdateReturn();
-            //Console.WriteLine(currentKeyboardState);
         }
         
         private void _playbutton4_OnClick(object sender, EventArgs e)
@@ -183,14 +187,17 @@ namespace Game.GameStates
             {
                 Console.WriteLine("Window Size Changed");
                 Transform transform1 = new Transform(new Vector3(0, 0, 0), Vector3.Zero, new Vector3(window.Width, window.Height, 30));
-                Texture texture1 = new Texture("res\\textures\\background2.png");
+                Texture texture1 = new Texture("res\\textures\\CustomBackground.png");
                 _renderer.Remove(_background);
                 _background = new Sprite(texture1, transform1);
                 _renderer.Add(_background);
-                _playbutton.AddToRenderer(_renderer);
-                _playbutton2.AddToRenderer(_renderer);
-                _playbutton3.AddToRenderer(_renderer);
-                _playbutton4.AddToRenderer(_renderer);
+                foreach (Button button in buttons)
+                {
+                    button.RemoveToRenderer(_renderer);
+                    button.AddToRenderer(_renderer);
+                }
+                _renderer.Remove(buttonBackground);
+                _renderer.Add(buttonBackground);
                 foreach (Sprite Font in Text.TextArray)
                 {
                     MenuState._renderer.Remove(Font);

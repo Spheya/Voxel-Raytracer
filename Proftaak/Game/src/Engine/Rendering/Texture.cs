@@ -37,7 +37,7 @@ namespace Game.Engine.Rendering
         }
 
         public Texture(string file, TextureMinFilter minFilter = TextureMinFilter.Nearest, TextureMagFilter magFilter = TextureMagFilter.Nearest) :
-            this(new Bitmap(file), minFilter, magFilter)
+           this(new Bitmap(file), minFilter, magFilter)
         { }
 
         public void Bind(TextureUnit unit)
