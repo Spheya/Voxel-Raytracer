@@ -24,6 +24,7 @@ namespace Game.GameStates
 {
     class MenuState : ApplicationState
     {
+        Text info = new Text();
         public static SpriteRenderer _renderer;
         Sprite _background;
         Button _playbutton;
@@ -126,17 +127,17 @@ namespace Game.GameStates
                 int totLenght = 0;
                 foreach (string word in sayStringSplit)
                 {
-                    Text.AddStringText(word, window, verPos);
+                    info.AddStringText(word, window, verPos);
                     totLenght += word.Length;
                     if (totLenght > 5)
                     {
                         verPos += 15;
-                        Text.posSayString = 0;
+                        info.posSayString = 0;
                         totLenght = 0;
                     }
                     else
                     {
-                        Text.AddStringText(" ", window, verPos);
+                        info.AddStringText(" ", window, verPos);
                     }
                 }
             }
@@ -153,15 +154,15 @@ namespace Game.GameStates
         private void _playbutton3_OnClick(object sender, EventArgs e)
         {
             Console.WriteLine("3");
+            //Console.WriteLine(info.textString);
         }
         
         private void _playbutton4_OnClick(object sender, EventArgs e)
         {
             //new Window(new GameState()).Run();
-            RequestState(new GameState());
+            RequestState(new GameState(Convert.ToString(info.textString)));
             //new Window(new SplashScreenState()).Run();
         }
-
         public override void OnDestroy()
         {
 
@@ -198,7 +199,7 @@ namespace Game.GameStates
                 }
                 _renderer.Remove(buttonBackground);
                 _renderer.Add(buttonBackground);
-                foreach (Sprite Font in Text.TextArray)
+                foreach (Sprite Font in info.TextArray)
                 {
                     MenuState._renderer.Remove(Font);
                     MenuState._renderer.Add(Font);
@@ -211,7 +212,7 @@ namespace Game.GameStates
             {
                 if (NewTextCount == false)
                 {
-                    Text.AddText();
+                    info.AddText();
                 }
             }
             NewTextCount = TextCount;

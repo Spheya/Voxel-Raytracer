@@ -45,15 +45,15 @@ namespace Game.src.UI
             Y = 107,
             Z = 108,
             Comma = 126,
-            Space = 109,
+            Space = 51,
             BackSpace = 53,
             Period = 127,
             Right = 48,
             Enter = 49
         }
-        static Texture texture;
-        static int o = 0;
-        public static void FontList()
+        Texture texture;
+        int o = 0;
+        public void FontList()
         {
             foreach (var item in OwnList)
             {
@@ -79,8 +79,8 @@ namespace Game.src.UI
         static List<Key> theList = Enum.GetValues(typeof(Key)).Cast<Key>().ToList();
         static int PosText = 0;
         static List<Sprite> typedText = new List<Sprite>();
-        public static int posSayString = 0;
-        public static void AddStringText(string sayString, GameWindow window, int VerPos)
+        public int posSayString = 0;
+        public void AddStringText(string sayString, GameWindow window, int VerPos)
         {
             foreach (char letter in sayString.ToUpper())
             {
@@ -114,7 +114,8 @@ namespace Game.src.UI
                 posSayString += 25;
             }
         }
-        public static void AddText()
+        public string textString = "";
+        public void AddText()
         {
             foreach (var item in theList)
             {
@@ -151,8 +152,26 @@ namespace Game.src.UI
                         }
                         else
                         {
+                            string newItem;
+                            if (item == Key.Space)
+                            {
+                                newItem = " ";
+                            }
+                            else if (item == Key.Comma)
+                            {
+                                newItem = ",";
+                            }
+                            else if(item == Key.Period)
+                            {
+                                newItem = ".";
+                            }
+                            else
+                            {
+                                newItem = Convert.ToString(item);
+                            }
+                            textString += newItem;
                             texture = new Texture(@"res\Keys\" + item + ".png");
-                            Console.WriteLine(@"res\Keys\" + item + ".png");
+                            //Console.WriteLine(@"res\Keys\" + item + ".png");
                             AddFont(PosText-710, 310, texture, true);
                             PosText += 25;
                             break;
@@ -161,8 +180,8 @@ namespace Game.src.UI
                 }
             }
         }
-        public static List<Sprite> TextArray = new List<Sprite>();
-        static void AddFont(int x, int y, Texture texture, bool inList)
+        public List<Sprite> TextArray = new List<Sprite>();
+        void AddFont(int x, int y, Texture texture, bool inList)
         {
             int dit = 40;
             Colour colorFont = new Colour(1, 1, 1);

@@ -22,7 +22,11 @@ namespace Game.GameStates
 {
     sealed class GameState : ApplicationState
     {
-
+        string Name;
+        public GameState(string name)
+        {
+            Name = name;
+        }
         private ulong _playerId = 0;
         private EntityManager _entityManager = new EntityManager();
         private PacketSender _packetSender = new PacketSender();
