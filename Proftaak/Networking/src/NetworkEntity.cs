@@ -37,7 +37,7 @@ namespace Networking
         public abstract byte[] GetPacket();
         public abstract void ProcessPacket(byte[] packet, ulong MyId);
 
-        public static void HandlePacket(EntityManager manager, byte[] data, ulong myId)
+        public static bool HandlePacket(EntityManager manager, byte[] data, ulong myId)
         {
             if (data[0] == 0)
             {
@@ -48,9 +48,11 @@ namespace Networking
                     if (entity.Id == id)
                     {
                         entity.ProcessPacket(data, myId);
+                        return true;
                     }
                 }
             }
+            return false;
         }
     }
 
