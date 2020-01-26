@@ -17,6 +17,7 @@ using VoxelData;
 using VoxLoader;
 using Networking;
 using EntitySystem;
+using Game.Gameplay;
 
 namespace Game.GameStates
 {
@@ -155,6 +156,14 @@ namespace Game.GameStates
                 if(data[0] == 1)
                 {
                     _playerId = BitConverter.ToUInt64(data, 1);
+                } else if (data[0] == 0)
+                {
+                    if (NetworkEntity.HandlePacket(_entityManager, data, data[5]) == false)
+                    {
+                        //Entity doesn't exist yet
+                        Player player = new Player(data[1], data[5]);
+                        _entityManager.Add(player);
+                    }
                 }
             });
 

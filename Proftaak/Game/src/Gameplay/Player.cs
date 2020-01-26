@@ -33,17 +33,17 @@ namespace Game.Gameplay
 
         public override void OnAdd(EntityManager entityManager)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public override void OnRemove(EntityManager entityManager)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public override void Update(EntityManager entityManager, float deltatime)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

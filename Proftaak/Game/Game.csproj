@@ -110,12 +110,10 @@
     <None Include="res\maps\castle.vox" />
     <None Include="res\maps\gamercube.vox" />
     <None Include="res\maps\map.vox">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="res\maps\map_city.vox" />
-    <None Include="res\maps\monu10.vox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="res\maps\map_city.vox" />
+    <None Include="res\maps\monu10.vox" />
     <None Include="res\maps\monu9.vox" />
     <None Include="res\maps\nature.vox" />
     <None Include="res\maps\room.vox" />
