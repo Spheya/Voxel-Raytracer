@@ -42,8 +42,8 @@ namespace Networking
             byte[] buffer = new byte[1];
 
             _socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            //_socket.Connect(new IPEndPoint(target, port));
-            //_socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
+            _socket.Connect(new IPEndPoint(target, port));
+            _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
         }
 
         private TcpConnection(Socket socket, ThreadLauncher.OnPacket callback)

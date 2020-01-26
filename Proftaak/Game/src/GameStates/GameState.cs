@@ -39,6 +39,7 @@ namespace Game.GameStates
 
         private VoxelModel _model;
         private VoxelModel _model2;
+        
         public override void OnCreate()
         {
             try
@@ -155,8 +156,26 @@ namespace Game.GameStates
             pointLights.Add(pointlight);
             _voxelRenderer.PointLights = pointLights;
 
+            MyVoxLoader CharBodyVox = new MyVoxLoader();
+            VoxReader rCharBody = new VoxReader(@"res\char1_body.vox", CharBodyVox);
+            rCharBody.Read();
+
+            //Use palette of castlevox
+            //List<Material> materialsChar = new List<Material>();
+            //for (int i = 0; i < 256; i++)
+            //{
+            //    Vector3 color = new Vector3((float)CharBodyVox._materials[i].r / 255f, (float)CharBodyVox._materials[i].g / 255f, (float)CharBodyVox._materials[i].b / 255f);
+            //    float ior = 1.01f;
+            //    if (i == 252) ior = 1.1f;
+            //    if (i == 254) ior = 1.1f;
+            //    //Vector3 color = new Vector3(1f, 0f, 0f);
+            //    materialsChar.Add(new Material(color, ior));
+            //}
+            //_voxelRenderer.Materials.Set(materialsChar);
+
             TcpConnection connection = new TcpConnection(IPAddress.Parse("127.0.0.1"), 42069, (IConnection c, byte[] data) =>
             {
+                Console.WriteLine("Received packet...");
                 if(data[0] == 1)
                 {
                     _playerId = BitConverter.ToUInt64(data, 1);
@@ -164,8 +183,16 @@ namespace Game.GameStates
                 {
                     if (NetworkEntity.HandlePacket(_entityManager, data, data[5]) == false)
                     {
-                        //Entity doesn't exist yet
+                        //Player doesn't exist yet
+                        Console.WriteLine("Adding new player");
                         Player player = new Player(data[1], data[5]);
+                        player._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
+                        new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
+
+                        for (int x = 0; x < CharBodyVox.Width; x++)
+                            for (int y = 0; y < CharBodyVox.Height; y++)
+                                for (int z = 0; z < CharBodyVox.Depth; z++)
+                                    player._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
                         _entityManager.Add(player);
                     }
                 }

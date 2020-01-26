@@ -161,6 +161,7 @@ namespace Game.GameStates
         {
             //new Window(new GameState()).Run();
             RequestState(new GameState(Convert.ToString(info.textString)));
+            //RequestState(new GameState());
             //new Window(new SplashScreenState()).Run();
         }
         public override void OnDestroy()
