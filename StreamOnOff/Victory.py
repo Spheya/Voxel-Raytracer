@@ -3,9 +3,9 @@ import cv2
 
 # import image module from pillow
 from PIL import Image, ImageDraw
-base = r"C:\Users\mikel\Desktop\Proftaak 2.0\foto's\\"
+base = "C:\\Users\\mikel\\Desktop\\School\\Proftaak 2\\foto's\\"
 foto = "Winners.png"
-mike = "Mike.png"
+mike = "download.png"
 basefoto = base+foto
 mikefoto = base+mike
 
@@ -43,6 +43,7 @@ pastewidth = width*0.4525
 pasteheight = height*0.2721617418351477
 Image2copy.paste(Image1copy, (int(pastewidth), int(pasteheight)), mask)
 Image2copy.show()
+Image2copy.save(r"C:\Users\mikel\Desktop\School\Proftaak 2\Voxel-Raytracer\StreamOnOff\IMGOut.png");
 # Image1copy.show()
 # save the image
 
