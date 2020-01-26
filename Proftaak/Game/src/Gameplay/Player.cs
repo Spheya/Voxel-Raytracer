@@ -19,10 +19,12 @@ namespace Game.Gameplay
     {
         public VoxelModel _modelBody; //Merely a reference, not enough time to think all this through, so it's public.
         private Transform transform;
+        private bool _controllable;
 
-        public Player(ulong id, ulong ownerId) : base(id, ownerId, Type.PLAYER) {
+        public Player(ulong id, ulong ownerId, bool controllable) : base(id, ownerId, Type.PLAYER) {
             transform = new Transform();
             transform.Position = new OpenTK.Vector3(0.0f, 32.0f, 0.0f);
+            _controllable = controllable;
         }
         public override void FixedUpdate(EntityManager entityManager, float deltatime)
         {
@@ -53,6 +55,10 @@ namespace Game.Gameplay
         public override void Update(EntityManager entityManager, float deltatime)
         {
             //throw new NotImplementedException();
+            if (_controllable)
+            {
+                //Take input and move player
+            }
         }
     }
 }
