@@ -88,6 +88,9 @@ namespace Game.Gameplay
                     //_transform.Position += new Vector3(1 * deltatime, 0f, 0f);
                     _transform.Position += new Vector3(_speed * (float)Math.Cos(-_transform.Rotation.Y) * deltatime, 0f, _speed * (float)Math.Sin(-_transform.Rotation.Y) * deltatime);
                 }
+
+                Vector2 delta = MouseInput.GetMouseDelta() * mouseSensitivity;
+                _transform.Rotation += new Vector3(delta.Y, delta.X, 0.0f);
             }
         }
     }
