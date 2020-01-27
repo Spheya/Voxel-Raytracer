@@ -22,7 +22,7 @@ namespace Game.Gameplay
         public VoxelModel _modelBody; //Merely a reference, not enough time to think all this through, so it's public.
         private Transform _transform;
         private bool _controllable;
-        private Camera camera;
+        public Camera camera;
 
         private float _speed = 7f;
         private float mouseSensitivity = 0.001f;
@@ -30,7 +30,9 @@ namespace Game.Gameplay
         public Player(ulong id, ulong ownerId, bool controllable) : base(id, ownerId, Type.PLAYER) {
             _transform = new Transform();
             _transform.Position = new OpenTK.Vector3(0.0f, 32.0f, 0.0f);
+            _transform.Rotation = new OpenTK.Vector3(0f, 0f, 0f);
             _controllable = controllable;
+            camera = new Camera(_transform.Position, _transform.Rotation);
         }
         public override void FixedUpdate(EntityManager entityManager, float deltatime)
         {
@@ -61,6 +63,7 @@ namespace Game.Gameplay
 
         public override void Update(EntityManager entityManager, float deltatime)
         {
+            Console.WriteLine("test");
             //throw new NotImplementedException();
             if (_controllable)
             {
@@ -92,6 +95,11 @@ namespace Game.Gameplay
 
                 Vector2 delta = MouseInput.GetMouseDelta() * mouseSensitivity;
                 _transform.Rotation += new Vector3(delta.Y, delta.X, 0.0f);
+
+                camera._transform.Position = _transform.Position + new Vector3(0f, 128f, 0f);
+                camera._transform.Rotation = _transform.Rotation;
+
+                Console.WriteLine($"X: {camera._transform.Position.X}");
             }
         }
     }

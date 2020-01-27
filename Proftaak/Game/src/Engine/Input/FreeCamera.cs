@@ -26,7 +26,7 @@ namespace Game.Engine.Input
         /// Updates the camera position using the user input
         /// </summary>
         /// <param name="deltatime">The time (in seconds) the previous frame took</param>
-        public void Update(float deltatime)
+        public override void Update(float deltatime)
         {
             bool pressedFD = KeyboardInput.IsForwardDown();
             bool pressedBD = KeyboardInput.IsBackwardDown();

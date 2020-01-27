@@ -75,5 +75,7 @@ namespace Game.Engine.Rendering
             float aspect = window.Width / (float)window.Height;
             return Matrix4.CreatePerspectiveFieldOfView(Fov * (float)(Math.PI / 180.0f), aspect, Near, Far);
         }
+
+        public virtual void Update(float deltatime) { }
     }
 }
