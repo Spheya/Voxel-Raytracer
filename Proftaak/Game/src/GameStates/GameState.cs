@@ -206,7 +206,7 @@ namespace Game.GameStates
                         //            _mainPlayer._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
 
                         //Commenting this line out will give you access to the FreeCamera
-                        _camera = _mainPlayer.camera;
+                        //_camera = _mainPlayer.camera;
                         _entityManager.Add(_mainPlayer);
                     }
                     else if (data[0] == 0)
@@ -268,7 +268,7 @@ namespace Game.GameStates
         {
             _entityManager.FixedUpdate(deltatime);
 
-            foreach(var entity in _entityManager.OfType<NetworkEntity>())
+            foreach(var entity in _entityManager.OfType<NetworkEntity>().ToList())
                 _packetSender.EnqueuePacket(entity.GetPacket());
 
             _packetSender.Send();
