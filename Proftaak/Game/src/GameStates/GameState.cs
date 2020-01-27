@@ -194,6 +194,7 @@ namespace Game.GameStates
                     Console.WriteLine("Received our player id!");
                     _playerId = BitConverter.ToUInt64(data, 1);
                     _mainPlayer = new Player(data[1], _playerId, true);
+                    _mainPlayer._world = _model2;
                     _mainPlayer._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
                         new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 
@@ -208,7 +209,7 @@ namespace Game.GameStates
                 } else if (data[0] == 0)
                 {
                     //Not sure if myId should be data[5] or _playerId
-                    if (NetworkEntity.HandlePacket(_entityManager, data, data[5]) == false)
+                    if (NetworkEntity.HandlePacket(_entityManager, data, _playerId) == false)
                     {
                         //Player doesn't exist yet
                         Console.WriteLine("Adding new player");

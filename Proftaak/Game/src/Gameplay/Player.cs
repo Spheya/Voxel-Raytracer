@@ -21,8 +21,11 @@ namespace Game.Gameplay
     {
         public VoxelModel _modelBody; //Merely a reference, not enough time to think all this through, so it's public.
         private Transform _transform;
+        private Vector3 _velocity;
         private bool _controllable;
         public Camera camera;
+
+        public VoxelModel _world;
 
         private float _speed = 7f;
         private float mouseSensitivity = 0.001f;
@@ -38,35 +41,26 @@ namespace Game.Gameplay
         {
             //throw new NotImplementedException();
             _modelBody.Transform.Position = _transform.Position;
-        }
 
-        public override PlayerPacket GetNetworkData()
-        {
-            return new PlayerPacket() { x=0,y=0,z=0 };
-        }
-
-        public override void NetworkUpdate(PlayerPacket packet)
-        {
-            //throw new NotImplementedException();
-            _transform.Position = new OpenTK.Vector3(packet.x, packet.y, packet.z);
-        }
-
-        public override void OnAdd(EntityManager entityManager)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public override void OnRemove(EntityManager entityManager)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public override void Update(EntityManager entityManager, float deltatime)
-        {
-            Console.WriteLine("test");
-            //throw new NotImplementedException();
             if (_controllable)
             {
+                // Check physics
+                //if (_transform.Position.X >= _world.Transform.Position.X - _world.Width && _transform.Position.X < _world.Transform.Position.X + _world.Width)
+                //    if (_transform.Position.Y >= _world.Transform.Position.Y - _world.Height && _transform.Position.Y < _world.Transform.Position.Y + _world.Height)
+                //        if (_transform.Position.Z >= _world.Transform.Position.Z - _world.Depth && _transform.Position.Z < _world.Transform.Position.Z + _world.Depth)
+                //        {
+                //            byte voxel = _world[(int)_transform.Position.X, (int)_transform.Position.Y - 1, (int)_transform.Position.Z];
+                //            if (voxel > 0)
+                //            {
+                //                //Player is on top of voxel
+                //                _velocity.Y = 0f;
+                //            }
+                //            else
+                //            {
+                //                _velocity.Y += 9.8f * deltatime;
+                //            }
+                //        }
+
                 //Take input and move player
                 bool pressedFD = KeyboardInput.IsForwardDown();
                 bool pressedBD = KeyboardInput.IsBackwardDown();
@@ -96,11 +90,38 @@ namespace Game.Gameplay
                 Vector2 delta = MouseInput.GetMouseDelta() * mouseSensitivity;
                 _transform.Rotation += new Vector3(delta.Y, delta.X, 0.0f);
 
-                camera._transform.Position = _transform.Position + new Vector3(0f, 128f, 0f);
+                camera._transform.Position = _transform.Position + new Vector3(0f, 4f, 0f);
                 camera._transform.Rotation = _transform.Rotation;
 
-                Console.WriteLine($"X: {camera._transform.Position.X}");
+                //Console.WriteLine($"X: {camera._transform.Position.X}");
             }
+        }
+
+        public override PlayerPacket GetNetworkData()
+        {
+            return new PlayerPacket() { x=_transform.Position.X,y=_transform.Position.Y,z=_transform.Position.Z };
+        }
+
+        public override void NetworkUpdate(PlayerPacket packet)
+        {
+            //throw new NotImplementedException();
+            _transform.Position = new OpenTK.Vector3(packet.x, packet.y, packet.z);
+        }
+
+        public override void OnAdd(EntityManager entityManager)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public override void OnRemove(EntityManager entityManager)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public override void Update(EntityManager entityManager, float deltatime)
+        {
+            Console.WriteLine("test");
+            //throw new NotImplementedException();
         }
     }
 }
