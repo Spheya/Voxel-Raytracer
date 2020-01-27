@@ -189,39 +189,43 @@ namespace Game.GameStates
             TcpConnection connection = new TcpConnection(IPAddress.Parse("127.0.0.1"), 42069, (IConnection c, byte[] data) =>
             {
                 //Console.WriteLine("Received packet...");
-                if(data[0] == 1)
+                if (data.Length > 1)
                 {
-                    Console.WriteLine("Received our player id!");
-                    _playerId = BitConverter.ToUInt64(data, 1);
-                    _mainPlayer = new Player(data[1], _playerId, true);
-                    _mainPlayer._world = _model2;
-                    _mainPlayer._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
-                        new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
-
-                    //for (int x = 0; x < CharBodyVox.Width; x++)
-                    //    for (int y = 0; y < CharBodyVox.Height; y++)
-                    //        for (int z = 0; z < CharBodyVox.Depth; z++)
-                    //            _mainPlayer._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
-
-                    //Commenting this line out will give you access to the FreeCamera
-                    _camera = _mainPlayer.camera;
-                    _entityManager.Add(_mainPlayer);
-                } else if (data[0] == 0)
-                {
-                    //Not sure if myId should be data[5] or _playerId
-                    if (NetworkEntity.HandlePacket(_entityManager, data, _playerId) == false)
+                    if (data[0] == 1)
                     {
-                        //Player doesn't exist yet
-                        Console.WriteLine("Adding new player");
-                        Player player = new Player(data[1], data[5], false);
-                        player._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
-                        new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
+                        Console.WriteLine("Received our player id!");
+                        _playerId = BitConverter.ToUInt64(data, 1);
+                        _mainPlayer = new Player(data[1], _playerId, true);
+                        _mainPlayer._world = _model2;
+                        _mainPlayer._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
+                            new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
 
-                        for (int x = 0; x < CharBodyVox.Width; x++)
-                            for (int y = 0; y < CharBodyVox.Height; y++)
-                                for (int z = 0; z < CharBodyVox.Depth; z++)
-                                    player._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
-                        _entityManager.Add(player);
+                        //for (int x = 0; x < CharBodyVox.Width; x++)
+                        //    for (int y = 0; y < CharBodyVox.Height; y++)
+                        //        for (int z = 0; z < CharBodyVox.Depth; z++)
+                        //            _mainPlayer._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
+
+                        //Commenting this line out will give you access to the FreeCamera
+                        _camera = _mainPlayer.camera;
+                        _entityManager.Add(_mainPlayer);
+                    }
+                    else if (data[0] == 0)
+                    {
+                        //Not sure if myId should be data[5] or _playerId
+                        if (NetworkEntity.HandlePacket(_entityManager, data, _playerId) == false)
+                        {
+                            //Player doesn't exist yet
+                            Console.WriteLine("Adding new player");
+                            Player player = new Player(data[1], data[5], false);
+                            player._modelBody = _voxelRenderer.CreateModel(CharBodyVox.Width, CharBodyVox.Height, CharBodyVox.Depth,
+                            new Transform(new Vector3(-24.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.1f, 0.0f), new Vector3(0.5f)));
+
+                            for (int x = 0; x < CharBodyVox.Width; x++)
+                                for (int y = 0; y < CharBodyVox.Height; y++)
+                                    for (int z = 0; z < CharBodyVox.Depth; z++)
+                                        player._modelBody[x, y, z] = CharBodyVox._data[x, y, z];
+                            _entityManager.Add(player);
+                        }
                     }
                 }
             });
