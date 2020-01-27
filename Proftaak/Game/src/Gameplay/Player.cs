@@ -25,6 +25,7 @@ namespace Game.Gameplay
         private Camera camera;
 
         private float _speed = 7f;
+        private float mouseSensitivity = 0.001f;
 
         public Player(ulong id, ulong ownerId, bool controllable) : base(id, ownerId, Type.PLAYER) {
             _transform = new Transform();
